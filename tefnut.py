@@ -10,6 +10,8 @@ if __name__ == "__main__":
     logger.info("Tefnut application starting")
 
 
+    #logger.info(settings.test == "asd")
+
     logger.info("Starting control loop")
     x = threading.Thread(target=control.main_loop, args=(1,))
     x.start()
