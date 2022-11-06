@@ -1,21 +1,18 @@
+"""
+Tenut
+"""
 import logging
 import threading
-from tefnut import control
-from tefnut.utils.setting import settings, save_config
-import tefnut.utils.logging
+from tefnut.control import control
+from tefnut.utils.logging import configure_logger
+
+logger = logging.getLogger("main")
 
 if __name__ == "__main__":
-    logger = logging.getLogger("main")
-
-    logger.info("Tefnut application starting")
-
-
-    #logger.info(settings.test == "asd")
-
-    logger.info("Starting control loop")
-    x = threading.Thread(target=control.main_loop, args=(1,))
+    logger.info("++++++++++Tefnut application starting++++++++++")
+    configure_logger()
+    logger.debug("Starting control loop")
+    x = threading.Thread(target=control.control_loop, args=(1,))
     x.start()
 
-    save_config()
-    logger.info("Tefnut started")
-    
+    logger.debug("Tefnut started")
