@@ -1,12 +1,12 @@
 # tefnut
 
-![Tefnut](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Shu_with_feather.svg/640px-Shu_with_feather.svg.png | width=100)
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Shu_with_feather.svg/640px-Shu_with_feather.svg.png' width='100'>
 
 ## Configuration 
   
 ### Weather API
   
-![OpenWeather](https://openweathermap.org/themes/openweathermap/assets/img/logo_white_cropped.png)
+<img src='https://openweathermap.org/themes/openweathermap/assets/img/logo_white_cropped.png' width='100'>
 
 In order to do proper Humidity calculation, we need to know the outside temperature. To do so we use [OpenWeather API](https://openweathermap.org/api). Simply [register](https://home.openweathermap.org/users/sign_up) for the **FREE** access to weather data. You will need to add your API key in the configuration file. You also need to get your latitude and longitude value to get the appropriate weather information.
 
