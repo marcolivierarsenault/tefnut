@@ -27,6 +27,8 @@ def get_temperature():
         (current_temperature, 3_hour_forecast, target temperature)
     """
     # current temp
+
+    current_temp = None
     try:
         response = requests.get(current_temp_url)
         logger.debug(response)
@@ -45,6 +47,7 @@ def get_temperature():
             logger.error(e)
 
     # future temp
+    future_temp = None
     try:
         response = requests.get(future_temp_url)
         logger.debug(response)
@@ -62,4 +65,11 @@ def get_temperature():
             logger.error(" Weather forecast parsing JSON error")
             logger.error(e)
 
-    return (current_temp, future_temp, min(current_temp, current_temp-(current_temp-future_temp)/2))
+    if future_temp is not None and current_temp is not None:
+        return (current_temp, future_temp, calculate_target(current_temp, future_temp))
+    else:
+        return (None, None, None)
+
+
+def calculate_target(current_temp, future_temp):
+    return min(current_temp, current_temp-(current_temp-future_temp)/2)

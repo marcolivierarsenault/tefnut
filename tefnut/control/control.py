@@ -1,6 +1,6 @@
 import logging
 import time
-from tefnut.utils.setting import settings
+# from tefnut.utils.setting import settings
 from tefnut.control.weather import get_temperature
 
 logger = logging.getLogger("main")
@@ -12,7 +12,7 @@ def control_loop(name):
         future_temp = -100
         target_temp = -100
         while True:
-            logger.info(settings.get("general.test"))
+            logger.info("starting a control loop")
 
             # Weather
             (current_temp, future_temp, target_temp) = get_temperature()

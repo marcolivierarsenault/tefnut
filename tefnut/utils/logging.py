@@ -7,7 +7,7 @@ from tefnut.utils.setting import settings
 def configure_logger():
     """Function to configure the logger"""
     logger = logging.getLogger("main")
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(settings.get("general.loglevel"))
 
     # Console
     handler2 = logging.StreamHandler()

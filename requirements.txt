@@ -1,2 +1,3 @@
 dynaconf
 python-logging-loki
+influxdb-client

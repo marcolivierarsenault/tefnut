@@ -131,3 +131,5 @@ dmypy.json
 # Ignore dynaconf secret files
 .secrets.*
 settings.toml
+
+.vscode
