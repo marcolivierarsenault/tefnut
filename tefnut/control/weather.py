@@ -13,10 +13,6 @@ lon = settings.get("WEATHER.lon")
 current_temp_url = "https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&appid=%s&units=metric" % (lat, lon, api_key)
 future_temp_url = "https://api.openweathermap.org/data/2.5/forecast?lat=%s&lon=%s&appid=%s&units=metric" % (lat, lon, api_key)
 
-current_temp = -100
-future_temp = -100
-target_temp = -100
-
 
 def get_temperature():
     """
@@ -33,7 +29,7 @@ def get_temperature():
     # current temp
     try:
         response = requests.get(current_temp_url)
-        logger.debug("response")
+        logger.debug(response)
     except Exception as e:
         logger.error("Get Weather HTTP error")
         logger.error(e)
@@ -43,7 +39,7 @@ def get_temperature():
     else:
         try:
             current_temp = json.loads(response.text)['main']['temp']
-            logger.debug(current_temp)
+            logger.debug(json.loads(response.text))
         except Exception as e:
             logger.error(" Weather parsing JSON error")
             logger.error(e)
@@ -51,7 +47,7 @@ def get_temperature():
     # future temp
     try:
         response = requests.get(future_temp_url)
-        logger.debug("response")
+        logger.debug(response)
     except Exception as e:
         logger.error("Get Weather forecast HTTP error")
         logger.error(e)
@@ -61,7 +57,9 @@ def get_temperature():
     else:
         try:
             future_temp = json.loads(response.text)['list'][0]['main']['temp']
-            logger.debug(future_temp)
+            logger.debug(json.loads(response.text))
         except Exception as e:
             logger.error(" Weather forecast parsing JSON error")
             logger.error(e)
+
+    return (current_temp, future_temp, min(current_temp, current_temp-(current_temp-future_temp)/2))
