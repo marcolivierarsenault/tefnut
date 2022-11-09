@@ -40,7 +40,7 @@ class SettingLoader:
         if persist:
             self.save_config()
 
-    def get(self, name):
+    def get(self, name, default=None):
         """Get a config value from config file
 
         Parameters:
@@ -51,8 +51,10 @@ class SettingLoader:
             file does not include the name
         """
         result = self.setting_obj.get(name)
-        if result is None:
+        if result is None and default is None:
             logger.error("Setting config failled, missing setting: %s", name)
+        elif result is None:
+            logger.warning("Setting config failled, missing setting: %s, using the default value", name)
         return result
 
 

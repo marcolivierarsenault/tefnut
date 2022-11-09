@@ -6,15 +6,12 @@ logger = logging.getLogger("main")
 
 
 def control_loop(name):
-    a = 3
     try:
         while True:
             logger.info(settings.get("general.test"))
             time.sleep(1)
-            a -= 1
-            if a == 0:
-                break
-                # raise Exception("snip")
+
+            # Weather
 
     except Exception as e:
         logger.error("control main loop exception")
