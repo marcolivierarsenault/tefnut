@@ -3,12 +3,13 @@ from influxdb_client import InfluxDBClient
 from influxdb_client.client.write_api import SYNCHRONOUS
 from tefnut.utils.setting import settings
 
-client = None
-write_api = None
 logger = logging.getLogger("main")
 
 
 class InfluxClient:
+    client = None
+    write_api = None
+
     def __init__(self):
         self.influx_enable = settings.get("influx.enable")
         if self.influx_enable:
@@ -31,8 +32,10 @@ class InfluxClient:
             try:
                 logger.debug("Wrinting to InfludDB")
                 self.write_api.write(bucket=settings.get("influx.bucket"), org=settings.get("influx.org"), record=point)
+                return 0
             except Exception as e:
                 logger.error("Faillure to configure Influx DB client")
                 logger.error(e)
         else:
             logger.debug("Not Wrinting to InfludDB")
+        return 1
