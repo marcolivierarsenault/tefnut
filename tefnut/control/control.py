@@ -7,8 +7,8 @@ from influxdb_client import Point
 
 logger = logging.getLogger("main")
 influx_client = InfluxClient()
-DELAY_LOOP = 5
-DELAY_TEMP = 15
+DELAY_LOOP = 60
+DELAY_TEMP = 15 * 60
 TEMP_EMERGENCY_DELAY = 3 * 60 * 60  # 3 hours
 state = {'temp time': time.time() - DELAY_TEMP}
 
@@ -47,18 +47,18 @@ def control_loop(name):
         while True:
             current_values = {}
             current_values['start time'] = time.time()
-            current_values['temps delay'] = time.time() - state['temps time']
+            current_values['temp delay'] = time.time() - state['temp time']
             logger.debug("starting a control loop")
 
             # Weather
-            if current_values['temps delay'] >= DELAY_TEMP:
-                logger.info("Capturing temps")
+            if current_values['temp delay'] >= DELAY_TEMP:
+                logger.info("Capturing temp")
                 (current_values['current_temp'], current_values['future_temp'],
                  current_values['target_temp']) = get_temperature()
                 logger.debug("current temp: %s", current_values['current_temp'])
                 logger.debug("forcast temp: %s", current_values['future_temp'])
                 logger.debug("target temp: %s", current_values['target_temp'])
-                current_values['temps time'] = time.time()
+                current_values['temp time'] = time.time()
             else:
                 logger.info("Temp fresh enough, not refreshing")
 
@@ -69,6 +69,6 @@ def control_loop(name):
 
     except Exception as e:
         logger.error("control main loop exception")
-        logger.error(e)
+        logging.error(e)
     finally:
         logger.info("control main loop finish")
