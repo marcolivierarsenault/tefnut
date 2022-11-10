@@ -1,3 +1,4 @@
 dynaconf
 python-logging-loki
 influxdb-client
+logging_json
