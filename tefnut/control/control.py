@@ -23,9 +23,9 @@ def humidificator_logic(current_values):
                 current_values['target_temp'] is not None]):
 
             point = (Point("temp")
-                     .field("current temp", current_values['current_temp'])
-                     .field("forcast temp", current_values['future_temp'])
-                     .field("target temp", current_values['target_temp'])
+                     .field("current temp", float(current_values['current_temp']))
+                     .field("forcast temp", float(current_values['future_temp']))
+                     .field("target temp", float(current_values['target_temp']))
                      )
             influx_client.write(point)
             if 'temp time' in current_values and current_values['temp time'] is not None:
@@ -35,8 +35,8 @@ def humidificator_logic(current_values):
             state['target_temp'] = current_values['target_temp']
 
     point = (Point("timming")
-             .field("loop time", current_values['finish time']-current_values['start time'])
-             .field("temp delay", current_values['temp delay'])
+             .field("loop time", float(current_values['finish time']-current_values['start time']))
+             .field("temp delay", float(current_values['temp delay']))
              )
     influx_client.write(point)
     return 0
