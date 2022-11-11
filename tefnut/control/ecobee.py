@@ -3,6 +3,7 @@ import logging
 import pytz
 import pyecobee as pyecobee
 from datetime import datetime
+from tefnut.utils.setting import settings
 
 logger = logging.getLogger("main")
 
@@ -14,7 +15,7 @@ class ecobee:
             self.ecobee_service = pyecobee_db["thermostat"]
         except KeyError:
             self.ecobee_service = pyecobee.EcobeeService(thermostat_name="thermostat",
-                                                         application_key="vydwOaNpYFzckXW4FP7TYuUvjUGKt73c")
+                                                         application_key=settings.get("ECOBEE.apikey"))
         finally:
             pyecobee_db.close()
 
