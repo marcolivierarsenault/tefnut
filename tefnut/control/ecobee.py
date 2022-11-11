@@ -67,14 +67,14 @@ class ecobee:
         try:
             now_utc = datetime.now(pytz.utc)
             if now_utc > self.ecobee_service.refresh_token_expires_on:
-                self.authorize(self.ecobee_service)
-                self.request_tokens(self.ecobee_service)
+                self.authorize()
+                self.request_tokens()
             elif now_utc > self.ecobee_service.access_token_expires_on:
-                self.token_response = self.refresh_tokens(self.ecobee_service)
+                self.token_response = self.refresh_tokens()
 
             selection = pyecobee.Selection(selection_type=pyecobee.SelectionType.REGISTERED.value, selection_match='',
                                            include_runtime=True)
             thermostat_response = self.ecobee_service.request_thermostats(selection)
             return thermostat_response.thermostat_list[0].runtime.actual_humidity
         except Exception as e:
-            logger.error("Failinf to retreive humidity", exc_info=e)
+            logger.error("Failed to retreive humidity", exc_info=e)
