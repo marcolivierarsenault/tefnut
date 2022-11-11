@@ -2,7 +2,7 @@ import logging
 import time
 # from tefnut.utils.setting import settings
 from tefnut.control.weather import get_temperature
-from tefnut.control.ecobee import ecobee as ee
+from tefnut.control.ecobee import get_pin, ecobee as ee
 from tefnut.utils.influx_client import InfluxClient
 from influxdb_client import Point
 
@@ -65,9 +65,8 @@ def control_loop(name):
         logger.debug("starting ecobee device")
         ecobee = ee()
         logger.debug("Ecobee device started")
-    except Exception as e:
-        logger.fatal("Failed to load Ecobee, Please validate PIN ")
-        logger.fatal(e)
+    except Exception:
+        logger.error("Failed to load Ecobee, Please validate PIN %s", get_pin())
 
     try:
         while True:
@@ -103,7 +102,6 @@ def control_loop(name):
             time.sleep(DELAY_LOOP)
 
     except Exception as e:
-        logger.error("control main loop exception")
-        logging.error(e)
+        logger.fatal("control main loop exception", exc_info=e)
     finally:
         logger.info("control main loop finish")

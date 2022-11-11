@@ -33,8 +33,7 @@ def get_temperature():
         response = requests.get(current_temp_url)
         logger.debug(response)
     except Exception as e:
-        logger.error("Get Weather HTTP error")
-        logger.error(e)
+        logger.error("Get Weather HTTP error", exc_info=e)
 
     if response.status_code != 200:
         logger.error("Error from the OpenWeather API, code code : %d", response.status_code)
@@ -43,8 +42,7 @@ def get_temperature():
             current_temp = json.loads(response.text)['main']['temp']
             logger.debug(json.loads(response.text))
         except Exception as e:
-            logger.error(" Weather parsing JSON error")
-            logger.error(e)
+            logger.error(" Weather parsing JSON error", exc_info=e)
 
     # future temp
     future_temp = None
@@ -52,8 +50,7 @@ def get_temperature():
         response = requests.get(future_temp_url)
         logger.debug(response)
     except Exception as e:
-        logger.error("Get Weather forecast HTTP error")
-        logger.error(e)
+        logger.error("Get Weather forecast HTTP error", exc_info=e)
 
     if response.status_code != 200:
         logger.error("Error from the OpenWeather forecast API, code code : %d", response.status_code)
@@ -62,8 +59,7 @@ def get_temperature():
             future_temp = json.loads(response.text)['list'][0]['main']['temp']
             logger.debug(json.loads(response.text))
         except Exception as e:
-            logger.error(" Weather forecast parsing JSON error")
-            logger.error(e)
+            logger.error(" Weather forecast parsing JSON error", exc_info=e)
 
     if future_temp is not None and current_temp is not None:
         return (current_temp, future_temp, calculate_target(current_temp, future_temp))
