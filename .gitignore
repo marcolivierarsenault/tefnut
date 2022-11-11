@@ -133,3 +133,4 @@ dmypy.json
 settings.toml
 
 .vscode
+pyecobee_db
