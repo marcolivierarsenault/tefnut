@@ -18,6 +18,10 @@ state = {'temp time': time.time() - DELAY_TEMP,
 ecobee = None
 
 
+def humidificator_controller():
+    1 == 1
+
+
 def data_collection_logic(current_values):
 
     # humidity
@@ -62,9 +66,9 @@ def data_collection_logic(current_values):
 
 def control_loop(name):
     try:
-        logger.debug("starting ecobee device")
+        logger.info("starting ecobee device")
         ecobee = ee()
-        logger.debug("Ecobee device started")
+        logger.info("Ecobee device started")
     except Exception:
         logger.error("Failed to load Ecobee, Please validate PIN %s", get_pin())
 
@@ -78,6 +82,7 @@ def control_loop(name):
 
             # humidity
             if current_values['humidity delay'] >= DELAY_HUMIDITY:
+                logger.info("Capturing humidity")
                 current_values['humidity'] = ecobee.get_humidity()
                 logger.debug("humidity: %s", current_values['humidity'])
                 current_values['humidity time'] = time.time()
