@@ -28,7 +28,7 @@ class SettingLoader:
         """Save config file, after they are updated programatically"""
         loaders.write(self.file_path, self.setting_obj.to_dict())
 
-    def set(self, name, value, persist=True):
+    def set(self, name, value, persist=False):
         """Set a config value from config file
 
         Parameters:

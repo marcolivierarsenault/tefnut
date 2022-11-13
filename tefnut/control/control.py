@@ -1,10 +1,11 @@
 import logging
 import time
-# from tefnut.utils.setting import settings
+from tefnut.utils.setting import settings
 from tefnut.control.weather import get_temperature
 from tefnut.control.ecobee import get_pin, ecobee as ee
 from tefnut.utils.influx_client import InfluxClient
 from influxdb_client import Point
+from enum import Enum
 
 logger = logging.getLogger("main")
 influx_client = InfluxClient()
@@ -13,13 +14,95 @@ DELAY_TEMP = 15 * 60
 TEMP_EMERGENCY_DELAY = 3 * 60 * 60  # 3 hours
 DELAY_HUMIDITY = 10 * 60
 HUMIDITY_EMERGENCY_DELAY = 40 * 60  # 40 min
+
+
+class MODE(Enum):
+    AUTO = 0
+    MANUAL = 1
+    TEMP_EMERGENCY = 2
+    NO_HUMIDITY = 3
+
+
+class STATE(Enum):
+    OFF = 0
+    ON = 1
+
+
 state = {'temp time': time.time() - DELAY_TEMP,
-         'humidity time': time.time() - DELAY_HUMIDITY}
+         'humidity time': time.time() - DELAY_HUMIDITY,
+         'temp delay': 0,
+         'humidity delay': 0,
+         'current_temp': None,
+         'future_temp': None,
+         'target_temp': None,
+         'humidity': None,
+         'target_humidity': settings.get("GENERAL.manual_target"),
+         'mode': MODE.AUTO,
+         'state': STATE.OFF,
+         }
 ecobee = None
 
 
+def compute_automated_target(outside_temp):
+    if outside_temp >= 3:
+        return 45
+    elif outside_temp >= -12:
+        return 40
+    elif outside_temp >= -18:
+        return 35
+    elif outside_temp >= -24:
+        return 25
+    elif outside_temp >= -30:
+        return 20
+    else:
+        return 15
+
+
 def humidificator_controller():
-    1 == 1
+    logger.debug("Starting control")
+    logger.debug("humidity is currently %d", state['humidity'])
+    output = 0
+    if any(value is None for value in state.values()):
+        logger.error("None values in dict when making decision")
+        return -1
+
+    state['mode'] = MODE[settings.get("GENERAL.mode")]
+
+    if state['humidity delay'] == HUMIDITY_EMERGENCY_DELAY:
+        logger.error("No Humidity info for too long, turning Humi off")
+        state['mode'] = MODE.NO_HUMIDITY
+        # STOP HERE
+        logger.info("Stopping Thermostat")
+        state['state'] = STATE.OFF
+        return -2
+
+    if state['temp delay'] == TEMP_EMERGENCY_DELAY:
+        logger.error("No temp info for too long, running in emerengy target")
+        state['mode'] = MODE.TEMP_EMERGENCY
+        settings.set("GENERAL.mode", MODE.TEMP_EMERGENCY.name, persist=False)
+        state['target_humidity'] = settings.get("GENERAL.emergency_target")
+        output = -3
+
+    if state['mode'] == MODE.MANUAL:
+        state['target_humidity'] = settings.get("GENERAL.manual_target")
+        logger.info("Manual")
+    elif state['mode'] == MODE.AUTO:
+        logger.info("Auto")
+        state['target_humidity'] = compute_automated_target(state['target_temp'])
+
+    if state['humidity'] <= state['target_humidity'] - settings.get("GENERAL.delta") + 1:
+        # START HERE
+        logger.info("Starting Thermostat")
+        state['state'] = STATE.ON
+    elif state['humidity'] > state['target_humidity'] + settings.get("GENERAL.delta"):
+        # STOP HERE
+        logger.info("Stopping Thermostat")
+        state['state'] = STATE.OFF
+
+    logger.debug("Mode %s", state['mode'].name)
+    logger.debug("State %s", state['state'].name)
+    logger.debug("Target Humidity %d", state['target_humidity'])
+    return output
 
 
 def data_collection_logic(current_values):
@@ -27,10 +110,9 @@ def data_collection_logic(current_values):
     # humidity
     if "humidity" in current_values:
         if current_values['humidity'] is not None:
-            point = (Point("humidity").field("humidity", float(current_values['humidity'])))
-            influx_client.write(point)
             if 'humidity time' in current_values and current_values['humidity time'] is not None:
                 state['humidity time'] = current_values['humidity time']
+                state['humidity delay'] = current_values['humidity delay']
             state['humidity'] = current_values['humidity']
 
     # temp
@@ -50,13 +132,27 @@ def data_collection_logic(current_values):
             influx_client.write(point)
             if 'temp time' in current_values and current_values['temp time'] is not None:
                 state['temp time'] = current_values['temp time']
+                state['temp delay'] = current_values['temp delay']
             state['current_temp'] = current_values['current_temp']
             state['future_temp'] = current_values['future_temp']
             state['target_temp'] = current_values['target_temp']
 
+    humidificator_controller()
+
+    # CRASH HERE ON SECOND RUN
+    point = (Point("humidity").field("humidity", float(current_values['humidity']))
+                              .field("target", float(state['target_humidity']))
+             )
+    influx_client.write(point)
+
+    point = (Point("Status").field("mode", state['mode'].name)
+                            .field("state", state['state'].name)
+             )
+    influx_client.write(point)
+
     # Timings
     point = (Point("timming")
-             .field("loop time", float(current_values['finish time']-current_values['start time']))
+             .field("loop time", float(time.time()-current_values['start time']))
              .field("temp delay", float(current_values['temp delay']))
              .field("humidity delay", float(current_values['humidity delay']))
              )
@@ -101,7 +197,6 @@ def control_loop(name):
             else:
                 logger.info("Temp fresh enough, not refreshing")
 
-            current_values['finish time'] = time.time()
             data_collection_logic(current_values)
 
             time.sleep(DELAY_LOOP)
