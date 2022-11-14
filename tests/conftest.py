@@ -7,3 +7,4 @@ def pytest_sessionstart(session):
     logger.info("Configuring test")
     settings.set("loki.enable", False, persist=False)
     settings.set("INFLUX.enable", False, persist=False)
+    settings.set("GENERAL.delta", 2, persist=False)

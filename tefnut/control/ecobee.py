@@ -75,6 +75,7 @@ class ecobee:
             selection = pyecobee.Selection(selection_type=pyecobee.SelectionType.REGISTERED.value, selection_match='',
                                            include_runtime=True)
             thermostat_response = self.ecobee_service.request_thermostats(selection)
+            logger.debug(thermostat_response)
             return thermostat_response.thermostat_list[0].runtime.actual_humidity
         except Exception as e:
             logger.error("Failed to retreive humidity", exc_info=e)

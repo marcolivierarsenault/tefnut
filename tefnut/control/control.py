@@ -60,7 +60,8 @@ def compute_automated_target(outside_temp):
 
 def humidificator_controller():
     logger.debug("Starting control")
-    logger.debug("humidity is currently %d", state['humidity'])
+    if state['humidity'] is not None:
+        logger.debug("humidity is currently %d", state['humidity'])
     output = 0
     if any(value is None for value in state.values()):
         logger.error("None values in dict when making decision")
@@ -85,19 +86,21 @@ def humidificator_controller():
 
     if state['mode'] == MODE.MANUAL:
         state['target_humidity'] = settings.get("GENERAL.manual_target")
-        logger.info("Manual")
+        logger.debug("Manual")
     elif state['mode'] == MODE.AUTO:
-        logger.info("Auto")
+        logger.debug("Auto")
         state['target_humidity'] = compute_automated_target(state['target_temp'])
 
-    if state['humidity'] <= state['target_humidity'] - settings.get("GENERAL.delta") + 1:
+    if state['humidity'] <= state['target_humidity'] - settings.get("GENERAL.delta") and state['state'] != STATE.ON:
         # START HERE
         logger.info("Starting Thermostat")
         state['state'] = STATE.ON
-    elif state['humidity'] > state['target_humidity'] + settings.get("GENERAL.delta"):
+        output = 1
+    elif state['humidity'] > state['target_humidity'] + settings.get("GENERAL.delta") and state['state'] != STATE.OFF:
         # STOP HERE
         logger.info("Stopping Thermostat")
         state['state'] = STATE.OFF
+        output = 2
 
     logger.debug("Mode %s", state['mode'].name)
     logger.debug("State %s", state['state'].name)
@@ -114,6 +117,8 @@ def data_collection_logic(current_values):
                 state['humidity time'] = current_values['humidity time']
                 state['humidity delay'] = current_values['humidity delay']
             state['humidity'] = current_values['humidity']
+            point = Point("humidity").field("humidity", float(current_values['humidity']))
+            influx_client.write(point)
 
     # temp
     if all(["current_temp" in current_values,
@@ -139,9 +144,7 @@ def data_collection_logic(current_values):
 
     humidificator_controller()
 
-    # CRASH HERE ON SECOND RUN
-    point = (Point("humidity").field("humidity", float(current_values['humidity']))
-                              .field("target", float(state['target_humidity']))
+    point = (Point("humidity").field("target", float(state['target_humidity']))
              )
     influx_client.write(point)
 
