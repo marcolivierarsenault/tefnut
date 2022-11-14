@@ -6,8 +6,22 @@ url = "http://127.0.0.1:3100/loki/api/v1/push"
 
 [GENERAL]
 loglevel = "INFO"
+mode = "AUTO"
+manual_target = 40
+emergency_target = 40
+delta = 2
 
 [WEATHER]
 api_key = "123123123123123123123123123"
 lat = "45.50"
 lon = "-73.56"
+
+[INFLUX]
+enable = true
+url = "http://127.0.0.1:8086"
+org = "tefnut"
+token = "dsaDwe34fDsfedsssd3#DSefsdfewdwqd"
+bucket = "tefnut-dev"
+
+[ECOBEE]
+apikey = "dsaDwe34fDsfedsssd3dasADWDqwdawdq@DADad"
