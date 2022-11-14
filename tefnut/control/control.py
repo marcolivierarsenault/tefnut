@@ -69,7 +69,7 @@ def humidificator_controller():
 
     state['mode'] = MODE[settings.get("GENERAL.mode")]
 
-    if state['humidity delay'] == HUMIDITY_EMERGENCY_DELAY:
+    if state['humidity delay'] >= HUMIDITY_EMERGENCY_DELAY:
         logger.error("No Humidity info for too long, turning Humi off")
         state['mode'] = MODE.NO_HUMIDITY
         # STOP HERE
@@ -77,12 +77,12 @@ def humidificator_controller():
         state['state'] = STATE.OFF
         return -2
 
-    if state['temp delay'] == TEMP_EMERGENCY_DELAY:
+    if state['temp delay'] >= TEMP_EMERGENCY_DELAY and state['mode'] == MODE.AUTO:
         logger.error("No temp info for too long, running in emerengy target")
         state['mode'] = MODE.TEMP_EMERGENCY
         settings.set("GENERAL.mode", MODE.TEMP_EMERGENCY.name, persist=False)
         state['target_humidity'] = settings.get("GENERAL.emergency_target")
-        output = -3
+        output = -5
 
     if state['mode'] == MODE.MANUAL:
         state['target_humidity'] = settings.get("GENERAL.manual_target")
@@ -95,12 +95,12 @@ def humidificator_controller():
         # START HERE
         logger.info("Starting Thermostat")
         state['state'] = STATE.ON
-        output = 1
+        output += 1
     elif state['humidity'] > state['target_humidity'] + settings.get("GENERAL.delta") and state['state'] != STATE.OFF:
         # STOP HERE
         logger.info("Stopping Thermostat")
         state['state'] = STATE.OFF
-        output = 2
+        output += 2
 
     logger.debug("Mode %s", state['mode'].name)
     logger.debug("State %s", state['state'].name)
