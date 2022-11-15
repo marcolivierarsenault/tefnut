@@ -1,6 +1,7 @@
 import logging
 import time
 import psutil
+import atexit
 from tefnut.utils.constant import STATE, MODE
 from tefnut.utils.setting import settings
 from tefnut.control.weather import get_temperature
@@ -212,3 +213,8 @@ def control_loop(name):
     finally:
         logger.info("control main loop finish")
         humidificator.shutdown()
+
+
+@atexit.register
+def goodbye():
+    humidificator.shutdown()
