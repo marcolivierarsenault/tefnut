@@ -212,7 +212,10 @@ def test_auto_calculation_logic():
 def test_manual_high_humid_stopping(state_with_data):
     state_with_data["mode"] = control.MODE.MANUAL
     state_with_data["state"] = control.STATE.ON
+    control.humidificator.turn_on()
     control.state = state_with_data
+    control.state['humidity delay'] = 0
+    settings.set("GENERAL.manual_target", 20, persist=False)
     assert control.humidificator_controller() == 2
     assert control.state["state"] == control.STATE.OFF
 
@@ -239,6 +242,8 @@ def test_manual_too_humid_starting(state_with_data):
     state_with_data["mode"] = control.MODE.MANUAL
     state_with_data["state"] = control.STATE.OFF
     state_with_data["humidity"] = 20
+    settings.set("GENERAL.manual_target", 30, persist=False)
+    control.humidificator.turn_off()
     control.state = state_with_data
     assert control.humidificator_controller() == 1
     assert control.state["state"] == control.STATE.ON
