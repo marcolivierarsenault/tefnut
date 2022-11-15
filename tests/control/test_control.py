@@ -488,3 +488,34 @@ def test_weather_delay_manual(state_with_data):
     assert control.humidificator_controller() == 1
     assert control.state["state"] == control.STATE.ON
     assert control.state["mode"] != control.MODE.TEMP_EMERGENCY
+
+
+def test_humidity_delay(state_with_data):
+    settings.set("GENERAL.mode", "AUTO", persist=False)
+    state_with_data["state"] = control.STATE.ON
+    state_with_data["humidity"] = 10
+    state_with_data["target_temp"] = -15
+    control.state = state_with_data
+    assert control.humidificator_controller() == 0
+    assert control.state["state"] == control.STATE.ON
+
+    control.state["humidity delay"] = control.HUMIDITY_EMERGENCY_DELAY
+    assert control.humidificator_controller() == -2
+    assert control.state["state"] == control.STATE.OFF
+    assert control.state["mode"] == control.MODE.NO_HUMIDITY
+
+
+def test_humidity_and_temp_delay(state_with_data):
+    settings.set("GENERAL.mode", "AUTO", persist=False)
+    state_with_data["state"] = control.STATE.ON
+    state_with_data["humidity"] = 10
+    state_with_data["target_temp"] = -15
+    control.state = state_with_data
+    assert control.humidificator_controller() == 0
+    assert control.state["state"] == control.STATE.ON
+
+    control.state["humidity delay"] = control.HUMIDITY_EMERGENCY_DELAY
+    control.state["temp delay"] = control.TEMP_EMERGENCY_DELAY+1000
+    assert control.humidificator_controller() == -2
+    assert control.state["state"] == control.STATE.OFF
+    assert control.state["mode"] == control.MODE.NO_HUMIDITY
