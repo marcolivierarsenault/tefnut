@@ -1,9 +1,11 @@
 # noqa: F401
 import logging
 import time
+import atexit
 import RPi.GPIO as GPIO
 from tefnut.utils.constant import STATE
 from tefnut.utils.setting import settings
+
 
 logger = logging.getLogger("main")
 
@@ -38,3 +40,7 @@ class HumidificatorImplement:
         logger.info("Closing Humidificator")
         GPIO.cleanup()
         time.sleep(2)
+
+    @atexit.register
+    def goodbye(self):
+        self.shutdown()
