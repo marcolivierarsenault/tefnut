@@ -30,9 +30,9 @@ class HumidificatorImplement:
     def get_value(self):
         if 1 == GPIO.input(self.pin):
             logger.debug("Humidificator value is %s", STATE.OFF.name)
-            return STATE.OFF.name
+            return STATE.OFF
         logger.debug("Humidificator value is %s", STATE.ON.name)
-        return STATE.ON.name
+        return STATE.ON
 
     def shutdown(self):
         logger.info("Closing Humidificator")
