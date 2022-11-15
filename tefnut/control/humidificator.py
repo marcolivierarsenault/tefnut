@@ -3,7 +3,7 @@ from tefnut.utils.setting import settings
 
 class Humidificator:
     def __init__(self):
-        if settings.get("GENERAL.manual_target") == "pi":
+        if settings.get("GENERAL.humidificator") == "pi":
             from tefnut.control.humidificator_pi import HumidificatorImplement
             self.humi = HumidificatorImplement()
         else:
