@@ -1,5 +1,6 @@
 # noqa: F401
 import logging
+import time
 import RPi.GPIO as GPIO
 from tefnut.utils.constant import STATE
 from tefnut.utils.setting import settings
@@ -14,14 +15,17 @@ class HumidificatorImplement:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin, GPIO.OUT)
         GPIO.output(self.pin, GPIO.HIGH)
+        time.sleep(0.5)
 
     def turn_on(self):
         logger.info("Turning On humidifcator")
         GPIO.output(self.pin, GPIO.LOW)
+        time.sleep(0.5)
 
     def turn_off(self):
         logger.info("Turning Off humidifcator")
         GPIO.output(self.pin, GPIO.HIGH)
+        time.sleep(0.5)
 
     def get_value(self):
         if 1 == GPIO.input(self.pin):
@@ -33,3 +37,4 @@ class HumidificatorImplement:
     def shutdown(self):
         logger.info("Closing Humidificator")
         GPIO.cleanup()
+        time.sleep(2)
