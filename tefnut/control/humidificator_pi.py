@@ -15,17 +15,17 @@ class HumidificatorImplement:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin, GPIO.OUT)
         GPIO.output(self.pin, GPIO.HIGH)
-        time.sleep(0.5)
+        time.sleep(2)
 
     def turn_on(self):
         logger.info("Turning On humidifcator")
         GPIO.output(self.pin, GPIO.LOW)
-        time.sleep(0.5)
+        time.sleep(2)
 
     def turn_off(self):
         logger.info("Turning Off humidifcator")
         GPIO.output(self.pin, GPIO.HIGH)
-        time.sleep(0.5)
+        time.sleep(2)
 
     def get_value(self):
         if 1 == GPIO.input(self.pin):
