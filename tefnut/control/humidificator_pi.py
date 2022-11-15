@@ -9,7 +9,7 @@ logger = logging.getLogger("main")
 
 class HumidificatorImplement:
     def __init__(self):
-        logger.info("Using Stub humidificator")
+        logger.info("Using PI humidificator")
         self.pin = settings.get("GENERAL.rpi_pi")
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin, GPIO.OUT)
