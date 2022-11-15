@@ -35,6 +35,5 @@ class HumidificatorImplement:
         return STATE.ON
 
     def shutdown(self):
-        logger.info("Closing Humidificator")
         GPIO.cleanup()
         time.sleep(2)

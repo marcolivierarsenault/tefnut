@@ -22,5 +22,4 @@ class HumidificatorImplement:
         return self.state
 
     def shutdown(self):
-        logger.info("Closing Humidificator")
         pass
