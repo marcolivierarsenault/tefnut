@@ -1,5 +1,4 @@
 import logging
-from tefnut.utils.setting import settings
 from tefnut.utils.logging import configure_logger
 
 

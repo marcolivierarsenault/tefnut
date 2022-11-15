@@ -1,31 +1,23 @@
 import logging
 import time
+import psutil
+from tefnut.utils.constant import STATE, MODE
 from tefnut.utils.setting import settings
 from tefnut.control.weather import get_temperature
 from tefnut.control.ecobee import get_pin, ecobee as ee
 from tefnut.utils.influx_client import InfluxClient
+from tefnut.control.humidificator import Humidificator
 from influxdb_client import Point
-from enum import Enum
+
 
 logger = logging.getLogger("main")
 influx_client = InfluxClient()
+humidificator = Humidificator()
 DELAY_LOOP = 60
 DELAY_TEMP = 15 * 60
 TEMP_EMERGENCY_DELAY = 3 * 60 * 60  # 3 hours
 DELAY_HUMIDITY = 10 * 60
 HUMIDITY_EMERGENCY_DELAY = 40 * 60  # 40 min
-
-
-class MODE(Enum):
-    AUTO = 0
-    MANUAL = 1
-    TEMP_EMERGENCY = 2
-    NO_HUMIDITY = 3
-
-
-class STATE(Enum):
-    OFF = 0
-    ON = 1
 
 
 state = {'temp time': time.time() - DELAY_TEMP,
@@ -72,7 +64,7 @@ def humidificator_controller():
     if state['humidity delay'] >= HUMIDITY_EMERGENCY_DELAY:
         logger.error("No Humidity info for too long, turning Humi off")
         state['mode'] = MODE.NO_HUMIDITY
-        # STOP HERE
+        humidificator.turn_off()
         logger.info("Stopping Thermostat")
         state['state'] = STATE.OFF
         return -2
@@ -92,12 +84,12 @@ def humidificator_controller():
         state['target_humidity'] = compute_automated_target(state['target_temp'])
 
     if state['humidity'] <= state['target_humidity'] - settings.get("GENERAL.delta") and state['state'] != STATE.ON:
-        # START HERE
+        humidificator.turn_on()
         logger.info("Starting Thermostat")
         state['state'] = STATE.ON
         output += 1
     elif state['humidity'] > state['target_humidity'] + settings.get("GENERAL.delta") and state['state'] != STATE.OFF:
-        # STOP HERE
+        humidificator.turn_off()
         logger.info("Stopping Thermostat")
         state['state'] = STATE.OFF
         output += 2
@@ -105,6 +97,12 @@ def humidificator_controller():
     logger.debug("Mode %s", state['mode'].name)
     logger.debug("State %s", state['state'].name)
     logger.debug("Target Humidity %d", state['target_humidity'])
+
+    if state['state'] == humidificator.get_value():
+        logger.debug("Humidificator and Logic are in sync")
+    else:
+        logger.error("Humidificator and Logic are not in sync")
+        return -6
     return output
 
 
@@ -150,6 +148,11 @@ def data_collection_logic(current_values):
 
     point = (Point("Status").field("mode", state['mode'].name)
                             .field("state", state['state'].name)
+             )
+    influx_client.write(point)
+
+    point = (Point("hardware").field("cpu", float(psutil.cpu_percent()))
+                              .field("ram", float(psutil.virtual_memory().percent))
              )
     influx_client.write(point)
 
@@ -208,3 +211,4 @@ def control_loop(name):
         logger.fatal("control main loop exception", exc_info=e)
     finally:
         logger.info("control main loop finish")
+        humidificator.shutdown()

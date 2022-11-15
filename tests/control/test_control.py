@@ -230,6 +230,7 @@ def test_manual_low_keep_humid_on(state_with_data):
     state_with_data["state"] = control.STATE.ON
     state_with_data["humidity"] = 20
     control.state = state_with_data
+    control.humidificator.turn_on()
     assert control.humidificator_controller() == 0
     assert control.state["state"] == control.STATE.ON
 
@@ -248,6 +249,7 @@ def test_start_delay(state_with_data):
     settings.set("GENERAL.manual_target", 30, persist=False)
 
     state_with_data["state"] = control.STATE.OFF
+    control.humidificator.turn_off()
 
     state_with_data["humidity"] = 30
     control.state = state_with_data
@@ -511,6 +513,7 @@ def test_humidity_and_temp_delay(state_with_data):
     state_with_data["humidity"] = 10
     state_with_data["target_temp"] = -15
     control.state = state_with_data
+    control.humidificator.turn_on()
     assert control.humidificator_controller() == 0
     assert control.state["state"] == control.STATE.ON
 
