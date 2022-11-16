@@ -83,6 +83,11 @@ def humidificator_controller():
     elif state['mode'] == MODE.AUTO:
         logger.debug("Auto")
         state['target_humidity'] = compute_automated_target(state['target_temp'])
+    elif state['mode'] == MODE.OFF:
+        logger.debug("Off")
+        humidificator.turn_off()
+        state['state'] = STATE.OFF
+        return -7
 
     if state['humidity'] < state['target_humidity'] - settings.get("GENERAL.deadband") and state['state'] != STATE.ON:
         humidificator.turn_on()

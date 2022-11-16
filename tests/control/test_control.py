@@ -536,3 +536,23 @@ def test_humidity_and_temp_delay(state_with_data):
     assert control.humidificator_controller() == -2
     assert control.state["state"] == control.STATE.OFF
     assert control.state["mode"] == control.MODE.NO_HUMIDITY
+
+
+def test_off_mode_from_on(state_with_data):
+    settings.set("GENERAL.mode", "OFF", persist=False)
+    state_with_data["state"] = control.STATE.ON
+    state_with_data["humidity"] = 10
+    control.state = state_with_data
+    control.humidificator.turn_on()
+    assert control.humidificator_controller() == -7
+    assert control.state["state"] == control.STATE.OFF
+
+
+def test_off_mode_from_off(state_with_data):
+    settings.set("GENERAL.mode", "OFF", persist=False)
+    state_with_data["state"] = control.STATE.OFF
+    state_with_data["humidity"] = 50
+    control.state = state_with_data
+    control.humidificator.turn_on()
+    assert control.humidificator_controller() == -7
+    assert control.state["state"] == control.STATE.OFF

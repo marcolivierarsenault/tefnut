@@ -6,6 +6,7 @@ class MODE(Enum):
     MANUAL = 1
     TEMP_EMERGENCY = 2
     NO_HUMIDITY = 3
+    OFF = 4
 
 
 class STATE(Enum):
