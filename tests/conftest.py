@@ -8,6 +8,7 @@ def pytest_configure(config):
     settings.set("loki.enable", False, persist=False)
     settings.set("INFLUX.enable", False, persist=False)
     settings.set("GENERAL.deadband", 2, persist=False)
+    settings.set("GENERAL.humidificator", "stub", persist=False)
 
 
 def pytest_sessionfinish(session):
