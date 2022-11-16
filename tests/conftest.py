@@ -7,7 +7,7 @@ def pytest_configure(config):
     logger.info("Configuring test")
     settings.set("loki.enable", False, persist=False)
     settings.set("INFLUX.enable", False, persist=False)
-    settings.set("GENERAL.delta", 2, persist=False)
+    settings.set("GENERAL.deadband", 2, persist=False)
 
 
 def pytest_sessionfinish(session):

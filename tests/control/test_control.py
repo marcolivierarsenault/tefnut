@@ -256,6 +256,11 @@ def test_start_delay(state_with_data):
     state_with_data["state"] = control.STATE.OFF
     control.humidificator.turn_off()
 
+    state_with_data["humidity"] = 31
+    control.state = state_with_data
+    assert control.humidificator_controller() == 0
+    assert control.state["state"] == control.STATE.OFF
+
     state_with_data["humidity"] = 30
     control.state = state_with_data
     assert control.humidificator_controller() == 0
@@ -266,10 +271,14 @@ def test_start_delay(state_with_data):
     assert control.state["state"] == control.STATE.OFF
 
     control.state["humidity"] = 28
+    assert control.humidificator_controller() == 0
+    assert control.state["state"] == control.STATE.OFF
+
+    control.state["humidity"] = 27
     assert control.humidificator_controller() == 1
     assert control.state["state"] == control.STATE.ON
 
-    control.state["humidity"] = 27
+    control.state["humidity"] = 26
     assert control.humidificator_controller() == 0
     assert control.state["state"] == control.STATE.ON
 

@@ -84,12 +84,12 @@ def humidificator_controller():
         logger.debug("Auto")
         state['target_humidity'] = compute_automated_target(state['target_temp'])
 
-    if state['humidity'] <= state['target_humidity'] - settings.get("GENERAL.delta") and state['state'] != STATE.ON:
+    if state['humidity'] < state['target_humidity'] - settings.get("GENERAL.deadband") and state['state'] != STATE.ON:
         humidificator.turn_on()
         logger.info("Starting Thermostat")
         state['state'] = STATE.ON
         output += 1
-    elif state['humidity'] > state['target_humidity'] + settings.get("GENERAL.delta") and state['state'] != STATE.OFF:
+    elif state['humidity'] > state['target_humidity'] + settings.get("GENERAL.deadband") and state['state'] != STATE.OFF:
         humidificator.turn_off()
         logger.info("Stopping Thermostat")
         state['state'] = STATE.OFF
