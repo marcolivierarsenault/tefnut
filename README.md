@@ -6,6 +6,19 @@
 
 Tefnut is a control system to manage central humidificatior. Tefnut replace basic humidistat that only operate on a fix preset. It allows to use outdoor temperature which in cold climate, prevent condesation in windows. 
 
+Instead, by using outside temperature, we are adjusting the desired setpoint automatically 
+
+
+|Outside Temp (oC)|Target Humidity Level|
+|---|---|
+|<= -30|15%|
+|<= -25|20%|
+|<= -20|25%|
+|<= -15|30%|
+|<= -10|35%|
+|<= 5|40%|
+|> 5|45%|
+
 ## Limitation
 
 This implementation of Tefnut is only compatible with:
