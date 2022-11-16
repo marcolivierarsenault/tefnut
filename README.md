@@ -1,5 +1,7 @@
 # Tefnut
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/546c9b7ee86f4d0eb5f7c7f1055ec072)](https://app.codacy.com/gh/marcolivierarsenault/tefnut?utm_source=github.com&utm_medium=referral&utm_content=marcolivierarsenault/tefnut&utm_campaign=Badge_Grade_Settings)
+
 <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Shu_with_feather.svg/640px-Shu_with_feather.svg.png' width='100'>
 
 `Tefnut (tfnwt) is a deity of moisture, moist air, dew and rain in Ancient Egyptian religion.` - [Wikipedia](https://en.wikipedia.org/wiki/Tefnut)
