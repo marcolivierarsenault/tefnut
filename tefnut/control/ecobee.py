@@ -78,4 +78,4 @@ class ecobee:
             logger.debug(thermostat_response)
             return thermostat_response.thermostat_list[0].runtime.actual_humidity
         except Exception as e:
-            logger.error("Failed to retreive humidity", exc_info=e)
+            logger.warning("Failed to retreive humidity", exc_info=e)
