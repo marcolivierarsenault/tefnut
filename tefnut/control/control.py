@@ -29,7 +29,7 @@ state = {'temp time': time.time() - DELAY_TEMP,
          'future_temp': None,
          'target_temp': None,
          'humidity': None,
-         'target_humidity': settings.get("GENERAL.manual_target"),
+         'target_humidity': settings.get("GENERAL.manual_target", default=40),
          'mode': MODE.AUTO,
          'state': STATE.OFF,
          }
@@ -37,15 +37,17 @@ ecobee = None
 
 
 def compute_automated_target(outside_temp):
-    if outside_temp >= 3:
+    if outside_temp > 5:
         return 45
-    elif outside_temp >= -12:
+    elif outside_temp >= -9:
         return 40
-    elif outside_temp >= -18:
+    elif outside_temp >= -14:
         return 35
+    elif outside_temp >= -19:
+        return 30
     elif outside_temp >= -24:
         return 25
-    elif outside_temp >= -30:
+    elif outside_temp >= -29:
         return 20
     else:
         return 15
@@ -74,22 +76,29 @@ def humidificator_controller():
         logger.error("No temp info for too long, running in emerengy target")
         state['mode'] = MODE.TEMP_EMERGENCY
         settings.set("GENERAL.mode", MODE.TEMP_EMERGENCY.name, persist=False)
-        state['target_humidity'] = settings.get("GENERAL.emergency_target")
+        state['target_humidity'] = settings.get("GENERAL.emergency_target", default=30)
         output = -5
 
     if state['mode'] == MODE.MANUAL:
-        state['target_humidity'] = settings.get("GENERAL.manual_target")
+        state['target_humidity'] = settings.get("GENERAL.manual_target", default=40)
         logger.debug("Manual")
     elif state['mode'] == MODE.AUTO:
         logger.debug("Auto")
         state['target_humidity'] = compute_automated_target(state['target_temp'])
+    elif state['mode'] == MODE.OFF:
+        logger.debug("Off")
+        humidificator.turn_off()
+        state['state'] = STATE.OFF
+        return -7
 
-    if state['humidity'] <= state['target_humidity'] - settings.get("GENERAL.delta") and state['state'] != STATE.ON:
+    deadband = settings.get("GENERAL.deadband", default=2)
+
+    if state['humidity'] < state['target_humidity'] - deadband and state['state'] != STATE.ON:
         humidificator.turn_on()
         logger.info("Starting Thermostat")
         state['state'] = STATE.ON
         output += 1
-    elif state['humidity'] > state['target_humidity'] + settings.get("GENERAL.delta") and state['state'] != STATE.OFF:
+    elif state['humidity'] > state['target_humidity'] + deadband and state['state'] != STATE.OFF:
         humidificator.turn_off()
         logger.info("Stopping Thermostat")
         state['state'] = STATE.OFF

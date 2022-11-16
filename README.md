@@ -17,4 +17,5 @@ Note: It is designed to be resonabily modular, so assuming you want to get humid
 
 ## Configuration 
  
-Installation and configuration [instruction available here](https://github.com/marcolivierarsenault/tefnut/wiki/Installation)
+* Installation and configuration [instruction available here](https://github.com/marcolivierarsenault/tefnut/wiki/Installation)
+* Utilisation instruction can be [found here](https://github.com/marcolivierarsenault/tefnut/wiki/Usage)
