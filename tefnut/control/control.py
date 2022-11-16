@@ -37,15 +37,17 @@ ecobee = None
 
 
 def compute_automated_target(outside_temp):
-    if outside_temp >= 3:
+    if outside_temp > 5:
         return 45
-    elif outside_temp >= -12:
+    elif outside_temp >= -9:
         return 40
-    elif outside_temp >= -18:
+    elif outside_temp >= -14:
         return 35
+    elif outside_temp >= -19:
+        return 30
     elif outside_temp >= -24:
         return 25
-    elif outside_temp >= -30:
+    elif outside_temp >= -29:
         return 20
     else:
         return 15
