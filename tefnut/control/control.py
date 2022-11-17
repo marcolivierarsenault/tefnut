@@ -227,3 +227,8 @@ def control_loop(name):
 @atexit.register
 def goodbye():
     humidificator.shutdown()
+
+
+def more_code():
+    1 == 1
+    print("asdasdasd")
