@@ -123,7 +123,6 @@ def data_collection_logic(current_values):
         if current_values['humidity'] is not None:
             if 'humidity time' in current_values and current_values['humidity time'] is not None:
                 state['humidity time'] = current_values['humidity time']
-                state['humidity delay'] = current_values['humidity delay']
             state['humidity'] = current_values['humidity']
             point = Point("humidity").field("humidity", float(current_values['humidity']))
             influx_client.write(point)
@@ -145,7 +144,6 @@ def data_collection_logic(current_values):
             influx_client.write(point)
             if 'temp time' in current_values and current_values['temp time'] is not None:
                 state['temp time'] = current_values['temp time']
-                state['temp delay'] = current_values['temp delay']
             state['current_temp'] = current_values['current_temp']
             state['future_temp'] = current_values['future_temp']
             state['target_temp'] = current_values['target_temp']
@@ -189,11 +187,11 @@ def control_loop(name):
             current_values = {}
             current_values['start time'] = time.time()
             logger.debug("starting a control loop")
-            current_values['temp delay'] = time.time() - state['temp time']
-            current_values['humidity delay'] = time.time() - state['humidity time']
+            state['temp delay'] = time.time() - state['temp time']
+            state['humidity delay'] = time.time() - state['humidity time']
 
             # humidity
-            if current_values['humidity delay'] >= DELAY_HUMIDITY:
+            if state['humidity delay'] >= DELAY_HUMIDITY:
                 logger.info("Capturing humidity")
                 current_values['humidity'] = ecobee.get_humidity()
                 logger.debug("humidity: %s", current_values['humidity'])
@@ -202,7 +200,7 @@ def control_loop(name):
                 logger.info("Humidity fresh enough, not refreshing")
 
             # Weather
-            if current_values['temp delay'] >= DELAY_TEMP:
+            if state['temp delay'] >= DELAY_TEMP:
                 logger.info("Capturing temp")
                 (current_values['current_temp'], current_values['future_temp'],
                  current_values['target_temp']) = get_temperature()
