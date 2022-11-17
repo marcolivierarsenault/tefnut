@@ -4,3 +4,5 @@ influxdb-client==1.34.0
 logging_json==0.2.1
 pyecobee==1.3.11
 psutil==5.9.4
+pytest-cov==4.0.0
+requests_mock==1.10.0
