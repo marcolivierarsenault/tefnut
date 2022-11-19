@@ -167,8 +167,8 @@ def data_collection_logic(current_values):
     # Timings
     point = (Point("timming")
              .field("loop time", float(time.time()-current_values['start time']))
-             .field("temp delay", float(current_values['temp delay']))
-             .field("humidity delay", float(current_values['humidity delay']))
+             .field("temp delay", float(state['temp delay']))
+             .field("humidity delay", float(state['humidity delay']))
              )
     influx_client.write(point)
     return 0
