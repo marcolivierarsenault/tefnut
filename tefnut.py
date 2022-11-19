@@ -18,17 +18,18 @@ def start_control():
 
 
 def start_webui():
-    logger.debug("Starting control loop")
+    logger.debug("Starting WebUI")
+    configure_logger(webservice.app.logger)
     webservice.app.run(host='0.0.0.0', debug=True)
 
 
 if __name__ == "__main__":
     logger.info("++++++++++Tefnut application starting++++++++++")
-    configure_logger()
+    configure_logger(logger)
 
     repo = git.Repo(search_parent_directories=True)
     sha = repo.head.object.hexsha
     logger.info("Starting code on git sha: %s", sha)
     
-    # start_control()
+    start_control()
     start_webui()

@@ -5,9 +5,8 @@ import logging_json
 from tefnut.utils.setting import settings
 
 
-def configure_logger():
+def configure_logger(logger):
     """Function to configure the logger"""
-    logger = logging.getLogger("main")
     logger.setLevel(settings.get("general.loglevel"))
 
     # Console
