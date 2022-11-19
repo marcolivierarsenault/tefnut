@@ -1,7 +1,81 @@
 {% extends "base.html" %}
-{% block title %}Index{% endblock %}
 {% block content %}
-  <h1>Index</h1>
-  <p class="important">
-    Welcome on my awesome homepage.
+<div class="container section has-text-centered">
+    <h1 class="title">
+        Status
+    </h1>
+    <div class="columns is-multiline">
+        <div class="column is-half">
+            <div class="box">
+                <h1 class="subtitle">
+                    Humidificator Mode
+                </h1>
+                <h1 class="title">
+                    Auto
+                </h1>
+            </div>
+        </div>
+        <div class="column is-half">
+            <div class="box">
+                <h1 class="subtitle">
+                    Humidificator Status
+                </h1>
+                <h1 class="title">
+                    On
+                </h1>
+            </div>
+        </div>
+        <div class="column is-half">
+            <div class="box">
+                <h1 class="subtitle">
+                    Humidity
+                </h1>
+                <h1 class="title">
+                    37 %
+                </h1>
+            </div>
+        </div>
+        <div class="column is-half">
+            <div class="box">
+                <h1 class="subtitle">
+                    Target Humidity
+                </h1>
+                <h1 class="title">
+                    40 %
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container section has-text-centered" id="config">
+    <h1 class="title">
+        Configuration
+    </h1>
+    <div class="box">
+        <h2 class="subtitle">
+            Humidificator Mode
+        </h2>
+        <div class="buttons has-addons is-centered">
+            <button class="button">Automatic</button>
+            <button class="button is-info is-selected">Manual</button>
+            <button class="button">Off</button>
+        </div>
+    </div>
+
+    <div class="box">
+        <h2 class="subtitle">
+             Target Humidity
+        </h2>
+        <div class="columns">
+            <div class="column is-three-quarters">
+                <input class="input" type="phone" placeholder="40" disabled>
+            </div>
+            <div class="column ">
+                <button class="button" disabled>Automatic</button>
+            </div>
+        </div>
+
+    </div>
+</div>
 {% endblock %}
