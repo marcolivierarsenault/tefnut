@@ -35,5 +35,6 @@ class HumidificatorImplement:
         return STATE.ON
 
     def shutdown(self):
+        logger.warning("Pi turning off the Humidificator")
         GPIO.cleanup()
         time.sleep(2)

@@ -68,7 +68,7 @@ def humidificator_controller():
         logger.error("No Humidity info for too long, turning Humi off")
         state['mode'] = MODE.NO_HUMIDITY
         humidificator.turn_off()
-        logger.info("Stopping Thermostat")
+        logger.info("Stopping Humidificator")
         state['state'] = STATE.OFF
         return -2
 
@@ -95,12 +95,12 @@ def humidificator_controller():
 
     if state['humidity'] < state['target_humidity'] - deadband and state['state'] != STATE.ON:
         humidificator.turn_on()
-        logger.info("Starting Thermostat")
+        logger.info("Starting Humidificator")
         state['state'] = STATE.ON
         output += 1
     elif state['humidity'] > state['target_humidity'] + deadband and state['state'] != STATE.OFF:
         humidificator.turn_off()
-        logger.info("Stopping Thermostat")
+        logger.info("Stopping Humidificator")
         state['state'] = STATE.OFF
         output += 2
 
@@ -224,4 +224,5 @@ def control_loop(name):
 
 @atexit.register
 def goodbye():
+    logger.warning("shutdown detected")
     humidificator.shutdown()
