@@ -33,8 +33,8 @@ function get_state(data_to_send){
         if (status == "success") {
             $('#mode').html(data.mode);
             $('#state').html(data.state);
-            $('#humidity').html(data.humidity);
-            $('#setpoint').html(data.target_humidity);
+            $('#humidity').html(data.humidity + " %");
+            $('#setpoint').html(data.target_humidity + " %");
             switch(data.mode) {
                 case "AUTO":
                     $('#btn_auto').addClass("is-success");
