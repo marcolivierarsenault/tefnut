@@ -21,13 +21,19 @@ def load_user(user_id):
 @app.route("/")
 @login_required
 def index():
-    print(state)
+    app.logger.info("Accessing main page")
     return render_template('index.html')
 
 
 @app.route('/login')
 def login():
+    app.logger.info("Accessing Login page")
     return render_template('login.html')
+
+
+@app.route('/state')
+def get_state():
+    return state
 
 
 @app.route('/login', methods=['POST'])
@@ -37,9 +43,11 @@ def login_post():
     user = User()
 
     if username == settings.get("WEBUI.username") and password == settings.get("WEBUI.password"):
+        app.logger.info("User Logging in")
         login_user(user, remember=True)
         return redirect(url_for('index'))
 
+    app.logger.info("User FAILED Logging to loggin")
     flash('Please check your login details and try again.')
     return redirect(url_for('login'))
 
@@ -47,6 +55,7 @@ def login_post():
 @app.route('/logout')
 @login_required
 def logout():
+    app.logger.info("User Logging out")
     logout_user()
     return redirect(url_for('login'))
 
@@ -64,4 +73,8 @@ def page_not_found(e):
 
 
 class User(UserMixin):
+    """
+    Dummy User class for the Login,
+    Nothing crazy here, there is only 1 user that we get from config files
+    """
     id = "secretID"

@@ -25,3 +25,10 @@ $(document).ready(function() {
     });
 
 });
+
+function get_state(){
+    $.post( "state", function( data ) {
+        var obj = jQuery.parseJSON(data );
+        $( ".result" ).json( data );
+      });
+}
