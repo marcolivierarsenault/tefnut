@@ -32,6 +32,6 @@ if __name__ == "__main__":
     repo = git.Repo(search_parent_directories=True)
     sha = repo.head.object.hexsha
     logger.info("Starting code on git sha: %s", sha)
-    
+
     start_control()
     start_webui()
