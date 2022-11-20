@@ -24,7 +24,7 @@ $(document).ready(function() {
   
     });
 
-    setTimeout(get_state, 3000);
+    setTimeout(get_state, 400);
 
 });
 

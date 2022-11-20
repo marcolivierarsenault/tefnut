@@ -32,6 +32,7 @@ def login():
 
 
 @app.route('/state', methods=['POST'])
+@login_required
 def get_state():
     return state
 
