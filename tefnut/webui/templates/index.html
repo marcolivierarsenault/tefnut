@@ -11,7 +11,7 @@
                     Humidificator Mode
                 </h1>
                 <h1 class="title">
-                    Auto
+                    <div id="mode"><span class="icon"> <i class="fas fa-spinner"></i></span></div>
                 </h1>
             </div>
         </div>
@@ -21,7 +21,7 @@
                     Humidificator Status
                 </h1>
                 <h1 class="title">
-                    On
+                    <div id="state"><span class="icon"> <i class="fas fa-spinner"></i></span></div>
                 </h1>
             </div>
         </div>
@@ -31,7 +31,7 @@
                     Humidity
                 </h1>
                 <h1 class="title">
-                    37 %
+                    <div id="humidity"><span class="icon"> <i class="fas fa-spinner"></i></span></div>
                 </h1>
             </div>
         </div>
@@ -41,7 +41,7 @@
                     Target Humidity
                 </h1>
                 <h1 class="title">
-                    40 %
+                    <div id="setpoint"><span class="icon"> <i class="fas fa-spinner"></i></span></div>
                 </h1>
             </div>
         </div>
@@ -57,9 +57,9 @@
             Humidificator Mode
         </h2>
         <div class="buttons has-addons is-centered">
-            <button class="button">Automatic</button>
-            <button class="button is-info is-selected">Manual</button>
-            <button class="button">Off</button>
+            <button class="button" id="btn_auto">Automatic</button>
+            <button class="button" id="btn_manual">Manual</button>
+            <button class="button" id="btn_off">Off</button>
         </div>
     </div>
 
@@ -69,10 +69,10 @@
         </h2>
         <div class="columns">
             <div class="column is-three-quarters">
-                <input class="input" type="phone" placeholder="40" disabled>
+                <input class="input" id="target_input" type="phone" placeholder="40" disabled>
             </div>
             <div class="column ">
-                <button class="button" disabled>Automatic</button>
+                <button class="button" id="btn_target" disabled>Submit</button>
             </div>
         </div>
 

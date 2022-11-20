@@ -24,11 +24,41 @@ $(document).ready(function() {
   
     });
 
+    setTimeout(get_state, 3000);
+
 });
 
-function get_state(){
-    $.post( "state", function( data ) {
-        var obj = jQuery.parseJSON(data );
-        $( ".result" ).json( data );
+function get_state(data_to_send){
+    $.post( "state", data_to_send, function( data, status ) {
+        if (status == "success") {
+            $('#mode').html(data.mode);
+            $('#state').html(data.state);
+            $('#humidity').html(data.humidity);
+            $('#setpoint').html(data.target_humidity);
+            switch(data.mode) {
+                case "AUTO":
+                    $('#btn_auto').addClass("is-success");
+                  break;
+                case "MANUAL":
+                    $('#btn_manual').addClass("is-info");
+                    $('#target_input').prop('disabled', false);
+                    $('#btn_target').prop('disabled', false);
+                  break;
+                default:
+                $('#btn_off').addClass("is-danger");
+              }
+        }
       });
-}
+};
+
+function reset_ui(){
+    $('#mode').html('<span class="icon"> <i class="fas fa-spinner"></i></span>');
+    $('#state').html('<span class="icon"> <i class="fas fa-spinner"></i></span>');
+    $('#humidity').html('<span class="icon"> <i class="fas fa-spinner"></i></span>');
+    $('#setpoint').html('<span class="icon"> <i class="fas fa-spinner"></i></span>');
+    $('#btn_auto').removeClass("is-success");
+    $('#btn_manual').removeClass("is-info");
+    $('#btn_off').removeClass("is-danger");
+    $('#target_input').prop('disabled', true);
+    $('#btn_target').prop('disabled', true);
+};

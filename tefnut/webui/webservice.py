@@ -31,7 +31,7 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/state')
+@app.route('/state', methods=['POST'])
 def get_state():
     return state
 
