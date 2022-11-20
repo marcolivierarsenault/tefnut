@@ -1,6 +1,7 @@
 import logging
 import time
 import psutil
+import os
 import atexit
 from tefnut.utils.constant import STATE, MODE
 from tefnut.utils.setting import settings
@@ -224,5 +225,6 @@ def control_loop(name):
 
 @atexit.register
 def goodbye():
-    logger.warning("shutdown detected")
+    if "PYTEST_CURRENT_TEST" in os.environ:
+        logger.warning("shutdown detected")
     humidificator.shutdown()
