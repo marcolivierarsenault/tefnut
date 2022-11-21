@@ -18,19 +18,79 @@ $(document).ready(function() {
   
     });
 
-    $(".testboutton").click(function() {
-  
-        print("ALLOs")
-  
+    $('#btn_auto').click(function() {
+        if (current_mode != "AUTO"){
+            $('#modal_mode').text("AUTO");
+            $('.modal').addClass("is-active");
+            
+            $('#modal_accept').click(function() {
+                $('.modal').removeClass("is-active");
+                $('#modal_accept').off('click');
+                $('#modal_cancel').off('click');
+                reset_ui();
+                get_state(JSON.stringify({"mode": "AUTO"}))
+            });
+
+            $('#modal_cancel').click(function() {
+                $('.modal').removeClass("is-active");
+                $('#modal_accept').off('click');
+                $('#modal_cancel').off('click');
+            });
+        }
+    });
+
+    $('#btn_manual').click(function() {
+        if (current_mode != "MANUAL"){
+            $('#modal_mode').text("MANUAL");
+            $('.modal').addClass("is-active");
+            
+            $('#modal_accept').click(function() {
+                $('.modal').removeClass("is-active");
+                $('#modal_accept').off('click');
+                $('#modal_cancel').off('click');
+                reset_ui();
+                get_state(JSON.stringify({"mode": "MANUAL"}))
+            });
+
+            $('#modal_cancel').click(function() {
+                $('.modal').removeClass("is-active");
+                $('#modal_accept').off('click');
+                $('#modal_cancel').off('click');
+            });
+        }
+    });
+
+    $('#btn_off').click(function() {
+        if (current_mode != "OFF"){
+            $('#modal_mode').text("OFF");
+            $('.modal').addClass("is-active");
+            
+            $('#modal_accept').click(function() {
+                $('.modal').removeClass("is-active");
+                $('#modal_accept').off('click');
+                $('#modal_cancel').off('click');
+                reset_ui();
+                get_state(JSON.stringify({"mode": "OFF"}))
+            });
+
+            $('#modal_cancel').click(function() {
+                $('.modal').removeClass("is-active");
+                $('#modal_accept').off('click');
+                $('#modal_cancel').off('click');
+            });
+        }
     });
 
     setTimeout(get_state, 400);
 
 });
 
-function get_state(data_to_send){
+var current_mode = ""
+
+function get_state(data_to_send=NaN){
     $.post( "state", data_to_send, function( data, status ) {
         if (status == "success") {
+            current_mode = data.mode
             $('#mode').html(data.mode);
             $('#state').html(data.state);
             $('#humidity').html(data.humidity + " %");
@@ -38,17 +98,26 @@ function get_state(data_to_send){
             switch(data.mode) {
                 case "AUTO":
                     $('#btn_auto').addClass("is-success");
+                    $('#btn_auto').prop('disabled', false);
+                    $('#btn_manual').prop('disabled', false);
+                    $('#btn_off').prop('disabled', false);
                   break;
                 case "MANUAL":
                     $('#btn_manual').addClass("is-info");
+                    $('#btn_manual').prop('disabled', false);
+                    $('#btn_auto').prop('disabled', false);
+                    $('#btn_off').prop('disabled', false);
                     $('#target_input').prop('disabled', false);
                     $('#btn_target').prop('disabled', false);
                   break;
                 default:
-                $('#btn_off').addClass("is-danger");
+                    $('#btn_off').addClass("is-danger");
+                    $('#btn_off').prop('disabled', false);
+                    $('#btn_auto').prop('disabled', false);
+                    $('#btn_manual').prop('disabled', false);
               }
         }
-      });
+      }, "json");
 };
 
 function reset_ui(){
@@ -59,6 +128,9 @@ function reset_ui(){
     $('#btn_auto').removeClass("is-success");
     $('#btn_manual').removeClass("is-info");
     $('#btn_off').removeClass("is-danger");
+    $('#btn_auto').prop('disabled', true);
+    $('#btn_manual').prop('disabled', true);
+    $('#btn_off').prop('disabled', true);
     $('#target_input').prop('disabled', true);
     $('#btn_target').prop('disabled', true);
 };

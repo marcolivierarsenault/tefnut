@@ -1,7 +1,8 @@
+import json
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_required, login_user, UserMixin, logout_user
 from tefnut.utils.setting import settings
-from tefnut.control.control import state
+from tefnut.control.control import state, humidificator_controller
 
 
 app = Flask(__name__)
@@ -34,6 +35,41 @@ def login():
 @app.route('/state', methods=['POST'])
 @login_required
 def get_state():
+    if request.get_data().decode("utf-8") == "":
+        app.logger.debug("Updating webUI with no incoming data")
+        return state
+
+    try:
+        new_data = json.loads(request.get_data())
+    except Exception as e:
+        app.logger.error(request.get_data())
+        app.logger.error("Error opening json", exc_info=e)
+
+    if "mode" in new_data:
+        if new_data["mode"] not in ["AUTO", "MANUAL", "OFF"]:
+            app.logger.error("Error incoming data, mode invalid: %s", new_data["mode"])
+            return state
+
+        app.logger.info("Chaning Humidificator mode: %s", new_data["mode"])
+        settings.set("GENERAL.mode", new_data["mode"], persist=True)
+        humidificator_controller()
+        return state
+
+    if "manual_target" in new_data:
+        if not new_data["manual_target"].is_integer():
+            app.logger.error("Error incoming data, manual_target invalid: %s", new_data["manual_target"])
+            return state
+
+        if new_data["manual_target"] < 10 or new_data["manual_target"] > 50:
+            app.logger.error("Error incoming data, manual_target is out of range: %s", new_data["manual_target"])
+            return state
+
+        app.logger.info("Chaning Humidificator manual_target: %s", new_data["mode"])
+        settings.set("GENERAL.manual_target", new_data["manual_target"], persist=True)
+        humidificator_controller()
+        return state
+
+    app.logger.error("Error incoming data, invalid data: %s", new_data)
     return state
 
 
