@@ -84,12 +84,17 @@ $(document).ready(function() {
     $('#btn_target').click(function() {
         value = Number($('#target_input').val())
         if (isNaN(value)) {
-            alert("WORNG")
+            alert("Please enter a value between 10 and 50")
             return 1
-        } else {
-            alert("GOOD")
-
         }
+        if (value < 10 || value > 50) {
+            alert("Please enter a value between 10 and 50")
+            return 1
+        }
+        alert("Updating Manual target value")
+        reset_ui();
+        get_state(JSON.stringify({"manual_target": value}))
+
     });
 
     setTimeout(get_state, 400);
@@ -106,6 +111,7 @@ function get_state(data_to_send=NaN){
             $('#state').html(data.state);
             $('#humidity').html(data.humidity + " %");
             $('#setpoint').html(data.target_humidity + " %");
+            $('#target_input').val(data.target_humidity)
             switch(data.mode) {
                 case "AUTO":
                     $('#btn_auto').addClass("is-success");

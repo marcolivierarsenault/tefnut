@@ -56,7 +56,7 @@ def get_state():
         return state
 
     if "manual_target" in new_data:
-        if not new_data["manual_target"].is_integer():
+        if not type(new_data["manual_target"]) == int:
             app.logger.error("Error incoming data, manual_target invalid: %s", new_data["manual_target"])
             return state
 
@@ -64,7 +64,7 @@ def get_state():
             app.logger.error("Error incoming data, manual_target is out of range: %s", new_data["manual_target"])
             return state
 
-        app.logger.info("Chaning Humidificator manual_target: %s", new_data["mode"])
+        app.logger.info("Chaning Humidificator manual_target: %d", new_data["manual_target"])
         settings.set("GENERAL.manual_target", new_data["manual_target"], persist=True)
         humidificator_controller()
         return state
