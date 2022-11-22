@@ -81,6 +81,17 @@ $(document).ready(function() {
         }
     });
 
+    $('#btn_target').click(function() {
+        value = Number($('#target_input').val())
+        if (isNaN(value)) {
+            alert("WORNG")
+            return 1
+        } else {
+            alert("GOOD")
+
+        }
+    });
+
     setTimeout(get_state, 400);
 
 });
