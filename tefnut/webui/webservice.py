@@ -13,6 +13,8 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 app.secret_key = 'super secret key'
 
+persist = True
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -51,7 +53,7 @@ def get_state():
             return state
 
         app.logger.info("Chaning Humidificator mode: %s", new_data["mode"])
-        settings.set("GENERAL.mode", new_data["mode"], persist=True)
+        settings.set("GENERAL.mode", new_data["mode"], persist=persist)
         humidificator_controller()
         return state
 
@@ -65,7 +67,7 @@ def get_state():
             return state
 
         app.logger.info("Chaning Humidificator manual_target: %d", new_data["manual_target"])
-        settings.set("GENERAL.manual_target", new_data["manual_target"], persist=True)
+        settings.set("GENERAL.manual_target", new_data["manual_target"], persist=persist)
         humidificator_controller()
         return state
 
