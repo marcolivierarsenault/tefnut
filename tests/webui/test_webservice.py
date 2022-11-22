@@ -8,7 +8,10 @@ from tefnut.utils.setting import settings
 
 @pytest.fixture(scope="module", autouse=True)
 def configure_state():
-    print("--------------------")
+    state["current_temp"] = 10
+    state["future_temp"] = 20
+    state["target_temp"] = 30
+    state["humidity"] = 10
 
 
 @pytest.fixture()
@@ -62,8 +65,30 @@ class TestChangeState:
         settings.set("GENERAL.mode", MODE.AUTO.name, persist=False)
 
         response = client.post("/state", data="{\"mode\": \"MANUAL\"}")
-        assert json.loads(response.data)["mode"] != "MANUAL"
-        assert state['mode'] != MODE.MANUAL
+        assert json.loads(response.data)["mode"] == "MANUAL"
+        assert state['mode'] == MODE.MANUAL
+
+    def test_post_get_state_change_mode_auto_to_manual_start_hum(self, client):
+        state['mode'] = MODE.AUTO
+        settings.set("GENERAL.mode", MODE.AUTO.name, persist=False)
+        settings.set("GENERAL.manual_target", 30, persist=False)
+        state['humidity'] = 10
+
+        response = client.post("/state", data="{\"mode\": \"MANUAL\"}")
+        assert json.loads(response.data)["mode"] == "MANUAL"
+        assert state['mode'] == MODE.MANUAL
+        assert state['state'] == STATE.ON
+
+    def test_post_get_state_change_mode_auto_to_manual_stop_hum(self, client):
+        state['mode'] = MODE.AUTO
+        settings.set("GENERAL.mode", MODE.AUTO.name, persist=False)
+        settings.set("GENERAL.manual_target", 30, persist=False)
+        state['humidity'] = 50
+
+        response = client.post("/state", data="{\"mode\": \"MANUAL\"}")
+        assert json.loads(response.data)["mode"] == "MANUAL"
+        assert state['mode'] == MODE.MANUAL
+        assert state['state'] == STATE.OFF
 
 
 # response = client.post("/state", data={"mode": "MANUAL"}) # This throw an error
