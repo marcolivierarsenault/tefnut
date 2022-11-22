@@ -21,8 +21,16 @@ def test_target_calculation():
 
 def test_valide_returns_from_url(requests_mock):
     requests_mock.get(current_temp_url, json={"main": {"temp": 10}})
-    requests_mock.get(future_temp_url, json={"list": [{"main": {"temp": 20}}]})
+    requests_mock.get(future_temp_url, json={"Time": 1669078074204, "list": [{"dt": 1669086000, "main": {"temp": 20}}]})
     assert get_temperature() == (10, 20, 10)
+
+
+def test_valide_returns_from_url_second_forecast(requests_mock):
+    requests_mock.get(current_temp_url, json={"main": {"temp": 10}})
+    requests_mock.get(future_temp_url, json={"Time": 1669069890995,
+                                             "list": [{"dt": 1669075200, "main": {"temp": 20}},
+                                                      {"dt": 1669086000, "main": {"temp": 40}}]})
+    assert get_temperature() == (10, 40, 10)
 
 
 def test_url_one_wrong_API(requests_mock):
