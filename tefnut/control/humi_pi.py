@@ -8,9 +8,9 @@ from tefnut.utils.setting import settings
 logger = logging.getLogger("main")
 
 
-class HumidificatorImplement:
+class HumidifierImplement:
     def __init__(self):
-        logger.info("Using PI humidificator")
+        logger.info("Using PI humidifier")
         self.pin = settings.get("GENERAL.rpi_pi")
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin, GPIO.OUT)
@@ -29,12 +29,12 @@ class HumidificatorImplement:
 
     def get_value(self):
         if 1 == GPIO.input(self.pin):
-            logger.debug("Humidificator value is %s", STATE.OFF.name)
+            logger.debug("Humidifier value is %s", STATE.OFF.name)
             return STATE.OFF
-        logger.debug("Humidificator value is %s", STATE.ON.name)
+        logger.debug("Humidifier value is %s", STATE.ON.name)
         return STATE.ON
 
     def shutdown(self):
-        logger.warning("Pi turning off the Humidificator")
+        logger.warning("Pi turning off the Humidifier")
         GPIO.cleanup()
         time.sleep(2)

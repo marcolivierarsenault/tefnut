@@ -8,13 +8,13 @@ from tefnut.utils.setting import settings
 from tefnut.control.weather import get_temperature
 from tefnut.control.ecobee import get_pin, ecobee as ee
 from tefnut.utils.influx_client import InfluxClient
-from tefnut.control.humidificator import Humidificator
+from tefnut.control.humidifier import Humidifier
 from influxdb_client import Point
 
 
 logger = logging.getLogger("main")
 influx_client = InfluxClient()
-humidificator = Humidificator()
+humidifier = Humidifier()
 DELAY_LOOP = 60
 DELAY_TEMP = 15 * 60
 TEMP_EMERGENCY_DELAY = 3 * 60 * 60  # 3 hours
@@ -54,7 +54,7 @@ def compute_automated_target(outside_temp):
         return 15
 
 
-def humidificator_controller():
+def humidifier_controller():
     logger.debug("Starting control")
     if state['humidity'] is not None:
         logger.debug("humidity is currently %d", state['humidity'])
@@ -68,8 +68,8 @@ def humidificator_controller():
     if state['humidity delay'] >= HUMIDITY_EMERGENCY_DELAY:
         logger.error("No Humidity info for too long, turning Humi off")
         state['mode'] = MODE.NO_HUMIDITY
-        humidificator.turn_off()
-        logger.info("Stopping Humidificator")
+        humidifier.turn_off()
+        logger.info("Stopping Humidifier")
         state['state'] = STATE.OFF
         return -2
 
@@ -88,20 +88,20 @@ def humidificator_controller():
         state['target_humidity'] = compute_automated_target(state['target_temp'])
     elif state['mode'] == MODE.OFF:
         logger.debug("Off")
-        humidificator.turn_off()
+        humidifier.turn_off()
         state['state'] = STATE.OFF
         return -7
 
     deadband = settings.get("GENERAL.deadband", default=2)
 
     if state['humidity'] < state['target_humidity'] - deadband and state['state'] != STATE.ON:
-        humidificator.turn_on()
-        logger.info("Starting Humidificator")
+        humidifier.turn_on()
+        logger.info("Starting Humidifier")
         state['state'] = STATE.ON
         output += 1
     elif state['humidity'] > state['target_humidity'] + deadband and state['state'] != STATE.OFF:
-        humidificator.turn_off()
-        logger.info("Stopping Humidificator")
+        humidifier.turn_off()
+        logger.info("Stopping Humidifier")
         state['state'] = STATE.OFF
         output += 2
 
@@ -109,10 +109,10 @@ def humidificator_controller():
     logger.debug("State %s", state['state'].name)
     logger.debug("Target Humidity %d", state['target_humidity'])
 
-    if state['state'] == humidificator.get_value():
-        logger.debug("Humidificator and Logic are in sync")
+    if state['state'] == humidifier.get_value():
+        logger.debug("Humidifier and Logic are in sync")
     else:
-        logger.error("Humidificator and Logic are not in sync")
+        logger.error("Humidifier and Logic are not in sync")
         return -6
     return output
 
@@ -149,7 +149,7 @@ def data_collection_logic(current_values):
             state['future_temp'] = current_values['future_temp']
             state['target_temp'] = current_values['target_temp']
 
-    humidificator_controller()
+    humidifier_controller()
 
     point = (Point("humidity").field("target", float(state['target_humidity']))
              )
@@ -220,11 +220,11 @@ def control_loop(name):
         logger.fatal("control main loop exception", exc_info=e)
     finally:
         logger.info("control main loop finish")
-        humidificator.shutdown()
+        humidifier.shutdown()
 
 
 @atexit.register
 def goodbye():
     if "PYTEST_CURRENT_TEST" in os.environ:
         logger.warning("shutdown detected")
-    humidificator.shutdown()
+    humidifier.shutdown()

@@ -25,10 +25,10 @@ Instead, by using outside temperature, we are adjusting the desired setpoint aut
 
 This implementation of Tefnut is only compatible with:
 * Humidistat that can be control via simple dry switches
-* Access to hardware to control Humidificator switch (e.g. Raspberry Pi)
+* Access to hardware to control Humidifier switch (e.g. Raspberry Pi)
 * Ecobee smart thermostat to reed house ambiant humidity level. 
 
-Note: It is designed to be resonabily modular, so assuming you want to get humidity level from another source or you want to control Humidificator from something else than Rapberry pie, it should not be hard to replace in the source code. 
+Note: It is designed to be resonabily modular, so assuming you want to get humidity level from another source or you want to control Humidifier from something else than Rapberry pie, it should not be hard to replace in the source code. 
 
 ## Configuration 
  
