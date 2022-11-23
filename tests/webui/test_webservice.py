@@ -101,7 +101,6 @@ class TestChangeState:
         response = client.post("/state", data="{\"mode\": \"AUTO\"}")
         assert json.loads(response.data)["mode"] == "TEMP_EMERGENCY"
         assert control.state['mode'] == MODE.TEMP_EMERGENCY
-        assert control.state['state'] == STATE.ON
 
     def test_cannot_bypass_alarms_humidity_manual(self, client):
         control.state['mode'] = MODE.OFF
@@ -124,7 +123,9 @@ class TestChangeState:
     def test_setting_manual_target(self, client):
         control.state['mode'] = MODE.MANUAL
         control.state["humidity delay"] = 10
+        control.state["temp delay"] = 10
         control.state["humidity"] = 20
+        settings.set("GENERAL.mode", MODE.MANUAL.name, persist=False)
         control.state['mode'] = MODE.OFF
 
         response = client.post("/state", data="{\"manual_target\": 32}")
