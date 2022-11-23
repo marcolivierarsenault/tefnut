@@ -4,9 +4,9 @@ from tefnut.utils.constant import STATE
 logger = logging.getLogger("main")
 
 
-class HumidificatorImplement:
+class HumidifierImplement:
     def __init__(self):
-        logger.info("Using Stub humidificator")
+        logger.info("Using Stub humidifier")
         self.state = STATE.OFF
 
     def turn_on(self):
@@ -18,7 +18,7 @@ class HumidificatorImplement:
         self.state = STATE.OFF
 
     def get_value(self):
-        logger.debug("Humidificator value is %s", self.state.name)
+        logger.debug("Humidifier value is %s", self.state.name)
         return self.state
 
     def shutdown(self):
