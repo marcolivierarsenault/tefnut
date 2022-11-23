@@ -311,11 +311,11 @@ def test_stop_delay(state_with_data):
     assert control.state["state"] == control.STATE.ON
 
     control.state["humidity"] = 32
-    assert control.humidifier_controller() == 2
-    assert control.state["state"] == control.STATE.OFF
+    assert control.humidifier_controller() == 0
+    assert control.state["state"] == control.STATE.ON
 
     control.state["humidity"] = 33
-    assert control.humidifier_controller() == 0
+    assert control.humidifier_controller() == 2
     assert control.state["state"] == control.STATE.OFF
 
     control.state["humidity"] = 34
