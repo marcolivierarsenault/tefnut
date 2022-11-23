@@ -1,14 +1,14 @@
 from enum import Enum
 
 
-class MODE(Enum):
-    AUTO = 0
-    MANUAL = 1
-    TEMP_EMERGENCY = 2
-    NO_HUMIDITY = 3
-    OFF = 4
+class MODE(str, Enum):
+    AUTO = "AUTO"
+    MANUAL = "MANUAL"
+    TEMP_EMERGENCY = "TEMP_EMERGENCY"
+    NO_HUMIDITY = "NO_HUMIDITY"
+    OFF = "OFF"
 
 
-class STATE(Enum):
-    OFF = 0
-    ON = 1
+class STATE(str, Enum):
+    OFF = "OFF"
+    ON = "ON"
