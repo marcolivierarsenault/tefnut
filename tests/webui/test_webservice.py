@@ -1,5 +1,6 @@
 import pytest
 import json
+import copy
 import time
 import tefnut.webui.webservice as webservice
 import tefnut.control.control as control
@@ -93,5 +94,79 @@ class TestChangeState:
         assert control.state['mode'] == MODE.MANUAL
         assert control.state['state'] == STATE.OFF
 
+    def test_cannot_bypass_alarms_temp_manual(self, client):
+        control.state['mode'] = MODE.MANUAL
+        control.state["temp delay"] = 100000000
 
-# response = client.post("/state", data={"mode": "MANUAL"}) # This throw an error
+        response = client.post("/state", data="{\"mode\": \"AUTO\"}")
+        assert json.loads(response.data)["mode"] == "TEMP_EMERGENCY"
+        assert control.state['mode'] == MODE.TEMP_EMERGENCY
+        assert control.state['state'] == STATE.ON
+
+    def test_cannot_bypass_alarms_humidity_manual(self, client):
+        control.state['mode'] = MODE.OFF
+        control.state["humidity delay"] = 100000000
+
+        response = client.post("/state", data="{\"mode\": \"MANUAL\"}")
+        assert json.loads(response.data)["mode"] == "NO_HUMIDITY"
+        assert control.state['mode'] == MODE.NO_HUMIDITY
+        assert control.state['state'] == STATE.OFF
+
+    def test_cannot_bypass_alarms_humidity_auto(self, client):
+        control.state['mode'] = MODE.OFF
+        control.state["humidity delay"] = 100000000
+
+        response = client.post("/state", data="{\"mode\": \"AUTO\"}")
+        assert json.loads(response.data)["mode"] == "NO_HUMIDITY"
+        assert control.state['mode'] == MODE.NO_HUMIDITY
+        assert control.state['state'] == STATE.OFF
+
+    def test_setting_manual_target(self, client):
+        control.state['mode'] = MODE.MANUAL
+        control.state["humidity delay"] = 10
+        control.state["humidity"] = 20
+        control.state['mode'] = MODE.OFF
+
+        response = client.post("/state", data="{\"manual_target\": 32}")
+        assert json.loads(response.data)["mode"] == "MANUAL"
+        assert json.loads(response.data)["target_humidity"] == 32
+        assert json.loads(response.data)["state"] == "ON"
+
+        assert control.state["target_humidity"] == 32
+        assert control.state['state'] == STATE.ON
+
+    def test_invalid_mode(self, client, caplog):
+        copy_state = copy.deepcopy(control.state)
+        response = client.post("/state", data="{\"mode\": \"adasdad\"}")
+        assert ["Error incoming data, mode invalid: adasdad"] == [rec.message for rec in caplog.records]
+        assert json.loads(response.data) == copy_state
+
+    def test_invalid_data(self, client, caplog):
+        copy_state = copy.deepcopy(control.state)
+        response = client.post("/state", data="fsdfsdf")
+        assert "Error opening json" in [rec.message for rec in caplog.records]
+        assert json.loads(response.data) == copy_state
+
+    def test_invalid_manual_target_data(self, client, caplog):
+        copy_state = copy.deepcopy(control.state)
+        response = client.post("/state", data="{\"manual_target\": \"adasdad\"}")
+        assert "Error incoming data, manual_target invalid: adasdad" in [rec.message for rec in caplog.records]
+        assert json.loads(response.data) == copy_state
+
+    def test_invalid_too_low_target(self, client, caplog):
+        copy_state = copy.deepcopy(control.state)
+        response = client.post("/state", data="{\"manual_target\": 2}")
+        assert "Error incoming data, manual_target is out of range: 2" in [rec.message for rec in caplog.records]
+        assert json.loads(response.data) == copy_state
+
+    def test_invalid_too_high_target(self, client, caplog):
+        copy_state = copy.deepcopy(control.state)
+        response = client.post("/state", data="{\"manual_target\": 52}")
+        assert "Error incoming data, manual_target is out of range: 52" in [rec.message for rec in caplog.records]
+        assert json.loads(response.data) == copy_state
+
+    def test_invalid_dict_key(self, client, caplog):
+        copy_state = copy.deepcopy(control.state)
+        response = client.post("/state", data="{\"manual_tss\": 52}")
+        assert "Error incoming data, invalid data: {'manual_tss': 52}" in [rec.message for rec in caplog.records]
+        assert json.loads(response.data) == copy_state

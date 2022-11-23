@@ -46,6 +46,7 @@ def get_state():
     except Exception as e:
         app.logger.error(request.get_data())
         app.logger.error("Error opening json", exc_info=e)
+        return control.state
 
     if "mode" in new_data:
         if new_data["mode"] not in ["AUTO", "MANUAL", "OFF"]:
