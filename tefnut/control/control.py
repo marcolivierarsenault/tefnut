@@ -18,8 +18,8 @@ humidifier = Humidifier()
 DELAY_LOOP = 60
 DELAY_TEMP = 15 * 60
 TEMP_EMERGENCY_DELAY = 3 * 60 * 60  # 3 hours
-DELAY_HUMIDITY = 10 * 60
-HUMIDITY_EMERGENCY_DELAY = 40 * 60  # 40 min
+DELAY_HUMIDITY = 5 * 60
+HUMIDITY_EMERGENCY_DELAY = 20 * 60  # 40 min
 
 
 state = {'temp time': time.time() - DELAY_TEMP,

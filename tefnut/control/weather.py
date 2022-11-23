@@ -1,6 +1,7 @@
 import requests
 import json
 import logging
+import time
 from tefnut.utils.setting import settings
 
 logger = logging.getLogger("main")
@@ -61,8 +62,18 @@ def get_temperature():
         return (None, None, None)
     else:
         try:
-            future_temp = json.loads(response.text)['list'][0]['main']['temp']
-            logger.debug(json.loads(response.text))
+            response = json.loads(response.text)
+            current_time = int(time.time())
+            logger.debug(response)
+            # For some reason the open weather API, seems to be changing prediction in the last 1.5 hours of the 3 h windows
+            if (60 * 60 * 1.5) + current_time < response['list'][0]['dt']:
+                # Take first record, we are in the first 1.5 hour of the window
+                future_temp = response['list'][0]['main']['temp']
+                logger.debug("Taking first forecast")
+            else:
+                # Take second record, we are in the second 1.5 hour of the window
+                future_temp = response['list'][1]['main']['temp']
+                logger.debug("Taking second forecast")
         except Exception as e:
             logger.warning(" Weather forecast parsing JSON error", exc_info=e)
             return (None, None, None)
