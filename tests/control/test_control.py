@@ -7,7 +7,7 @@ from tefnut.utils.setting import settings
 @pytest.fixture
 def state():
     return {'temp time': time.time() - control.DELAY_TEMP,
-            'humidity time': time.time() - control.DELAY_HUMIDITY,
+            'humidity time': time.time() - control.OFF_DELAY_HUMIDITY,
             'temp delay': 0,
             'humidity delay': 0,
             'current_temp': None,
@@ -23,7 +23,7 @@ def state():
 @pytest.fixture
 def state_with_data():
     return {'temp time': time.time() - control.DELAY_TEMP,
-            'humidity time': time.time() - control.DELAY_HUMIDITY,
+            'humidity time': time.time() - control.OFF_DELAY_HUMIDITY,
             'temp delay': 0,
             'humidity delay': 0,
             'current_temp': -20,
@@ -311,11 +311,11 @@ def test_stop_delay(state_with_data):
     assert control.state["state"] == control.STATE.ON
 
     control.state["humidity"] = 32
-    assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.ON
+    assert control.humidifier_controller() == 2
+    assert control.state["state"] == control.STATE.OFF
 
     control.state["humidity"] = 33
-    assert control.humidifier_controller() == 2
+    assert control.humidifier_controller() == 0
     assert control.state["state"] == control.STATE.OFF
 
     control.state["humidity"] = 34

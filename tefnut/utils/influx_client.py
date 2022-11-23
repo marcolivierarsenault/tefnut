@@ -29,7 +29,7 @@ class InfluxClient:
     def write(self, point):
         if self.client is not None and self.write_api is not None:
             try:
-                logger.debug("Wrinting to InfludDB")
+                logger.debug("Wrinting to InfludDB %s", point)
                 self.write_api.write(bucket=settings.get("influx.bucket"), org=settings.get("influx.org"), record=point)
                 return 0
             except Exception as e:

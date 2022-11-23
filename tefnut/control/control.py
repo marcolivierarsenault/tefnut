@@ -18,12 +18,14 @@ humidifier = Humidifier()
 DELAY_LOOP = 60
 DELAY_TEMP = 15 * 60
 TEMP_EMERGENCY_DELAY = 3 * 60 * 60  # 3 hours
-DELAY_HUMIDITY = 5 * 60
 HUMIDITY_EMERGENCY_DELAY = 20 * 60  # 40 min
+
+OFF_DELAY_HUMIDITY = 5 * 60 - 2
+ON_DELAY_HUMIDITY = 1 * 60 - 2
 
 
 state = {'temp time': time.time() - DELAY_TEMP,
-         'humidity time': time.time() - DELAY_HUMIDITY,
+         'humidity time': time.time() - OFF_DELAY_HUMIDITY,
          'temp delay': 0,
          'humidity delay': 0,
          'current_temp': None,
@@ -99,7 +101,7 @@ def humidifier_controller():
         logger.info("Starting Humidifier")
         state['state'] = STATE.ON
         output += 1
-    elif state['humidity'] > state['target_humidity'] + deadband and state['state'] != STATE.OFF:
+    elif state['humidity'] >= state['target_humidity'] + deadband and state['state'] != STATE.OFF:
         humidifier.turn_off()
         logger.info("Stopping Humidifier")
         state['state'] = STATE.OFF
@@ -192,7 +194,8 @@ def control_loop(name):
             state['humidity delay'] = time.time() - state['humidity time']
 
             # humidity
-            if state['humidity delay'] >= DELAY_HUMIDITY:
+            delay = ON_DELAY_HUMIDITY if state["state"] == STATE.ON else OFF_DELAY_HUMIDITY
+            if state['humidity delay'] >= delay:
                 logger.info("Capturing humidity")
                 current_values['humidity'] = ecobee.get_humidity()
                 logger.debug("humidity: %s", current_values['humidity'])
