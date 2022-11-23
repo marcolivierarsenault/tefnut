@@ -53,9 +53,9 @@ def get_state():
             app.logger.error("Error incoming data, mode invalid: %s", new_data["mode"])
             return control.state
 
-        app.logger.info("Chaning Humidificator mode: %s", new_data["mode"])
+        app.logger.info("Chaning Humidifier mode: %s", new_data["mode"])
         settings.set("GENERAL.mode", new_data["mode"], persist=persist)
-        control.humidificator_controller()
+        control.humidifier_controller()
         return control.state
 
     if "manual_target" in new_data:
@@ -67,9 +67,9 @@ def get_state():
             app.logger.error("Error incoming data, manual_target is out of range: %s", new_data["manual_target"])
             return control.state
 
-        app.logger.info("Chaning Humidificator manual_target: %d", new_data["manual_target"])
+        app.logger.info("Chaning Humidifier manual_target: %d", new_data["manual_target"])
         settings.set("GENERAL.manual_target", new_data["manual_target"], persist=persist)
-        control.humidificator_controller()
+        control.humidifier_controller()
         return control.state
 
     app.logger.error("Error incoming data, invalid data: %s", new_data)
