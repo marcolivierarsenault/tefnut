@@ -21,8 +21,8 @@ def start_webui():
     logger.debug("Starting WebUI")
     configure_logger(webservice.app.logger)
     # webservice.app.run(use_debugger=False, use_reloader=False, passthrough_errors=True, host='0.0.0.0')  # For vsCode
-    webservice.app.run(host='0.0.0.0', debug=True)  # For normal debugging
-    # webservice.app.run(host='0.0.0.0')  # For prod
+    # webservice.app.run(host='0.0.0.0', debug=True)  # For normal debugging
+    webservice.app.run(host='0.0.0.0', debug=False)  # For prod
 
 
 if __name__ == "__main__":
