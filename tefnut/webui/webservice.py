@@ -2,7 +2,7 @@ import json
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_required, login_user, UserMixin, logout_user
 from tefnut.utils.setting import settings
-from tefnut.control.control import state, humidificator_controller
+import tefnut.control.control as control
 
 
 app = Flask(__name__)
@@ -39,7 +39,7 @@ def login():
 def get_state():
     if request.get_data().decode("utf-8") == "":
         app.logger.debug("Updating webUI with no incoming data")
-        return state
+        return control.state
 
     try:
         new_data = json.loads(request.get_data())
@@ -50,29 +50,29 @@ def get_state():
     if "mode" in new_data:
         if new_data["mode"] not in ["AUTO", "MANUAL", "OFF"]:
             app.logger.error("Error incoming data, mode invalid: %s", new_data["mode"])
-            return state
+            return control.state
 
         app.logger.info("Chaning Humidificator mode: %s", new_data["mode"])
         settings.set("GENERAL.mode", new_data["mode"], persist=persist)
-        humidificator_controller()
-        return state
+        control.humidificator_controller()
+        return control.state
 
     if "manual_target" in new_data:
         if not type(new_data["manual_target"]) == int:
             app.logger.error("Error incoming data, manual_target invalid: %s", new_data["manual_target"])
-            return state
+            return control.state
 
         if new_data["manual_target"] < 10 or new_data["manual_target"] > 50:
             app.logger.error("Error incoming data, manual_target is out of range: %s", new_data["manual_target"])
-            return state
+            return control.state
 
         app.logger.info("Chaning Humidificator manual_target: %d", new_data["manual_target"])
         settings.set("GENERAL.manual_target", new_data["manual_target"], persist=persist)
-        humidificator_controller()
-        return state
+        control.humidificator_controller()
+        return control.state
 
     app.logger.error("Error incoming data, invalid data: %s", new_data)
-    return state
+    return control.state
 
 
 @app.route('/login', methods=['POST'])
