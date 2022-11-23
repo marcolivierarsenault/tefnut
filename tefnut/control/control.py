@@ -101,7 +101,7 @@ def humidifier_controller():
         logger.info("Starting Humidifier")
         state['state'] = STATE.ON
         output += 1
-    elif state['humidity'] >= state['target_humidity'] + deadband and state['state'] != STATE.OFF:
+    elif state['humidity'] > state['target_humidity'] + deadband and state['state'] != STATE.OFF:
         humidifier.turn_off()
         logger.info("Stopping Humidifier")
         state['state'] = STATE.OFF
