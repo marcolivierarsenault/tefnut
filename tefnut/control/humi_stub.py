@@ -10,11 +10,11 @@ class HumidifierImplement:
         self.state = STATE.OFF
 
     def turn_on(self):
-        logger.info("Turning On humidifcator")
+        logger.info("Turning On humidifier")
         self.state = STATE.ON
 
     def turn_off(self):
-        logger.info("Turning Off humidifcator")
+        logger.info("Turning Off humidifier")
         self.state = STATE.OFF
 
     def get_value(self):
@@ -22,4 +22,5 @@ class HumidifierImplement:
         return self.state
 
     def shutdown(self):
+        logger.info("Shutdown humidifier, disabling GPIO")
         pass

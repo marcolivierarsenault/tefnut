@@ -1,8 +1,6 @@
 import logging
 import time
 import psutil
-import os
-import atexit
 from tefnut.utils.constant import STATE, MODE
 from tefnut.utils.setting import settings
 from tefnut.control.weather import get_temperature
@@ -15,6 +13,7 @@ from influxdb_client import Point
 logger = logging.getLogger("main")
 influx_client = InfluxClient()
 humidifier = Humidifier()
+looping = True
 DELAY_LOOP = 60
 DELAY_TEMP = 15 * 60
 TEMP_EMERGENCY_DELAY = 3 * 60 * 60  # 3 hours
@@ -186,7 +185,7 @@ def control_loop(name):
         logger.error("Failed to load Ecobee, Please validate PIN %s", get_pin())
 
     try:
-        while True:
+        while looping:
             current_values = {}
             current_values['start time'] = time.time()
             logger.debug("starting a control loop")
@@ -226,8 +225,6 @@ def control_loop(name):
         humidifier.shutdown()
 
 
-@atexit.register
 def goodbye():
-    if "PYTEST_CURRENT_TEST" in os.environ:
-        logger.warning("shutdown detected")
+    logger.info("GOODBYE")
     humidifier.shutdown()

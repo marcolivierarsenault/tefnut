@@ -18,12 +18,12 @@ class HumidifierImplement:
         time.sleep(2)
 
     def turn_on(self):
-        logger.info("Turning On humidifcator")
+        logger.info("Turning On Humidifier")
         GPIO.output(self.pin, GPIO.LOW)
         time.sleep(2)
 
     def turn_off(self):
-        logger.info("Turning Off humidifcator")
+        logger.info("Turning Off Humidifier")
         GPIO.output(self.pin, GPIO.HIGH)
         time.sleep(2)
 
@@ -35,6 +35,6 @@ class HumidifierImplement:
         return STATE.ON
 
     def shutdown(self):
-        logger.warning("Pi turning off the Humidifier")
+        logger.warning("Pi turning off the GPIO")
         GPIO.cleanup()
         time.sleep(2)
