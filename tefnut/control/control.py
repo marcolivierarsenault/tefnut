@@ -152,7 +152,10 @@ def data_collection_logic(current_values):
 
     humidifier_controller()
 
+    hum_state = 100 if state['state'] == STATE.ON else 0
+
     point = (Point("humidity").field("target", float(state['target_humidity']))
+                              .field("state", float(hum_state))
              )
     influx_client.write(point)
 
