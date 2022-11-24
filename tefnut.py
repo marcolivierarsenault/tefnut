@@ -13,7 +13,7 @@ logger = logging.getLogger("main")
 
 def start_control():
     logger.debug("Starting control loop")
-    x = threading.Thread(target=control.control_loop, args=(1,))
+    x = threading.Thread(target=control.control_loop, daemon=True, args=(1,))
     x.start()
 
 
@@ -23,6 +23,8 @@ def start_webui():
     # webservice.app.run(use_debugger=False, use_reloader=False, passthrough_errors=True, host='0.0.0.0')  # For vsCode
     # webservice.app.run(host='0.0.0.0', debug=True)  # For normal debugging
     webservice.app.run(host='0.0.0.0', debug=False)  # For prod
+    logger.info("stopping tefnut")
+    control.goodbye()
 
 
 if __name__ == "__main__":
