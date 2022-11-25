@@ -31,6 +31,12 @@ if __name__ == "__main__":
     logger.info("++++++++++Tefnut application starting++++++++++")
     configure_logger(logger)
 
+    f = open("VERSION", "r")
+    version = f.read()
+    f.close()
+
+    logger.info("Tefnut version: %s", version)
+
     repo = git.Repo(search_parent_directories=True)
     sha = repo.head.object.hexsha
     logger.info("Starting code on git sha: %s", sha)
