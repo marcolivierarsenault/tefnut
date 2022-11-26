@@ -17,8 +17,10 @@ def start_control():
     x.start()
 
 
-def start_webui():
+def start_webui(sha, version):
     logger.debug("Starting WebUI")
+    webservice.sha = sha
+    webservice.version = version
     configure_logger(webservice.app.logger)
     # webservice.app.run(use_debugger=False, use_reloader=False, passthrough_errors=True, host='0.0.0.0')  # For vsCode
     # webservice.app.run(host='0.0.0.0', debug=True)  # For normal debugging
@@ -42,4 +44,4 @@ if __name__ == "__main__":
     logger.info("Starting code on git sha: %s", sha)
 
     start_control()
-    start_webui()
+    start_webui(sha, version)

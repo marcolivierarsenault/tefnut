@@ -15,6 +15,14 @@ app.secret_key = 'super secret key'
 
 persist = True
 
+sha = ""
+version = ""
+
+
+@app.context_processor
+def inject_git_info():
+    return dict(sha=sha[0:6], version=version)
+
 
 @login_manager.user_loader
 def load_user(user_id):
