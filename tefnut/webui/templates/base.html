@@ -74,6 +74,13 @@
                   <a class="navbar-item" href="https://github.com/marcolivierarsenault/tefnut">
                     About
                   </a>
+                  <hr class="navbar-divider">
+                  <div class="navbar-item">
+                    git sha: {{ sha }}
+                  </div>
+                  <div class="navbar-item">
+                    Tefnut: {{ version }}
+                  </div>
                 </div>
               </div>
             {% if current_user.is_authenticated %}
