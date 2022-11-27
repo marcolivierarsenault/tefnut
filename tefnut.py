@@ -33,6 +33,8 @@ if __name__ == "__main__":
     logger.info("++++++++++Tefnut application starting++++++++++")
     configure_logger(logger)
 
+    logger.warning("Starting Tefnut")
+
     f = open("VERSION", "r")
     version = f.read()
     f.close()

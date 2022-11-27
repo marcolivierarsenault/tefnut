@@ -116,7 +116,7 @@ def handle_exception(e):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    app.logger.warning("404 - Wrong URL", exc_info=e)
+    app.logger.info("404 - Wrong URL", exc_info=e)
     return render_template('error.html', title="Invalid page", subtitle="take me home, west virginia"), 404
 
 
