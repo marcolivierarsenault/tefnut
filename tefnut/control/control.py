@@ -39,20 +39,24 @@ ecobee = None
 
 
 def compute_automated_target(outside_temp):
+    outside_temp = int(outside_temp)
+
     if outside_temp > 5:
         return 45
-    elif outside_temp >= -9:
+    elif outside_temp > -10 and outside_temp < 5:
         return 40
-    elif outside_temp >= -14:
+    elif outside_temp > -15 and outside_temp < -10:
         return 35
-    elif outside_temp >= -19:
+    elif outside_temp > -20 and outside_temp < -15:
         return 30
-    elif outside_temp >= -24:
+    elif outside_temp > -25 and outside_temp < -20:
         return 25
-    elif outside_temp >= -29:
+    elif outside_temp > -30 and outside_temp < -25:
         return 20
-    else:
+    elif outside_temp < -30:
         return 15
+    else:
+        return None
 
 
 def humidifier_controller():
@@ -86,7 +90,9 @@ def humidifier_controller():
         logger.debug("Manual")
     elif state['mode'] == MODE.AUTO:
         logger.debug("Auto")
-        state['target_humidity'] = compute_automated_target(state['target_temp'])
+        tmp_target = compute_automated_target(state['target_temp'])
+        if tmp_target is not None:  # Leaving a deadspot for specific degree
+            state['target_humidity'] = compute_automated_target(state['target_temp'])
     elif state['mode'] == MODE.OFF:
         logger.debug("Off")
         humidifier.turn_off()
