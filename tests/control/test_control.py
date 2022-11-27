@@ -192,27 +192,27 @@ def test_none_humidity_time(current_values, state):
 
 def test_auto_calculation_logic():
     assert control.compute_automated_target(-31) == 15
-    assert control.compute_automated_target(-30) == 15
+    assert control.compute_automated_target(-30) is None
     assert control.compute_automated_target(-29) == 20
 
     assert control.compute_automated_target(-26) == 20
-    assert control.compute_automated_target(-25) == 20
+    assert control.compute_automated_target(-25) is None
     assert control.compute_automated_target(-24) == 25
 
     assert control.compute_automated_target(-21) == 25
-    assert control.compute_automated_target(-20) == 25
+    assert control.compute_automated_target(-20) is None
     assert control.compute_automated_target(-19) == 30
 
     assert control.compute_automated_target(-16) == 30
-    assert control.compute_automated_target(-15) == 30
+    assert control.compute_automated_target(-15) is None
     assert control.compute_automated_target(-14) == 35
 
     assert control.compute_automated_target(-11) == 35
-    assert control.compute_automated_target(-10) == 35
+    assert control.compute_automated_target(-10) is None
     assert control.compute_automated_target(-9) == 40
 
     assert control.compute_automated_target(4) == 40
-    assert control.compute_automated_target(5) == 40
+    assert control.compute_automated_target(5) is None
     assert control.compute_automated_target(6) == 45
     assert control.compute_automated_target(7) == 45
 
@@ -564,3 +564,27 @@ def test_off_mode_from_off(state_with_data):
     control.humidifier.turn_on()
     assert control.humidifier_controller() == -7
     assert control.state["state"] == control.STATE.OFF
+
+
+def test_dead_temp_band(state_with_data):
+    state_with_data["target_humidity"] = 55
+    state_with_data["target_temp"] = 5.5  # deadspot
+    control.state = state_with_data
+    control.humidifier_controller()
+    control.state["target_humidity"] = 55
+
+
+def test_dead_temp_band_int(state_with_data):
+    state_with_data["target_humidity"] = 55
+    state_with_data["target_temp"] = -10  # deadspot
+    control.state = state_with_data
+    control.humidifier_controller()
+    control.state["target_humidity"] = 55
+
+
+def test_valid_temp_change_humidity(state_with_data):
+    state_with_data["target_humidity"] = 55
+    state_with_data["target_temp"] = -5  # valid spot
+    control.state = state_with_data
+    control.humidifier_controller()
+    control.state["target_humidity"] = 40
