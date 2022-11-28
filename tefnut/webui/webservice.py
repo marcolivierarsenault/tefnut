@@ -29,6 +29,15 @@ def load_user(user_id):
     return User()
 
 
+@app.route("/version")
+def version():
+    out = {
+                "version": version,
+                "sha": sha
+            }
+    return out
+
+
 @app.route("/")
 @login_required
 def index():
