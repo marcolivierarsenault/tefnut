@@ -209,7 +209,7 @@ def control_loop(name):
                 logger.debug("humidity: %s", current_values['humidity'])
                 current_values['humidity time'] = time.time()
             else:
-                logger.info("Humidity fresh enough, not refreshing")
+                logger.debug("Humidity fresh enough, not refreshing")
 
             # Weather
             if state['temp delay'] >= DELAY_TEMP:
@@ -221,7 +221,7 @@ def control_loop(name):
                 logger.debug("target temp: %s", current_values['target_temp'])
                 current_values['temp time'] = time.time()
             else:
-                logger.info("Temp fresh enough, not refreshing")
+                logger.debug("Temp fresh enough, not refreshing")
 
             data_collection_logic(current_values)
 
