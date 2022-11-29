@@ -31,7 +31,7 @@ def get_temperature():
 
     current_temp = None
     try:
-        response = requests.get(current_temp_url)
+        response = requests.get(current_temp_url, timeout=10)
         logger.debug(response)
     except Exception as e:
         logger.warning("Get Weather HTTP error", exc_info=e)
@@ -51,7 +51,7 @@ def get_temperature():
     # future temp
     future_temp = None
     try:
-        response = requests.get(future_temp_url)
+        response = requests.get(future_temp_url, timeout=10)
         logger.debug(response)
     except Exception as e:
         logger.warning("Get Weather forecast HTTP error", exc_info=e)
