@@ -1,4 +1,5 @@
 import time
+import requests
 from tefnut.control.weather import get_temperature, calculate_target
 from tefnut.utils.setting import settings
 
@@ -52,4 +53,15 @@ def test_unexpected_answer(requests_mock):
 def test_none_json_answer(requests_mock):
     requests_mock.get(current_temp_url, text="test")
     requests_mock.get(future_temp_url, text="test")
+    assert get_temperature() == (None, None, None)
+
+
+def test_timeout_current(requests_mock):
+    requests_mock.get(current_temp_url, exc=requests.exceptions.ConnectTimeout)
+    assert get_temperature() == (None, None, None)
+
+
+def test_timeout_future(requests_mock):
+    requests_mock.get(current_temp_url, json={"main": {"temp": 10}})
+    requests_mock.get(future_temp_url, exc=requests.exceptions.ConnectTimeout)
     assert get_temperature() == (None, None, None)
