@@ -150,6 +150,10 @@ def data_collection_logic(current_values):
                      .field("target temp", float(current_values['target_temp']))
                      )
             influx_client.write(point)
+
+            point = (Point("humidity").field("outdoor", float(current_values['outdoor_humidity'])))
+            influx_client.write(point)
+
             if 'temp time' in current_values and current_values['temp time'] is not None:
                 state['temp time'] = current_values['temp time']
             state['current_temp'] = current_values['current_temp']
@@ -215,10 +219,11 @@ def control_loop(name):
             if state['temp delay'] >= DELAY_TEMP:
                 logger.info("Capturing temp")
                 (current_values['current_temp'], current_values['future_temp'],
-                 current_values['target_temp']) = get_temperature()
+                 current_values['target_temp'], current_values['outdoor_humidity']) = get_temperature()
                 logger.debug("current temp: %s", current_values['current_temp'])
                 logger.debug("forcast temp: %s", current_values['future_temp'])
                 logger.debug("target temp: %s", current_values['target_temp'])
+                logger.debug("Outdoor Humidity: %s", current_values['outdoor_humidity'])
                 current_values['temp time'] = time.time()
             else:
                 logger.debug("Temp fresh enough, not refreshing")
