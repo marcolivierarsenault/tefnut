@@ -48,6 +48,7 @@ def current_values():
             'temp delay': 7,
             'humidity delay': 7,
             'humidity': 45,
+            'outdoor_humidity': 60,
             }
 
 
