@@ -1,5 +1,5 @@
 import json
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_login import LoginManager, login_required, login_user, UserMixin, logout_user
 from tefnut.utils.setting import settings
 import tefnut.control.control as control
@@ -107,6 +107,24 @@ def login_post():
     app.logger.info("User FAILED Logging to loggin")
     flash('Please check your login details and try again.')
     return redirect(url_for('login'))
+
+
+@login_manager.request_loader
+def load_user_from_header(request):
+    auth = request.authorization
+    if not auth:
+        return None
+
+    username = auth.username
+    password = auth.password
+    user = User()
+
+    if username == settings.get("WEBUI.username") and password == settings.get("WEBUI.password"):
+        app.logger.info("User Logging in from HTTP AUTH")
+        return user
+
+    app.logger.info("User FAILED Logging from HTTP AUTH")
+    abort(401)
 
 
 @app.route('/logout')
