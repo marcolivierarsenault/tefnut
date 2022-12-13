@@ -16,6 +16,7 @@ def configure_state():
     control.state["humidity"] = 10
     control.state["temp time"] = time.time()
     control.state["humidity time"] = time.time()
+    control.state["auto_delta"] = 0
 
 
 @pytest.fixture()
@@ -171,3 +172,41 @@ class TestChangeState:
         response = client.post("/state", data="{\"manual_tss\": 52}")
         assert "Error incoming data, invalid data: {'manual_tss': 52}" in [rec.message for rec in caplog.records]
         assert json.loads(response.data) == copy_state
+
+    def test_setting_auto_delta(self, client):
+        control.state['mode'] = MODE.AUTO
+        control.state["humidity delay"] = 10
+        control.state["temp delay"] = 10
+        control.state["humidity"] = 20
+        control.state["auto_delta"] = -2
+        settings.set("GENERAL.mode", MODE.AUTO.name, persist=False)
+        control.state['mode'] = MODE.OFF
+
+        response = client.post("/state", data="{\"auto_delta\": 0}")
+        assert json.loads(response.data)["auto_delta"] == 0
+
+    def test_setting_auto_delta_invalid_range(self, client, caplog):
+        control.state['mode'] = MODE.AUTO
+        control.state["humidity delay"] = 10
+        control.state["temp delay"] = 10
+        control.state["humidity"] = 20
+        control.state["auto_delta"] = -2
+        settings.set("GENERAL.mode", MODE.AUTO.name, persist=False)
+        control.state['mode'] = MODE.OFF
+
+        response = client.post("/state", data="{\"auto_delta\": -30}")
+        assert json.loads(response.data)["auto_delta"] == -2
+        assert "Error incoming data, auto_delta is out of range: -30" in [rec.message for rec in caplog.records]
+
+    def test_setting_auto_delta_invalid_type(self, client, caplog):
+        control.state['mode'] = MODE.AUTO
+        control.state["humidity delay"] = 10
+        control.state["temp delay"] = 10
+        control.state["humidity"] = 20
+        control.state["auto_delta"] = -2
+        settings.set("GENERAL.mode", MODE.AUTO.name, persist=False)
+        control.state['mode'] = MODE.OFF
+
+        response = client.post("/state", data="{\"auto_delta\": \"0\"}")
+        assert json.loads(response.data)["auto_delta"] == -2
+        assert "Error incoming data, auto_delta invalid: 0" in [rec.message for rec in caplog.records]

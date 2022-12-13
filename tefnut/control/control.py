@@ -32,6 +32,7 @@ state = {'temp time': time.time() - DELAY_TEMP,
          'target_temp': None,
          'humidity': None,
          'target_humidity': settings.get("GENERAL.manual_target", default=40),
+         'auto_delta': settings.get("GENERAL.auto_delta", default=0),
          'mode': MODE.AUTO,
          'state': STATE.OFF,
          }
@@ -40,21 +41,22 @@ ecobee = None
 
 def compute_automated_target(outside_temp):
     outside_temp = int(outside_temp)
+    delta = settings.get("GENERAL.auto_delta", default=0)
 
     if outside_temp > 5:
-        return 45
+        return 45 + delta
     elif outside_temp > -10 and outside_temp < 5:
-        return 40
+        return 40 + delta
     elif outside_temp > -15 and outside_temp < -10:
-        return 35
+        return 35 + delta
     elif outside_temp > -20 and outside_temp < -15:
-        return 30
+        return 30 + delta
     elif outside_temp > -25 and outside_temp < -20:
-        return 25
+        return 25 + delta
     elif outside_temp > -30 and outside_temp < -25:
-        return 20
+        return 20 + delta
     elif outside_temp < -30:
-        return 15
+        return 15 + delta
     else:
         return None
 
@@ -69,6 +71,7 @@ def humidifier_controller():
         return -1
 
     state['mode'] = MODE[settings.get("GENERAL.mode")]
+    state['auto_delta'] = settings.get("GENERAL.auto_delta", default=0)
 
     if state['humidity delay'] >= HUMIDITY_EMERGENCY_DELAY:
         logger.error("No Humidity info for too long, turning Humi off")
@@ -166,6 +169,7 @@ def data_collection_logic(current_values):
 
     point = (Point("humidity").field("target", float(state['target_humidity']))
                               .field("state", float(hum_state))
+                              .field("delta", float(state['auto_delta']))
              )
     influx_client.write(point)
 

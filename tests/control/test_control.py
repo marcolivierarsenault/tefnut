@@ -15,6 +15,7 @@ def state():
             'target_temp': None,
             'humidity': None,
             'target_humidity': 40,
+            'auto_delta': 0,
             'mode': control.MODE.AUTO,
             'state': control.STATE.OFF,
             }
@@ -30,6 +31,7 @@ def state_with_data():
             'future_temp': -20,
             'target_temp': -20,
             'humidity': 40,
+            'auto_delta': 0,
             'target_humidity': 30,
             'mode': control.MODE.AUTO,
             'state': control.STATE.OFF,
@@ -216,6 +218,76 @@ def test_auto_calculation_logic():
     assert control.compute_automated_target(5) is None
     assert control.compute_automated_target(6) == 45
     assert control.compute_automated_target(7) == 45
+
+
+def test_auto_calculation_logic_with_negative_delta():
+    settings.set("GENERAL.auto_delta", -2, persist=False)
+
+    assert control.compute_automated_target(-31) == 15 - 2
+    assert control.compute_automated_target(-30) is None
+    assert control.compute_automated_target(-29) == 20 - 2
+
+    assert control.compute_automated_target(-26) == 20 - 2
+    assert control.compute_automated_target(-25) is None
+    assert control.compute_automated_target(-24) == 25 - 2
+
+    assert control.compute_automated_target(-21) == 25 - 2
+    assert control.compute_automated_target(-20) is None
+    assert control.compute_automated_target(-19) == 30 - 2
+
+    assert control.compute_automated_target(-16) == 30 - 2
+    assert control.compute_automated_target(-15) is None
+    assert control.compute_automated_target(-14) == 35 - 2
+
+    assert control.compute_automated_target(-11) == 35 - 2
+    assert control.compute_automated_target(-10) is None
+    assert control.compute_automated_target(-9) == 40 - 2
+
+    assert control.compute_automated_target(4) == 40 - 2
+    assert control.compute_automated_target(5) is None
+    assert control.compute_automated_target(6) == 45 - 2
+    assert control.compute_automated_target(7) == 45 - 2
+
+    settings.set("GENERAL.auto_delta", 0, persist=False)
+
+
+def test_auto_calculation_logic_with_positive_delta():
+    settings.set("GENERAL.auto_delta", 2, persist=False)
+
+    assert control.compute_automated_target(-31) == 15 + 2
+    assert control.compute_automated_target(-30) is None
+    assert control.compute_automated_target(-29) == 20 + 2
+
+    assert control.compute_automated_target(-26) == 20 + 2
+    assert control.compute_automated_target(-25) is None
+    assert control.compute_automated_target(-24) == 25 + 2
+
+    assert control.compute_automated_target(-21) == 25 + 2
+    assert control.compute_automated_target(-20) is None
+    assert control.compute_automated_target(-19) == 30 + 2
+
+    assert control.compute_automated_target(-16) == 30 + 2
+    assert control.compute_automated_target(-15) is None
+    assert control.compute_automated_target(-14) == 35 + 2
+
+    assert control.compute_automated_target(-11) == 35 + 2
+    assert control.compute_automated_target(-10) is None
+    assert control.compute_automated_target(-9) == 40 + 2
+
+    assert control.compute_automated_target(4) == 40 + 2
+    assert control.compute_automated_target(5) is None
+    assert control.compute_automated_target(6) == 45 + 2
+    assert control.compute_automated_target(7) == 45 + 2
+
+    settings.set("GENERAL.auto_delta", 0, persist=False)
+
+
+def test_auto_calculation_logic_with_missing_delta():
+    settings.set("GENERAL.auto_delta", None, persist=False)
+
+    assert control.compute_automated_target(-31) == 15
+
+    settings.set("GENERAL.auto_delta", 0, persist=False)
 
 
 def test_manual_high_humid_stopping(state_with_data):

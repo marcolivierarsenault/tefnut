@@ -9,6 +9,8 @@ def pytest_configure(config):
     settings.set("INFLUX.enable", False, persist=False)
     settings.set("GENERAL.deadband", 2, persist=False)
     settings.set("GENERAL.humidifier", "stub", persist=False)
+    settings.set("GENERAL.mode", "AUTO", persist=False)
+    settings.set("GENERAL.auto_delta", 0, persist=False)
 
 
 def pytest_sessionfinish(session):

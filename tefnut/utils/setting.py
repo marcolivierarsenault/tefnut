@@ -55,6 +55,7 @@ class SettingLoader:
             logger.error("Setting config failled, missing setting: %s", name)
         elif result is None:
             logger.warning("Setting config failled, missing setting: %s, using the default value", name)
+            return default
         return result
 
 

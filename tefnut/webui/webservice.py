@@ -30,6 +30,7 @@ def load_user(user_id):
 
 
 @app.route("/version")
+@login_required
 def version():
     out = {
                 "version": version,
@@ -86,6 +87,20 @@ def get_state():
 
         app.logger.info("Chaning Humidifier manual_target: %d", new_data["manual_target"])
         settings.set("GENERAL.manual_target", new_data["manual_target"], persist=persist)
+        control.humidifier_controller()
+        return control.state
+
+    if "auto_delta" in new_data:
+        if not type(new_data["auto_delta"]) == int:
+            app.logger.error("Error incoming data, auto_delta invalid: %s", new_data["auto_delta"])
+            return control.state
+
+        if new_data["auto_delta"] < -20 or new_data["auto_delta"] > 20:
+            app.logger.error("Error incoming data, auto_delta is out of range: %s", new_data["auto_delta"])
+            return control.state
+
+        app.logger.info("Chaning Humidifier auto_delta: %d", new_data["auto_delta"])
+        settings.set("GENERAL.auto_delta", new_data["auto_delta"], persist=persist)
         control.humidifier_controller()
         return control.state
 
