@@ -11,6 +11,7 @@ manual_target = 40
 emergency_target = 30
 deadband = 2
 humidifier = "pi"
+auto_delta = 0
 rpi_pi = 26
 
 [WEATHER]
