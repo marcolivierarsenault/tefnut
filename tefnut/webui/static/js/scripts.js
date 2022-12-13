@@ -97,6 +97,22 @@ $(document).ready(function() {
 
     });
 
+    $('#btn_auto_delta').click(function() {
+        value = Number($('#auto_delta_input').val())
+        if (isNaN(value)) {
+            alert("Please enter a value between -20 and 20")
+            return 1
+        }
+        if (value < -200 || value > 20) {
+            alert("Please enter a value between -20 and 20")
+            return 1
+        }
+        alert("Updating Auto Delta target value")
+        reset_ui();
+        get_state(JSON.stringify({"auto_delta": value}))
+
+    });
+
     setTimeout(get_state, 400);
 
 });
@@ -111,13 +127,16 @@ function get_state(data_to_send=NaN){
             $('#state').html(data.state);
             $('#humidity').html(data.humidity + " %");
             $('#setpoint').html(data.target_humidity + " %");
-            $('#target_input').val(data.target_humidity)
+            $('#target_input').val(data.target_humidity);
+            $('#auto_delta_input').val(data.auto_delta);
             switch(data.mode) {
                 case "AUTO":
                     $('#btn_auto').addClass("is-success");
                     $('#btn_auto').prop('disabled', false);
                     $('#btn_manual').prop('disabled', false);
                     $('#btn_off').prop('disabled', false);
+                    $('#auto_delta_input').prop('disabled', false);
+                    $('#btn_auto_delta').prop('disabled', false);
                   break;
                 case "MANUAL":
                     $('#btn_manual').addClass("is-info");
@@ -150,4 +169,6 @@ function reset_ui(){
     $('#btn_off').prop('disabled', true);
     $('#target_input').prop('disabled', true);
     $('#btn_target').prop('disabled', true);
+    $('#auto_delta_input').prop('disabled', true);
+    $('#btn_auto_delta').prop('disabled', true);
 };

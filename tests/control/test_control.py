@@ -15,6 +15,7 @@ def state():
             'target_temp': None,
             'humidity': None,
             'target_humidity': 40,
+            'auto_delta': 0,
             'mode': control.MODE.AUTO,
             'state': control.STATE.OFF,
             }
@@ -30,6 +31,7 @@ def state_with_data():
             'future_temp': -20,
             'target_temp': -20,
             'humidity': 40,
+            'auto_delta': 0,
             'target_humidity': 30,
             'mode': control.MODE.AUTO,
             'state': control.STATE.OFF,

@@ -169,6 +169,7 @@ def data_collection_logic(current_values):
 
     point = (Point("humidity").field("target", float(state['target_humidity']))
                               .field("state", float(hum_state))
+                              .field("delta", float(state['auto_delta']))
              )
     influx_client.write(point)
 

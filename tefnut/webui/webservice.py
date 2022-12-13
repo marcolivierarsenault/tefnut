@@ -30,6 +30,7 @@ def load_user(user_id):
 
 
 @app.route("/version")
+@login_required
 def version():
     out = {
                 "version": version,
