@@ -1,0 +1,3 @@
+[report]
+omit = 
+    tefnut/control/humi_pi.py
