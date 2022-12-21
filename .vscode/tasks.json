@@ -7,13 +7,11 @@
             "label": "Run Tefnut",
             "type": "shell",
             "command": "python3 tefnut.py",
-            "dependsOn": ["Install all Requirements"]
         },
         {
             "label": "Test all",
             "type": "shell",
             "command": "pytest --cov=tefnut tests/ --cov-report term-missing -v",
-            "dependsOn": ["Install all Requirements"]
         },
         {
             "label": "Install all Requirements",
