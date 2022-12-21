@@ -1,0 +1,25 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Tefnut",
+            "type": "shell",
+            "command": "python3 tefnut.py",
+            "dependsOn": ["Install all Requirements"]
+        },
+        {
+            "label": "Test all",
+            "type": "shell",
+            "command": "pytest --cov=tefnut tests/ --cov-report term-missing -v",
+            "dependsOn": ["Install all Requirements"]
+        },
+        {
+            "label": "Install all Requirements",
+            "type": "shell",
+            "command": "pip3 install -r requirements.txt",
+            
+        }
+    ]
+}

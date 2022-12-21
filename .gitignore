@@ -132,7 +132,7 @@ dmypy.json
 .secrets.*
 settings.toml
 
-.vscode
+
 pyecobee_db
 
 .DS_Store
