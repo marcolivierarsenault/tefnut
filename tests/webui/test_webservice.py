@@ -24,7 +24,7 @@ def app():
     app = webservice.app
     app.config.update({
         "TESTING": True,
-        "LOGIN_DISABLED": True
+        "LOGIN_DISABLED": True  
     })
 
     webservice.persist = False

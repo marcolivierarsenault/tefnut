@@ -1,0 +1,58 @@
+{
+    "page": {
+      "page": 1,
+      "totalPages": 1,
+      "pageSize": 1,
+      "total": 1
+    },
+    "thermostatList": [
+      {
+        "identifier": "522674392583",
+        "name": "Myecobee",
+        "thermostatRev": "221220232727",
+        "isRegistered": true,
+        "modelNumber": "vulcanSmart",
+        "brand": "ecobee",
+        "features": "Home,HomeKit",
+        "lastModified": "2022-12-2023:27:27",
+        "thermostatTime": "2022-12-2120:13:18",
+        "utcTime": "2022-12-2201:13:18",
+        "runtime": {
+          "runtimeRev": "221222011246",
+          "connected": true,
+          "firstConnected": "2021-10-0502:18:34",
+          "connectDateTime": "2022-12-2012:01:01",
+          "disconnectDateTime": "2022-12-0901:54:00",
+          "lastModified": "2022-12-2201:12:46",
+          "lastStatusModified": "2022-12-2201:12:46",
+          "runtimeDate": "2022-12-22",
+          "runtimeInterval": 12,
+          "actualTemperature": 687,
+          "actualHumidity": 39,
+          "rawTemperature": 687,
+          "showIconMode": 0,
+          "desiredHeat": 680,
+          "desiredCool": 716,
+          "desiredHumidity": 36,
+          "desiredDehumidity": 54,
+          "desiredFanMode": "on",
+          "actualVOC": -5002,
+          "actualCO2": -5002,
+          "actualAQAccuracy": 0,
+          "actualAQScore": -5002,
+          "desiredHeatRange": [
+            450,
+            790
+          ],
+          "desiredCoolRange": [
+            650,
+            920
+          ]
+        }
+      }
+    ],
+    "status": {
+      "code": 0,
+      "message": ""
+    }
+  }
