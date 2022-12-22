@@ -39,13 +39,13 @@ def test_url_one_wrong_API(requests_mock):
 
 
 def test_url_two_wrong_API(requests_mock):
-    requests_mock.get(current_temp_url, json={"main": {"temp": 10}})
+    requests_mock.get(current_temp_url, json={"main": {"temp": 10, "humidity": 60}})
     requests_mock.get(future_temp_url, status_code=401)
     assert get_temperature() == (None, None, None, None)
 
 
 def test_unexpected_answer(requests_mock):
-    requests_mock.get(current_temp_url, json={"main": {"temp": 10}})
+    requests_mock.get(current_temp_url, json={"main": {"temp": 10, "humidity": 60}})
     requests_mock.get(future_temp_url, json={"notList": [{"main": {"temp": 20}}]})
     assert get_temperature() == (None, None, None, None)
 
@@ -62,6 +62,6 @@ def test_timeout_current(requests_mock):
 
 
 def test_timeout_future(requests_mock):
-    requests_mock.get(current_temp_url, json={"main": {"temp": 10}})
+    requests_mock.get(current_temp_url, json={"main": {"temp": 10, "humidity": 60}})
     requests_mock.get(future_temp_url, exc=requests.exceptions.ConnectTimeout)
     assert get_temperature() == (None, None, None, None)
