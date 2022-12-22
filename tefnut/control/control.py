@@ -194,11 +194,11 @@ def data_collection_logic(current_values):
 
 
 def control_loop(name):
-    try:
-        logger.info("starting ecobee device")
-        ecobee = ee("pyecobee_db")
-        logger.info("Ecobee device started")
-    except Exception:
+    logger.info("starting ecobee device")
+    ecobee = ee("pyecobee_db")
+    logger.info("Ecobee device started")
+
+    if not ecobee.is_active():
         logger.error("Failed to load Ecobee, Please validate PIN %s", ecobee.get_pin())
 
     try:

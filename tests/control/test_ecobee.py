@@ -39,11 +39,41 @@ class TestWorkingEcobee:
         assert self.ecobee.get_humidity() is None
         assert 'Failed to retreive humidity' in caplog.text
 
+    def test_is_active_positive(self):
+        assert self.ecobee.is_active()
+
 
 class TestOtherFlowEcobee:
 
-    def test_refresh_token_expires_on(self, mocker):
+    def test_invalid_api_key(self, caplog):
+        with requests_mock.Mocker() as m:
+            m.get("https://api.ecobee.com/authorize?client_id=dsaDwe34fDsfedsssd3dasADWDqwdawd&"
+                  "response_type=ecobeePin&scope=smartWrite",
+                  text=load_fixture("tests/control/fixture/failed_auth.json"),
+                  status_code=400
+                  )
 
+            local_ecobee = ecobee.ecobee("test")
+            assert not local_ecobee.is_active()
+            assert 'Failed to auhtorize ECOBEE apikey' in caplog.text
+
+    def test_invalid_pincode(self, caplog):
+        with requests_mock.Mocker() as m:
+            m.get("https://api.ecobee.com/authorize?client_id=dsaDwe34fDsfedsssd3dasADWDqwdawd&"
+                  "response_type=ecobeePin&scope=smartWrite",
+                  text=load_fixture("tests/control/fixture/auth.json")
+                  )
+            m.post("https://api.ecobee.com/token?client_id=dsaDwe34fDsfedsssd3dasADWDqwdawd"
+                   "&code=1234-5678&grant_type=ecobeePin",
+                   text=load_fixture("tests/control/fixture/failed_auth.json"),
+                   status_code=400
+                   )
+
+            local_ecobee = ecobee.ecobee("test")
+            assert not local_ecobee.is_active()
+            assert 'Failed to get token for PIN Code' in caplog.text
+
+    def test_refresh_token_expires_on(self, mocker):
         with requests_mock.Mocker() as m:
             m.get("https://api.ecobee.com/authorize?client_id=dsaDwe34fDsfedsssd3dasADWDqwdawd&"
                   "response_type=ecobeePin&scope=smartWrite",
@@ -76,7 +106,6 @@ class TestOtherFlowEcobee:
         os.remove("test")
 
     def test_access_token_expires_on(self, mocker):
-
         with requests_mock.Mocker() as m:
             m.get("https://api.ecobee.com/authorize?client_id=dsaDwe34fDsfedsssd3dasADWDqwdawd&"
                   "response_type=ecobeePin&scope=smartWrite",
@@ -102,4 +131,3 @@ class TestOtherFlowEcobee:
             refresh_tokens.assert_called_once()
 
         os.remove("test")
-
