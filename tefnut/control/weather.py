@@ -80,10 +80,7 @@ def get_temperature():
             logger.warning(" Weather forecast parsing JSON error", exc_info=e)
             return (None, None, None, None)
 
-    if future_temp is not None and current_temp is not None:
-        return (current_temp, future_temp, calculate_target(current_temp, future_temp), outdoor_humid)
-    else:
-        return (None, None, None, None)
+    return (current_temp, future_temp, calculate_target(current_temp, future_temp), outdoor_humid)
 
 
 def calculate_target(current_temp, future_temp):

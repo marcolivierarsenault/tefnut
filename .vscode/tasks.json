@@ -1,0 +1,29 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Tefnut",
+            "type": "shell",
+            "command": "python3 tefnut.py",
+        },
+        {
+            "label": "Test all",
+            "type": "shell",
+            "command": "pytest --cov=tefnut tests/ --cov-report term-missing -v",
+        },
+        {
+            "label": "Install all Requirements",
+            "type": "shell",
+            "command": "pip3 install -r requirements.txt",
+            
+        },
+        {
+            "label": "Flake",
+            "type": "shell",
+            "command": "flake8 . --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics; flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics",
+            
+        }
+    ]
+}

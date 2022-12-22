@@ -11,6 +11,7 @@ def pytest_configure(config):
     settings.set("GENERAL.humidifier", "stub", persist=False)
     settings.set("GENERAL.mode", "AUTO", persist=False)
     settings.set("GENERAL.auto_delta", 0, persist=False)
+    settings.set("ECOBEE.apikey", "dsaDwe34fDsfedsssd3dasADWDqwdawd", persist=False)
 
 
 def pytest_sessionfinish(session):

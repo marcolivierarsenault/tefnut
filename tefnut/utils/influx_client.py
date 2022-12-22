@@ -34,6 +34,7 @@ class InfluxClient:
                 return 0
             except Exception as e:
                 logger.error("Faillure to configure Influx DB client", exc_info=e)
+                return -1
         else:
             logger.debug("Not Wrinting to InfludDB")
         return 1
