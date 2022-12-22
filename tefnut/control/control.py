@@ -4,7 +4,7 @@ import psutil
 from tefnut.utils.constant import STATE, MODE
 from tefnut.utils.setting import settings
 from tefnut.control.weather import get_temperature
-from tefnut.control.ecobee import get_pin, ecobee as ee
+from tefnut.control.ecobee import ecobee as ee
 from tefnut.utils.influx_client import InfluxClient
 from tefnut.control.humidifier import Humidifier
 from influxdb_client import Point
@@ -196,10 +196,10 @@ def data_collection_logic(current_values):
 def control_loop(name):
     try:
         logger.info("starting ecobee device")
-        ecobee = ee()
+        ecobee = ee("pyecobee_db")
         logger.info("Ecobee device started")
     except Exception:
-        logger.error("Failed to load Ecobee, Please validate PIN %s", get_pin())
+        logger.error("Failed to load Ecobee, Please validate PIN %s", ecobee.get_pin())
 
     try:
         while looping:
