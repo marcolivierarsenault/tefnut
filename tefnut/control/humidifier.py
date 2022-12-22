@@ -3,7 +3,7 @@ from tefnut.utils.setting import settings
 
 class Humidifier:
     def __init__(self):
-        if settings.get("GENERAL.humidifier") == "pi":
+        if settings.get("GENERAL.humidifier") == "pi":  # pragma: no cover
             from tefnut.control.humi_pi import HumidifierImplement
             self.humi = HumidifierImplement()
         else:
