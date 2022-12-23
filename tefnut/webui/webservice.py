@@ -1,7 +1,9 @@
 import json
+import logging
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_required, login_user, UserMixin, logout_user
 from tefnut.utils.setting import settings
+from tefnut.utils.logging import configure_logger
 import tefnut.control.control as control
 
 
@@ -17,6 +19,11 @@ persist = True
 
 sha = ""
 version = ""
+
+
+def load_application():
+    configure_logger(logging.getLogger("main"))
+    configure_logger(app.logger)
 
 
 @app.context_processor

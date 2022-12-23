@@ -8,6 +8,22 @@ import tefnut.webui.webservice as webservice
 from tefnut.control import control
 from tefnut.utils.logging import configure_logger
 
+
+def start_server():
+    print("===========Starting up Tefnut=============")
+    webservice.load_application()
+    return webservice.app
+
+
+app = start_server()
+
+
+
+
+
+### OLD
+
+
 logger = logging.getLogger("main")
 
 
@@ -27,7 +43,6 @@ def start_webui(sha, version):
     webservice.app.run(host='0.0.0.0', debug=False)  # For prod
     logger.info("stopping tefnut")
     control.goodbye()
-
 
 if __name__ == "__main__":
     logger.info("++++++++++Tefnut application starting++++++++++")
