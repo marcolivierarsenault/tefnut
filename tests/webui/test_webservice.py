@@ -2,6 +2,8 @@ import pytest
 import json
 import copy
 import time
+import base64
+from unittest.mock import patch
 import tefnut.webui.webservice as webservice
 import tefnut.control.control as control
 from tefnut.utils.constant import STATE, MODE
@@ -27,6 +29,9 @@ def app():
         "LOGIN_DISABLED": True
     })
 
+    webservice.sha = "123"
+    webservice.version = "1.2.3"
+
     webservice.persist = False
 
     yield app
@@ -37,6 +42,53 @@ def app():
 @pytest.fixture()
 def client(app):
     return app.test_client()
+
+
+@pytest.fixture()
+def app_nl():
+    app = webservice.app
+    app.config.update({
+        "TESTING": True,
+    })
+
+    webservice.sha = "123"
+    webservice.version = "1.2.3"
+
+    webservice.persist = False
+
+    yield app
+
+    # clean up / reset resources here
+
+
+@pytest.fixture()
+def client_nl(app_nl):
+    return app_nl.test_client()
+
+
+class TestLogin:
+
+    def test_no_login_get_redirected(self, client_nl):
+        response = client_nl.get("/")
+        assert b"Humidifier Mode" not in response.data
+
+    def test_login_http_get_redirected(self, client_nl):
+        credentials = base64.b64encode(b"test:test").decode('utf-8')
+        response = client_nl.get("/", headers={"Authorization": "Basic {}".format(credentials)})
+        assert b"Humidifier Mode" in response.data
+
+    def test_login_http_invalid(self, client_nl):
+        credentials = base64.b64encode(b"test:test2").decode('utf-8')
+        response = client_nl.get("/", headers={"Authorization": "Basic {}".format(credentials)})
+        assert response.status == "302 FOUND"
+
+    def test_form_login(self, client_nl):
+        response = client_nl.post('/login', data=dict(username='test', password='test'), follow_redirects=True)
+        assert b"Humidifier Mode" in response.data
+
+    def test_form_login_failed_auth(self, client_nl):
+        response = client_nl.post('/login', data=dict(username='testworing', password='testworing'), follow_redirects=True)
+        assert b"Humidifier Mode" not in response.data
 
 
 class TestWebserviceReturn:
@@ -57,10 +109,20 @@ class TestWebserviceReturn:
         response = client.get("/logout")
         assert b"Redirecting" in response.data
 
+    def test_get_version(self, client):
+        response = client.get("/version")
+        assert b'{"sha":"123","version":"1.2.3"}' in response.data
+
     def test_invalid_page_throw_404(self, client):
         response = client.get("/dsadas")
         assert b"Invalid page" in response.data
         assert response.status == "404 NOT FOUND"
+
+    def test_invalid_page_throw_500(self, client):
+        with patch("tefnut.webui.webservice.User") as mocked_template:
+            mocked_template.side_effect = Exception("test")
+            response = client.post("/login")
+            assert response.status == "500 INTERNAL SERVER ERROR"
 
 
 class TestChangeState:

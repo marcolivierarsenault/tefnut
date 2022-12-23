@@ -1,5 +1,5 @@
 import json
-from flask import Flask, render_template, request, redirect, url_for, flash, abort
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_required, login_user, UserMixin, logout_user
 from tefnut.utils.setting import settings
 import tefnut.control.control as control
@@ -139,7 +139,6 @@ def load_user_from_header(request):
         return user
 
     app.logger.info("User FAILED Logging from HTTP AUTH")
-    abort(401)
 
 
 @app.route('/logout')
@@ -151,6 +150,7 @@ def logout():
 
 
 @app.errorhandler(Exception)
+@app.errorhandler(500)
 def handle_exception(e):
     app.logger.error("WebUI ERROR", exc_info=e)
     return render_template('error.html', title="Server Error", subtitle="check logs"), 500
@@ -158,7 +158,7 @@ def handle_exception(e):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    app.logger.info("404 - Wrong URL", exc_info=e)
+    app.logger.info(f"404 - Wrong URL {e}")
     return render_template('error.html', title="Invalid page", subtitle="take me home, west virginia"), 404
 
 
