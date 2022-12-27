@@ -18,6 +18,8 @@ DELAY_TEMP = 15 * 60
 TEMP_EMERGENCY_DELAY = 3 * 60 * 60  # 3 hours
 HUMIDITY_EMERGENCY_DELAY = 20 * 60  # 40 min
 
+humidifier = Humidifier()
+
 OFF_DELAY_HUMIDITY = 5 * 60 - 2
 ON_DELAY_HUMIDITY = 1 * 60 - 2
 
@@ -38,7 +40,7 @@ class TefnutController:
              }
 
     def __init__(self):
-        self.humidifier = Humidifier()
+        self.humidifier = humidifier
 
         logger.info("starting ecobee device")
         self.ecobee = ee("pyecobee_db")
@@ -81,7 +83,6 @@ class TefnutController:
 
             self.data_collection_logic(current_values)
 
-            time.sleep(DELAY_LOOP)
         except Exception as e:
             logger.fatal("control main loop exception", exc_info=e)
 

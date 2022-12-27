@@ -22,7 +22,7 @@ scheduler.init_app(app)
 scheduler.start()
 
 persist = True
-BACKGROUND_THREAD_TIMER = 15
+BACKGROUND_THREAD_TIMER = 60
 
 sha = ""
 version = ""
@@ -53,6 +53,7 @@ def load_application():
 def background_job():
     app.logger.info("Starting tefnut update")
     tefnut_controller.controler_loop()
+    app.logger.debug("finished tefnut update")
 
 
 @app.context_processor

@@ -99,8 +99,9 @@ class TestWebserviceReturn:
         response = client.get("/")
         assert b"Status" in response.data
 
-    def test_post_get_state(self, client, control):
+    def test_post_get_state(self, client):
         response = client.post("/state")
+        control = webservice.tefnut_controller
         assert control.state == json.loads(response.data)
 
     def test_get_login_page(self, client):
