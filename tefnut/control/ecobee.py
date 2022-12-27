@@ -3,15 +3,19 @@ import logging
 import pytz
 import pyecobee as pyecobee
 from datetime import datetime
+from threading import Lock
 from tefnut.utils.setting import settings
 
 logger = logging.getLogger("main")
+
+mutex = Lock()
 
 
 class ecobee:
     def __init__(self, pyecobee_db_path):
         self.pyecobee_db_path = pyecobee_db_path
         try:
+            mutex.acquire()
             pyecobee_db = shelve.open(pyecobee_db_path, protocol=2)
             self.ecobee_service = pyecobee_db["thermostat"]
         except KeyError:
@@ -19,6 +23,7 @@ class ecobee:
                                                          application_key=settings.get("ECOBEE.apikey"))
         finally:
             pyecobee_db.close()
+            mutex.release()
 
         if self.ecobee_service.authorization_token is None:
             self.authorize()
@@ -33,20 +38,29 @@ class ecobee:
                 )
 
     def get_pin(self):
+        mutex.acquire()
         self.pyecobee_db = shelve.open(self.pyecobee_db_path, protocol=2)
-        pin = self.pyecobee_db["pin"]
+        if "pin" not in self.pyecobee_db.keys():
+            pin = "0000-0000"
+        else:
+            pin = self.pyecobee_db["pin"]
         self.pyecobee_db.close()
+        mutex.release()
         return pin
 
     def persist_to_shelf(self):
+        mutex.acquire()
         self.pyecobee_db = shelve.open(self.pyecobee_db_path, protocol=2)
         self.pyecobee_db["thermostat"] = self.ecobee_service
         self.pyecobee_db.close()
+        mutex.release()
 
     def persist_pin(self, pin):
+        mutex.acquire()
         self.pyecobee_db = shelve.open(self.pyecobee_db_path, protocol=2)
         self.pyecobee_db["pin"] = pin
         self.pyecobee_db.close()
+        mutex.release()
 
     def refresh_tokens(self):
         self.token_response = self.ecobee_service.refresh_tokens()
@@ -60,8 +74,8 @@ class ecobee:
             logger.debug('TokenResponse returned from ecobee_service.request_tokens():\n{0}'.format(
                 self.token_response.pretty_format()))
             self.persist_to_shelf()
-        except Exception as e:
-            logger.error("Failed to get token for PIN Code", exc_info=e)
+        except Exception:
+            logger.warning("Please go congigure your PIN if not done: %s", self.get_pin())
             return -1
 
     def authorize(self):

@@ -5,13 +5,14 @@ import time
 import base64
 from unittest.mock import patch
 import tefnut.webui.webservice as webservice
-import tefnut.control.control as control
+import tefnut.control.control as ctl
 from tefnut.utils.constant import STATE, MODE
 from tefnut.utils.setting import settings
 
 
-@pytest.fixture(scope="module", autouse=True)
-def configure_state():
+@pytest.fixture()
+def control():
+    control = ctl.TefnutController()
     control.state["current_temp"] = 10
     control.state["future_temp"] = 20
     control.state["target_temp"] = 30
@@ -19,10 +20,13 @@ def configure_state():
     control.state["temp time"] = time.time()
     control.state["humidity time"] = time.time()
     control.state["auto_delta"] = 0
+    control.state["humidity delay"] = 0
+    control.state["temp delay"] = 0
+    return control
 
 
 @pytest.fixture()
-def app():
+def app(control):
     app = webservice.app
     app.config.update({
         "TESTING": True,
@@ -33,6 +37,8 @@ def app():
     webservice.version = "1.2.3"
 
     webservice.persist = False
+
+    webservice.tefnut_controller = control
 
     yield app
 
@@ -57,8 +63,6 @@ def app_nl():
     webservice.persist = False
 
     yield app
-
-    # clean up / reset resources here
 
 
 @pytest.fixture()
@@ -99,6 +103,7 @@ class TestWebserviceReturn:
 
     def test_post_get_state(self, client):
         response = client.post("/state")
+        control = webservice.tefnut_controller
         assert control.state == json.loads(response.data)
 
     def test_get_login_page(self, client):
@@ -127,7 +132,7 @@ class TestWebserviceReturn:
 
 class TestChangeState:
 
-    def test_post_get_state_change_mode_auto_to_manual(self, client):
+    def test_post_get_state_change_mode_auto_to_manual(self, client, control):
         control.state['mode'] = MODE.AUTO
         settings.set("GENERAL.mode", MODE.AUTO.name, persist=False)
 
@@ -135,7 +140,7 @@ class TestChangeState:
         assert json.loads(response.data)["mode"] == "MANUAL"
         assert control.state['mode'] == MODE.MANUAL
 
-    def test_post_get_state_change_mode_auto_to_manual_start_hum(self, client):
+    def test_post_get_state_change_mode_auto_to_manual_start_hum(self, client, control):
         control.state['mode'] = MODE.AUTO
         settings.set("GENERAL.mode", MODE.AUTO.name, persist=False)
         settings.set("GENERAL.manual_target", 30, persist=False)
@@ -146,7 +151,7 @@ class TestChangeState:
         assert control.state['mode'] == MODE.MANUAL
         assert control.state['state'] == STATE.ON
 
-    def test_post_get_state_change_mode_auto_to_manual_stop_hum(self, client):
+    def test_post_get_state_change_mode_auto_to_manual_stop_hum(self, client, control):
         control.state['mode'] = MODE.AUTO
         settings.set("GENERAL.mode", MODE.AUTO.name, persist=False)
         settings.set("GENERAL.manual_target", 30, persist=False)
@@ -157,7 +162,7 @@ class TestChangeState:
         assert control.state['mode'] == MODE.MANUAL
         assert control.state['state'] == STATE.OFF
 
-    def test_cannot_bypass_alarms_temp_manual(self, client):
+    def test_cannot_bypass_alarms_temp_manual(self, client, control):
         control.state['mode'] = MODE.MANUAL
         control.state["temp delay"] = 100000000
 
@@ -165,7 +170,7 @@ class TestChangeState:
         assert json.loads(response.data)["mode"] == "TEMP_EMERGENCY"
         assert control.state['mode'] == MODE.TEMP_EMERGENCY
 
-    def test_cannot_bypass_alarms_humidity_manual(self, client):
+    def test_cannot_bypass_alarms_humidity_manual(self, client, control):
         control.state['mode'] = MODE.OFF
         control.state["humidity delay"] = 100000000
 
@@ -174,7 +179,7 @@ class TestChangeState:
         assert control.state['mode'] == MODE.NO_HUMIDITY
         assert control.state['state'] == STATE.OFF
 
-    def test_cannot_bypass_alarms_humidity_auto(self, client):
+    def test_cannot_bypass_alarms_humidity_auto(self, client, control):
         control.state['mode'] = MODE.OFF
         control.state["humidity delay"] = 100000000
 
@@ -183,7 +188,7 @@ class TestChangeState:
         assert control.state['mode'] == MODE.NO_HUMIDITY
         assert control.state['state'] == STATE.OFF
 
-    def test_setting_manual_target(self, client):
+    def test_setting_manual_target(self, client, control):
         control.state['mode'] = MODE.MANUAL
         control.state["humidity delay"] = 10
         control.state["temp delay"] = 10
@@ -199,43 +204,43 @@ class TestChangeState:
         assert control.state["target_humidity"] == 32
         assert control.state['state'] == STATE.ON
 
-    def test_invalid_mode(self, client, caplog):
+    def test_invalid_mode(self, client, caplog, control):
         copy_state = copy.deepcopy(control.state)
         response = client.post("/state", data="{\"mode\": \"adasdad\"}")
         assert ["Error incoming data, mode invalid: adasdad"] == [rec.message for rec in caplog.records]
         assert json.loads(response.data) == copy_state
 
-    def test_invalid_data(self, client, caplog):
+    def test_invalid_data(self, client, caplog, control):
         copy_state = copy.deepcopy(control.state)
         response = client.post("/state", data="fsdfsdf")
         assert "Error opening json" in [rec.message for rec in caplog.records]
         assert json.loads(response.data) == copy_state
 
-    def test_invalid_manual_target_data(self, client, caplog):
+    def test_invalid_manual_target_data(self, client, caplog, control):
         copy_state = copy.deepcopy(control.state)
         response = client.post("/state", data="{\"manual_target\": \"adasdad\"}")
         assert "Error incoming data, manual_target invalid: adasdad" in [rec.message for rec in caplog.records]
         assert json.loads(response.data) == copy_state
 
-    def test_invalid_too_low_target(self, client, caplog):
+    def test_invalid_too_low_target(self, client, caplog, control):
         copy_state = copy.deepcopy(control.state)
         response = client.post("/state", data="{\"manual_target\": 2}")
         assert "Error incoming data, manual_target is out of range: 2" in [rec.message for rec in caplog.records]
         assert json.loads(response.data) == copy_state
 
-    def test_invalid_too_high_target(self, client, caplog):
+    def test_invalid_too_high_target(self, client, caplog, control):
         copy_state = copy.deepcopy(control.state)
         response = client.post("/state", data="{\"manual_target\": 52}")
         assert "Error incoming data, manual_target is out of range: 52" in [rec.message for rec in caplog.records]
         assert json.loads(response.data) == copy_state
 
-    def test_invalid_dict_key(self, client, caplog):
+    def test_invalid_dict_key(self, client, caplog, control):
         copy_state = copy.deepcopy(control.state)
         response = client.post("/state", data="{\"manual_tss\": 52}")
         assert "Error incoming data, invalid data: {'manual_tss': 52}" in [rec.message for rec in caplog.records]
         assert json.loads(response.data) == copy_state
 
-    def test_setting_auto_delta(self, client):
+    def test_setting_auto_delta(self, client, control):
         control.state['mode'] = MODE.AUTO
         control.state["humidity delay"] = 10
         control.state["temp delay"] = 10
@@ -247,7 +252,7 @@ class TestChangeState:
         response = client.post("/state", data="{\"auto_delta\": 0}")
         assert json.loads(response.data)["auto_delta"] == 0
 
-    def test_setting_auto_delta_invalid_range(self, client, caplog):
+    def test_setting_auto_delta_invalid_range(self, client, caplog, control):
         control.state['mode'] = MODE.AUTO
         control.state["humidity delay"] = 10
         control.state["temp delay"] = 10
@@ -260,7 +265,7 @@ class TestChangeState:
         assert json.loads(response.data)["auto_delta"] == -2
         assert "Error incoming data, auto_delta is out of range: -30" in [rec.message for rec in caplog.records]
 
-    def test_setting_auto_delta_invalid_type(self, client, caplog):
+    def test_setting_auto_delta_invalid_type(self, client, caplog, control):
         control.state['mode'] = MODE.AUTO
         control.state["humidity delay"] = 10
         control.state["temp delay"] = 10
@@ -272,3 +277,30 @@ class TestChangeState:
         response = client.post("/state", data="{\"auto_delta\": \"0\"}")
         assert json.loads(response.data)["auto_delta"] == -2
         assert "Error incoming data, auto_delta invalid: 0" in [rec.message for rec in caplog.records]
+
+
+class TestFramework:
+    def test_shutdown(self, app, caplog):
+        webservice.close_tefnut()
+        assert 'Stopping tefnut' in caplog.text
+        assert 'GOODBYE' in caplog.text
+
+    def test_background_job_gets_added(app):
+        assert len(webservice.scheduler.get_jobs()) == 1
+        assert webservice.scheduler.get_jobs()[0].id == 'tefnut_update'
+
+    @patch('tefnut.webui.webservice.tefnut_controller.controler_loop')
+    def test_background_job_loads_controller(self, tefnut_controller, app):
+        webservice.background_job()
+        tefnut_controller.assert_called_once()
+
+    @patch('tefnut.webui.webservice.atexit.register')
+    @patch('tefnut.webui.webservice.control.TefnutController')
+    def test_loading_job(self, atexit, tefnut_controller, app):
+        webservice.load_application()
+        atexit.assert_called_once()
+        tefnut_controller.assert_called_once()
+        assert webservice.sha != ""
+        assert webservice.version != ""
+        assert webservice.tefnut_controller is not None
+

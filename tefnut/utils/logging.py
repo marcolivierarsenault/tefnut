@@ -7,6 +7,7 @@ from tefnut.utils.setting import settings
 
 def configure_logger(logger):
     """Function to configure the logger"""
+    logger.handlers.clear()
     logger.setLevel(settings.get("general.loglevel"))
 
     # Console
