@@ -304,4 +304,3 @@ class TestFramework:
         assert webservice.version != ""
         assert webservice.tefnut_controller is not None
 
-
