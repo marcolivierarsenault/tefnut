@@ -74,8 +74,8 @@ class ecobee:
             logger.debug('TokenResponse returned from ecobee_service.request_tokens():\n{0}'.format(
                 self.token_response.pretty_format()))
             self.persist_to_shelf()
-        except Exception as e:
-            logger.error("Failed to get token for PIN Code", exc_info=e)
+        except Exception:
+            logger.warning("Please go congigure your PIN if not done: %s", self.get_pin())
             return -1
 
     def authorize(self):

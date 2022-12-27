@@ -71,7 +71,7 @@ class TestOtherFlowEcobee:
 
             local_ecobee = ecobee.ecobee("test")
             assert not local_ecobee.is_active()
-            assert 'Failed to get token for PIN Code' in caplog.text
+            assert 'Please go congigure your PIN if not done' in caplog.text
 
     def test_refresh_token_expires_on(self, mocker):
         with requests_mock.Mocker() as m:

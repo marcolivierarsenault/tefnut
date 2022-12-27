@@ -2,6 +2,7 @@ import pytest
 import time
 import tefnut.control.control as tef_control
 from tefnut.utils.setting import settings
+from unittest.mock import patch
 
 
 @pytest.fixture
@@ -669,3 +670,78 @@ def test_valid_temp_change_humidity(control, state_with_data):
     control.state = state_with_data
     control.humidifier_controller()
     control.state["target_humidity"] = 40
+
+
+def test_is_active(control):
+    assert control.is_active() == control.ecobee.is_active()
+
+
+@patch('tefnut.control.control.TefnutController.data_collection_logic')
+@patch('tefnut.control.control.get_temperature')
+@patch('tefnut.control.ecobee.ecobee.get_humidity')
+def test_working_loop(ecobee, get_temperature, data_collection_logic, control):
+    ecobee.return_value = 35
+    get_temperature.return_value = (5, 10, 15, 40)
+    control.controler_loop()
+    ecobee.assert_called_once()
+    get_temperature.assert_called_once()
+    data_collection_logic.assert_called_once()
+    params = data_collection_logic.call_args[0][0]
+
+    output = {'humidity': 35,
+              'current_temp': 5,
+              'future_temp': 10,
+              'target_temp': 15,
+              'outdoor_humidity': 40}
+
+    assert output.items() <= params.items()
+
+
+@patch('tefnut.control.control.TefnutController.data_collection_logic')
+@patch('tefnut.control.control.get_temperature')
+@patch('tefnut.control.ecobee.ecobee.get_humidity')
+def test_ecobee_timeout(ecobee, get_temperature, data_collection_logic, control):
+    control.state['humidity time'] = time.time() + 60*60*60
+    ecobee.return_value = 35
+    get_temperature.return_value = (5, 10, 15, 40)
+    control.controler_loop()
+    assert not ecobee.called
+    get_temperature.assert_called_once()
+    data_collection_logic.assert_called_once()
+    params = data_collection_logic.call_args[0][0]
+
+    output = {'current_temp': 5,
+              'future_temp': 10,
+              'target_temp': 15,
+              'outdoor_humidity': 40}
+
+    not_output = {'humidity': 35}
+
+    assert output.items() <= params.items()
+    assert not not_output.items() <= params.items()
+    control.state['humidity time'] = time.time() - 60*60
+
+
+@patch('tefnut.control.control.TefnutController.data_collection_logic')
+@patch('tefnut.control.control.get_temperature')
+@patch('tefnut.control.ecobee.ecobee.get_humidity')
+def test_weather_timeout(ecobee, get_temperature, data_collection_logic, control):
+    control.state['temp time'] = time.time() + 60*60*60
+    ecobee.return_value = 35
+    get_temperature.return_value = (5, 10, 15, 40)
+    control.controler_loop()
+    assert not get_temperature.called
+    ecobee.assert_called_once()
+    data_collection_logic.assert_called_once()
+    params = data_collection_logic.call_args[0][0]
+
+    output = {'humidity': 35}
+
+    not_output = {'current_temp': 5,
+                  'future_temp': 10,
+                  'target_temp': 15,
+                  'outdoor_humidity': 40}
+
+    assert output.items() <= params.items()
+    assert not not_output.items() <= params.items()
+    control.state['temp time'] = time.time() - 60*60

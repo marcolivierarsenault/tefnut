@@ -47,8 +47,8 @@ class TefnutController:
         logger.info("Ecobee device started")
         self._is_active = self.ecobee.is_active()
 
-        if not self._is_active:
-            logger.error("Failed to load Ecobee, Please validate PIN %s", self.ecobee.get_pin())
+    def is_active(self):
+        return self._is_active
 
     def controler_loop(self):
         try:
