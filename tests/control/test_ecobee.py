@@ -131,3 +131,20 @@ class TestOtherFlowEcobee:
             refresh_tokens.assert_called_once()
 
         os.remove("test")
+
+    def test_invalid_pin(self, mocker):
+        with requests_mock.Mocker() as m:
+            m.get("https://api.ecobee.com/authorize?client_id=dsaDwe34fDsfedsssd3dasADWDqwdawd&"
+                  "response_type=ecobeePin&scope=smartWrite",
+                  text=load_fixture("tests/control/fixture/auth.json")
+                  )
+            m.post("https://api.ecobee.com/token?client_id=dsaDwe34fDsfedsssd3dasADWDqwdawd"
+                   "&code=1234-5678&grant_type=ecobeePin",
+                   text=load_fixture("tests/control/fixture/token.json")
+                   )
+
+            local_ecobee = ecobee.ecobee("test")
+
+        os.remove("test")
+        assert local_ecobee.get_pin() == "0000-0000"
+        os.remove("test")

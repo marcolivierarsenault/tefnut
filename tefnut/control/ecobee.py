@@ -34,6 +34,8 @@ class ecobee:
 
     def get_pin(self):
         self.pyecobee_db = shelve.open(self.pyecobee_db_path, protocol=2)
+        if "pin" not in self.pyecobee_db.keys():
+            return "0000-0000"
         pin = self.pyecobee_db["pin"]
         self.pyecobee_db.close()
         return pin
