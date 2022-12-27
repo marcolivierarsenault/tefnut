@@ -20,6 +20,8 @@ def control():
     control.state["temp time"] = time.time()
     control.state["humidity time"] = time.time()
     control.state["auto_delta"] = 0
+    control.state["humidity delay"] = 0
+    control.state["temp delay"] = 0
     return control
 
 
