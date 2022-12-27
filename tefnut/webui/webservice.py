@@ -5,6 +5,7 @@ from flask_login import LoginManager, login_required, login_user, UserMixin, log
 from tefnut.utils.setting import settings
 from tefnut.utils.logging import configure_logger
 import git
+import atexit
 from flask_apscheduler import APScheduler
 import tefnut.control.control as control
 
@@ -30,8 +31,15 @@ version = ""
 tefnut_controller = None
 
 
+def close_tefnut():
+    app.logger.info("Stopping tefnut")
+    tefnut_controller.goodbye()
+
+
 def load_application():
     global tefnut_controller
+
+    atexit.register(close_tefnut)
 
     configure_logger(logging.getLogger("main"))
     configure_logger(app.logger)

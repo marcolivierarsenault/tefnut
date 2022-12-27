@@ -745,3 +745,20 @@ def test_weather_timeout(ecobee, get_temperature, data_collection_logic, control
     assert output.items() <= params.items()
     assert not not_output.items() <= params.items()
     control.state['temp time'] = time.time() - 60*60
+
+
+@patch('tefnut.control.control.TefnutController.data_collection_logic')
+@patch('tefnut.control.ecobee.ecobee.get_humidity')
+def test_ecobee_Exception(ecobee, data_collection_logic, control, caplog):
+    control.state['temp time'] = time.time() + 60*60*60
+    ecobee.side_effect = Exception("test")
+
+    control.controler_loop()
+
+    assert 'control main loop exception' in caplog.text
+    assert not data_collection_logic.called
+
+
+def test_goodbye(control, caplog):
+    control.goodbye()
+    assert 'GOODBYE' in caplog.text

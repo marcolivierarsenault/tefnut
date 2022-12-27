@@ -12,3 +12,4 @@ Flask-Login==0.6.2
 pytest-mock==3.10.0
 flask_apscheduler
 gunicorn
+atexit

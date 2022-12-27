@@ -277,3 +277,31 @@ class TestChangeState:
         response = client.post("/state", data="{\"auto_delta\": \"0\"}")
         assert json.loads(response.data)["auto_delta"] == -2
         assert "Error incoming data, auto_delta invalid: 0" in [rec.message for rec in caplog.records]
+
+
+class TestFramework:
+    def test_shutdown(self, app, caplog):
+        webservice.close_tefnut()
+        assert 'Stopping tefnut' in caplog.text
+        assert 'GOODBYE' in caplog.text
+
+    def test_background_job_gets_added(app):
+        assert len(webservice.scheduler.get_jobs()) == 1
+        assert webservice.scheduler.get_jobs()[0].id == 'tefnut_update'
+
+    @patch('tefnut.webui.webservice.tefnut_controller.controler_loop')
+    def test_background_job_loads_controller(self, tefnut_controller, app):
+        webservice.background_job()
+        tefnut_controller.assert_called_once()
+
+    @patch('tefnut.webui.webservice.atexit.register')
+    @patch('tefnut.webui.webservice.control.TefnutController')
+    def test_loading_job(self, atexit, tefnut_controller, app):
+        webservice.load_application()
+        atexit.assert_called_once()
+        tefnut_controller.assert_called_once()
+        assert webservice.sha != ""
+        assert webservice.version != ""
+        assert webservice.tefnut_controller is not None
+
+
