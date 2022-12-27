@@ -4,6 +4,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_required, login_user, UserMixin, logout_user
 from tefnut.utils.setting import settings
 from tefnut.utils.logging import configure_logger
+import git
+from flask_apscheduler import APScheduler
 import tefnut.control.control as control
 
 
@@ -15,15 +17,42 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 app.secret_key = 'super secret key'
 
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
+
 persist = True
+BACKGROUND_THREAD_TIMER = 15
 
 sha = ""
 version = ""
 
+tefnut_controller = None
+
 
 def load_application():
+    global tefnut_controller
+
     configure_logger(logging.getLogger("main"))
     configure_logger(app.logger)
+    app.logger.info("Application loaded")
+
+    f = open("VERSION", "r")
+    version = f.read()
+    f.close()
+    app.logger.info("Tefnut version: %s", version)
+
+    repo = git.Repo(search_parent_directories=True)
+    sha = repo.head.object.hexsha
+    app.logger.info("Starting code on git sha: %s", sha)
+
+    tefnut_controller = control.TefnutController()
+
+
+@scheduler.task('interval', id='tefnut_update', seconds=BACKGROUND_THREAD_TIMER, misfire_grace_time=900)
+def background_job():
+    app.logger.info("Starting tefnut update")
+    tefnut_controller.controler_loop()
 
 
 @app.context_processor
@@ -64,55 +93,55 @@ def login():
 def get_state():
     if request.get_data().decode("utf-8") == "":
         app.logger.debug("Updating webUI with no incoming data")
-        return control.state
+        return tefnut_controller.state
 
     try:
         new_data = json.loads(request.get_data())
     except Exception as e:
         app.logger.error(request.get_data())
         app.logger.error("Error opening json", exc_info=e)
-        return control.state
+        return tefnut_controller.state
 
     if "mode" in new_data:
         if new_data["mode"] not in ["AUTO", "MANUAL", "OFF"]:
             app.logger.error("Error incoming data, mode invalid: %s", new_data["mode"])
-            return control.state
+            return tefnut_controller.state
 
         app.logger.info("Chaning Humidifier mode: %s", new_data["mode"])
         settings.set("GENERAL.mode", new_data["mode"], persist=persist)
-        control.humidifier_controller()
-        return control.state
+        tefnut_controller.humidifier_controller()
+        return tefnut_controller.state
 
     if "manual_target" in new_data:
         if not type(new_data["manual_target"]) == int:
             app.logger.error("Error incoming data, manual_target invalid: %s", new_data["manual_target"])
-            return control.state
+            return tefnut_controller.state
 
         if new_data["manual_target"] < 10 or new_data["manual_target"] > 50:
             app.logger.error("Error incoming data, manual_target is out of range: %s", new_data["manual_target"])
-            return control.state
+            return tefnut_controller.state
 
         app.logger.info("Chaning Humidifier manual_target: %d", new_data["manual_target"])
         settings.set("GENERAL.manual_target", new_data["manual_target"], persist=persist)
-        control.humidifier_controller()
-        return control.state
+        tefnut_controller.humidifier_controller()
+        return tefnut_controller.state
 
     if "auto_delta" in new_data:
         if not type(new_data["auto_delta"]) == int:
             app.logger.error("Error incoming data, auto_delta invalid: %s", new_data["auto_delta"])
-            return control.state
+            return tefnut_controller.state
 
         if new_data["auto_delta"] < -20 or new_data["auto_delta"] > 20:
             app.logger.error("Error incoming data, auto_delta is out of range: %s", new_data["auto_delta"])
-            return control.state
+            return tefnut_controller.state
 
         app.logger.info("Chaning Humidifier auto_delta: %d", new_data["auto_delta"])
         settings.set("GENERAL.auto_delta", new_data["auto_delta"], persist=persist)
-        control.humidifier_controller()
-        return control.state
+        tefnut_controller.humidifier_controller()
+        return tefnut_controller.state
 
     app.logger.error("Error incoming data, invalid data: %s", new_data)
-    return control.state
+    return tefnut_controller.state
 
 
 @app.route('/login', methods=['POST'])

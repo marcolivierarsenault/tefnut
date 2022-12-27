@@ -8,7 +8,7 @@
             "name": "Tefnut",
             "type": "python",
             "request": "launch",
-            "program": "tefnut.py",
+            "program": "main.py",
             "console": "integratedTerminal",
             "jinja": true,
             "justMyCode": true
@@ -19,7 +19,7 @@
             "request": "launch",
             "module": "flask",
             "env": {
-                "FLASK_APP": "tefnut.py",
+                "FLASK_APP": "main.py",
                 "FLASK_ENV": "development",
                 "FLASK_DEBUG": "1"
             },

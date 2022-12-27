@@ -1,13 +1,13 @@
 import pytest
 import time
-import tefnut.control.control as control
+import tefnut.control.control as tef_control
 from tefnut.utils.setting import settings
 
 
 @pytest.fixture
 def state():
-    return {'temp time': time.time() - control.DELAY_TEMP,
-            'humidity time': time.time() - control.OFF_DELAY_HUMIDITY,
+    return {'temp time': time.time() - tef_control.DELAY_TEMP,
+            'humidity time': time.time() - tef_control.OFF_DELAY_HUMIDITY,
             'temp delay': 0,
             'humidity delay': 0,
             'current_temp': None,
@@ -16,15 +16,15 @@ def state():
             'humidity': None,
             'target_humidity': 40,
             'auto_delta': 0,
-            'mode': control.MODE.AUTO,
-            'state': control.STATE.OFF,
+            'mode': tef_control.MODE.AUTO,
+            'state': tef_control.STATE.OFF,
             }
 
 
 @pytest.fixture
 def state_with_data():
-    return {'temp time': time.time() - control.DELAY_TEMP,
-            'humidity time': time.time() - control.OFF_DELAY_HUMIDITY,
+    return {'temp time': time.time() - tef_control.DELAY_TEMP,
+            'humidity time': time.time() - tef_control.OFF_DELAY_HUMIDITY,
             'temp delay': 0,
             'humidity delay': 0,
             'current_temp': -20,
@@ -33,8 +33,8 @@ def state_with_data():
             'humidity': 40,
             'auto_delta': 0,
             'target_humidity': 30,
-            'mode': control.MODE.AUTO,
-            'state': control.STATE.OFF,
+            'mode': tef_control.MODE.AUTO,
+            'state': tef_control.STATE.OFF,
             }
 
 
@@ -54,12 +54,17 @@ def current_values():
             }
 
 
-def test_normal_beavior(current_values, state):
+@pytest.fixture
+def control():
+    return tef_control.TefnutController()
+
+
+def test_normal_beavior(control, current_values, state):
     control.state = state
     assert control.data_collection_logic(current_values) == 0
 
 
-def test_none_temp_setting(current_values, state):
+def test_none_temp_setting(control, current_values, state):
     control.state = state
 
     current_values['current_temp'] = None
@@ -117,7 +122,7 @@ def test_none_temp_setting(current_values, state):
     assert control.state["target_temp"] == 12
 
 
-def test_none_temp_time(current_values, state):
+def test_none_temp_time(control, current_values, state):
     control.state = state
     init_time = control.state['temp time']
 
@@ -142,7 +147,7 @@ def test_none_temp_time(current_values, state):
     assert init_time+1 == control.state['temp time']
 
 
-def test_none_humidity_setting(current_values, state):
+def test_none_humidity_setting(control, current_values, state):
     control.state = state
 
     current_values['humidity'] = None
@@ -168,7 +173,7 @@ def test_none_humidity_setting(current_values, state):
     assert control.state["humidity"] == 10
 
 
-def test_none_humidity_time(current_values, state):
+def test_none_humidity_time(control, current_values, state):
     control.state = state
     init_time = control.state['humidity time']
 
@@ -193,7 +198,7 @@ def test_none_humidity_time(current_values, state):
     assert init_time+1 == control.state['humidity time']
 
 
-def test_auto_calculation_logic():
+def test_auto_calculation_logic(control):
     assert control.compute_automated_target(-31) == 15
     assert control.compute_automated_target(-30) is None
     assert control.compute_automated_target(-29) == 20
@@ -220,7 +225,7 @@ def test_auto_calculation_logic():
     assert control.compute_automated_target(7) == 45
 
 
-def test_auto_calculation_logic_with_negative_delta():
+def test_auto_calculation_logic_with_negative_delta(control):
     settings.set("GENERAL.auto_delta", -2, persist=False)
 
     assert control.compute_automated_target(-31) == 15 - 2
@@ -251,7 +256,7 @@ def test_auto_calculation_logic_with_negative_delta():
     settings.set("GENERAL.auto_delta", 0, persist=False)
 
 
-def test_auto_calculation_logic_with_positive_delta():
+def test_auto_calculation_logic_with_positive_delta(control):
     settings.set("GENERAL.auto_delta", 2, persist=False)
 
     assert control.compute_automated_target(-31) == 15 + 2
@@ -282,7 +287,7 @@ def test_auto_calculation_logic_with_positive_delta():
     settings.set("GENERAL.auto_delta", 0, persist=False)
 
 
-def test_auto_calculation_logic_with_missing_delta():
+def test_auto_calculation_logic_with_missing_delta(control):
     settings.set("GENERAL.auto_delta", None, persist=False)
 
     assert control.compute_automated_target(-31) == 15
@@ -290,356 +295,359 @@ def test_auto_calculation_logic_with_missing_delta():
     settings.set("GENERAL.auto_delta", 0, persist=False)
 
 
-def test_manual_high_humid_stopping(state_with_data):
-    state_with_data["mode"] = control.MODE.MANUAL
-    state_with_data["state"] = control.STATE.ON
+def test_manual_high_humid_stopping(control, state_with_data):
+    state_with_data["mode"] = tef_control.MODE.MANUAL
+    state_with_data["state"] = tef_control.STATE.ON
     control.humidifier.turn_on()
     control.state = state_with_data
     control.state['humidity delay'] = 0
     settings.set("GENERAL.manual_target", 20, persist=False)
     assert control.humidifier_controller() == 2
-    assert control.state["state"] == control.STATE.OFF
+    assert control.state["state"] == tef_control.STATE.OFF
 
 
-def test_manual_high_keep_humid_off(state_with_data):
-    state_with_data["mode"] = control.MODE.MANUAL
-    state_with_data["state"] = control.STATE.OFF
+def test_manual_high_keep_humid_off(control, state_with_data):
+    state_with_data["mode"] = tef_control.MODE.MANUAL
+    state_with_data["state"] = tef_control.STATE.OFF
     control.state = state_with_data
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.OFF
+    assert control.state["state"] == tef_control.STATE.OFF
 
 
-def test_manual_low_keep_humid_on(state_with_data):
-    state_with_data["mode"] = control.MODE.MANUAL
-    state_with_data["state"] = control.STATE.ON
+def test_manual_low_keep_humid_on(control, state_with_data):
+    state_with_data["mode"] = tef_control.MODE.MANUAL
+    state_with_data["state"] = tef_control.STATE.ON
     state_with_data["humidity"] = 20
     control.state = state_with_data
     control.humidifier.turn_on()
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
 
-def test_manual_too_humid_starting(state_with_data):
-    state_with_data["mode"] = control.MODE.MANUAL
-    state_with_data["state"] = control.STATE.OFF
+def test_manual_too_humid_starting(control, state_with_data):
+    state_with_data["mode"] = tef_control.MODE.MANUAL
+    state_with_data["state"] = tef_control.STATE.OFF
     state_with_data["humidity"] = 20
     settings.set("GENERAL.manual_target", 30, persist=False)
     control.humidifier.turn_off()
     control.state = state_with_data
     assert control.humidifier_controller() == 1
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
 
-def test_start_delay(state_with_data):
+def test_start_delay(control, state_with_data):
     settings.set("GENERAL.mode", "MANUAL", persist=False)
     settings.set("GENERAL.manual_target", 30, persist=False)
 
-    state_with_data["state"] = control.STATE.OFF
+    state_with_data["state"] = tef_control.STATE.OFF
     control.humidifier.turn_off()
 
     state_with_data["humidity"] = 31
     control.state = state_with_data
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.OFF
+    assert control.state["state"] == tef_control.STATE.OFF
 
     state_with_data["humidity"] = 30
     control.state = state_with_data
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.OFF
+    assert control.state["state"] == tef_control.STATE.OFF
 
     control.state["humidity"] = 29
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.OFF
+    assert control.state["state"] == tef_control.STATE.OFF
 
     control.state["humidity"] = 28
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.OFF
+    assert control.state["state"] == tef_control.STATE.OFF
 
     control.state["humidity"] = 27
     assert control.humidifier_controller() == 1
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
     control.state["humidity"] = 26
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
 
-def test_stop_delay(state_with_data):
+def test_stop_delay(control, state_with_data):
     settings.set("GENERAL.mode", "MANUAL", persist=False)
     settings.set("GENERAL.manual_target", 30, persist=False)
 
-    state_with_data["state"] = control.STATE.ON
+    state_with_data["state"] = tef_control.STATE.ON
 
     state_with_data["humidity"] = 29
     control.state = state_with_data
+    control.humidifier.turn_on()
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
     control.state["humidity"] = 30
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
     control.state["humidity"] = 31
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
     control.state["humidity"] = 32
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
     control.state["humidity"] = 33
     assert control.humidifier_controller() == 2
-    assert control.state["state"] == control.STATE.OFF
+    assert control.state["state"] == tef_control.STATE.OFF
 
     control.state["humidity"] = 34
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.OFF
+    assert control.state["state"] == tef_control.STATE.OFF
 
 
-def test_auto_high_humid_stopping(state_with_data):
+def test_auto_high_humid_stopping(control, state_with_data):
     settings.set("GENERAL.mode", "AUTO", persist=False)
-    state_with_data["state"] = control.STATE.ON
+    state_with_data["state"] = tef_control.STATE.ON
     state_with_data["humidity"] = 40
     state_with_data["target_temp"] = -15
     control.state = state_with_data
     assert control.humidifier_controller() == 2
-    assert control.state["state"] == control.STATE.OFF
+    assert control.state["state"] == tef_control.STATE.OFF
 
 
-def test_auto_high_keep_humid_off(state_with_data):
+def test_auto_high_keep_humid_off(control, state_with_data):
     settings.set("GENERAL.mode", "AUTO", persist=False)
-    state_with_data["state"] = control.STATE.OFF
+    state_with_data["state"] = tef_control.STATE.OFF
     state_with_data["humidity"] = 40
     state_with_data["target_temp"] = -15
     control.state = state_with_data
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.OFF
+    assert control.state["state"] == tef_control.STATE.OFF
 
 
-def test_auto_low_humid_starting(state_with_data):
+def test_auto_low_humid_starting(control, state_with_data):
     settings.set("GENERAL.mode", "AUTO", persist=False)
-    state_with_data["state"] = control.STATE.OFF
+    state_with_data["state"] = tef_control.STATE.OFF
     state_with_data["humidity"] = 20
     state_with_data["target_temp"] = -15
     control.state = state_with_data
     assert control.humidifier_controller() == 1
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
 
-def test_auto_low_keep_humid_on(state_with_data):
+def test_auto_low_keep_humid_on(control, state_with_data):
     settings.set("GENERAL.mode", "AUTO", persist=False)
-    state_with_data["state"] = control.STATE.ON
+    state_with_data["state"] = tef_control.STATE.ON
     state_with_data["humidity"] = 20
     state_with_data["target_temp"] = -15
     control.state = state_with_data
+    control.humidifier.turn_on()
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
 
-def test_temp_delay_auto_start(state_with_data):
+def test_temp_delay_auto_start(control, state_with_data):
     settings.set("GENERAL.mode", "AUTO", persist=False)
     settings.set("GENERAL.emergency_target", 30, persist=False)
-    state_with_data["state"] = control.STATE.OFF
+    state_with_data["state"] = tef_control.STATE.OFF
     state_with_data["humidity"] = 10
     state_with_data["target_temp"] = -15
     control.state = state_with_data
     assert control.humidifier_controller() == 1
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
-    control.state["temp delay"] = control.TEMP_EMERGENCY_DELAY
-    control.state["state"] = control.STATE.OFF
+    control.state["temp delay"] = tef_control.TEMP_EMERGENCY_DELAY
+    control.state["state"] = tef_control.STATE.OFF
     assert control.humidifier_controller() == -4
-    assert control.state["state"] == control.STATE.ON
-    assert control.state["mode"] == control.MODE.TEMP_EMERGENCY
+    assert control.state["state"] == tef_control.STATE.ON
+    assert control.state["mode"] == tef_control.MODE.TEMP_EMERGENCY
 
 
-def test_temp_delay_auto_stay_on(state_with_data):
+def test_temp_delay_auto_stay_on(control, state_with_data):
     settings.set("GENERAL.mode", "AUTO", persist=False)
     settings.set("GENERAL.emergency_target", 30, persist=False)
-    state_with_data["state"] = control.STATE.OFF
+    state_with_data["state"] = tef_control.STATE.OFF
     state_with_data["humidity"] = 10
     state_with_data["target_temp"] = -15
     control.state = state_with_data
     assert control.humidifier_controller() == 1
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
     settings.set("GENERAL.mode", "AUTO", persist=False)
-    control.state["temp delay"] = control.TEMP_EMERGENCY_DELAY
+    control.state["temp delay"] = tef_control.TEMP_EMERGENCY_DELAY
     assert control.humidifier_controller() == -5
-    assert control.state["state"] == control.STATE.ON
-    assert control.state["mode"] == control.MODE.TEMP_EMERGENCY
+    assert control.state["state"] == tef_control.STATE.ON
+    assert control.state["mode"] == tef_control.MODE.TEMP_EMERGENCY
 
 
-def test_temp_delay_auto_mode_stay_on(state_with_data):
+def test_temp_delay_auto_mode_stay_on(control, state_with_data):
     settings.set("GENERAL.mode", "AUTO", persist=False)
     settings.set("GENERAL.emergency_target", 30, persist=False)
-    state_with_data["state"] = control.STATE.OFF
+    state_with_data["state"] = tef_control.STATE.OFF
     state_with_data["humidity"] = 10
     state_with_data["target_temp"] = -15
     control.state = state_with_data
     assert control.humidifier_controller() == 1
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
     settings.set("GENERAL.mode", "AUTO", persist=False)
-    control.state["temp delay"] = control.TEMP_EMERGENCY_DELAY
+    control.state["temp delay"] = tef_control.TEMP_EMERGENCY_DELAY
     assert control.humidifier_controller() == -5
-    assert control.state["state"] == control.STATE.ON
-    assert control.state["mode"] == control.MODE.TEMP_EMERGENCY
+    assert control.state["state"] == tef_control.STATE.ON
+    assert control.state["mode"] == tef_control.MODE.TEMP_EMERGENCY
 
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.ON
-    assert control.state["mode"] == control.MODE.TEMP_EMERGENCY
+    assert control.state["state"] == tef_control.STATE.ON
+    assert control.state["mode"] == tef_control.MODE.TEMP_EMERGENCY
 
 
-def test_temp_delay_auto_stop_humid(state_with_data):
+def test_temp_delay_auto_stop_humid(control, state_with_data):
     settings.set("GENERAL.mode", "AUTO", persist=False)
     settings.set("GENERAL.emergency_target", 30, persist=False)
-    state_with_data["state"] = control.STATE.OFF
+    state_with_data["state"] = tef_control.STATE.OFF
     state_with_data["humidity"] = 10
     state_with_data["target_temp"] = -15
     control.state = state_with_data
     assert control.humidifier_controller() == 1
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
     settings.set("GENERAL.mode", "AUTO", persist=False)
-    control.state["temp delay"] = control.TEMP_EMERGENCY_DELAY
+    control.state["temp delay"] = tef_control.TEMP_EMERGENCY_DELAY
     assert control.humidifier_controller() == -5
-    assert control.state["state"] == control.STATE.ON
-    assert control.state["mode"] == control.MODE.TEMP_EMERGENCY
+    assert control.state["state"] == tef_control.STATE.ON
+    assert control.state["mode"] == tef_control.MODE.TEMP_EMERGENCY
 
     control.state["humidity"] = 50
     assert control.humidifier_controller() == 2
-    assert control.state["state"] == control.STATE.OFF
-    assert control.state["mode"] == control.MODE.TEMP_EMERGENCY
+    assert control.state["state"] == tef_control.STATE.OFF
+    assert control.state["mode"] == tef_control.MODE.TEMP_EMERGENCY
 
 
-def test_temp_delay_auto_start_humid(state_with_data):
+def test_temp_delay_auto_start_humid(control, state_with_data):
     settings.set("GENERAL.mode", "AUTO", persist=False)
     settings.set("GENERAL.emergency_target", 30, persist=False)
-    state_with_data["state"] = control.STATE.OFF
+    state_with_data["state"] = tef_control.STATE.OFF
     state_with_data["humidity"] = 50
     state_with_data["target_temp"] = -15
     control.state = state_with_data
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.OFF
+    assert control.state["state"] == tef_control.STATE.OFF
 
     settings.set("GENERAL.mode", "AUTO", persist=False)
-    control.state["temp delay"] = control.TEMP_EMERGENCY_DELAY
+    control.state["temp delay"] = tef_control.TEMP_EMERGENCY_DELAY
     assert control.humidifier_controller() == -5
-    assert control.state["state"] == control.STATE.OFF
-    assert control.state["mode"] == control.MODE.TEMP_EMERGENCY
+    assert control.state["state"] == tef_control.STATE.OFF
+    assert control.state["mode"] == tef_control.MODE.TEMP_EMERGENCY
 
     control.state["humidity"] = 10
     assert control.humidifier_controller() == 1
-    assert control.state["state"] == control.STATE.ON
-    assert control.state["mode"] == control.MODE.TEMP_EMERGENCY
+    assert control.state["state"] == tef_control.STATE.ON
+    assert control.state["mode"] == tef_control.MODE.TEMP_EMERGENCY
 
 
-def test_temp_delay_auto_stop_humid_on_start(state_with_data):
+def test_temp_delay_auto_stop_humid_on_start(control, state_with_data):
     settings.set("GENERAL.mode", "AUTO", persist=False)
     settings.set("GENERAL.emergency_target", 30, persist=False)
-    state_with_data["state"] = control.STATE.OFF
+    state_with_data["state"] = tef_control.STATE.OFF
     state_with_data["humidity"] = 10
     state_with_data["target_temp"] = -15
     control.state = state_with_data
     assert control.humidifier_controller() == 1
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
     settings.set("GENERAL.mode", "AUTO", persist=False)
     control.state["humidity"] = 50
-    control.state["temp delay"] = control.TEMP_EMERGENCY_DELAY
+    control.state["temp delay"] = tef_control.TEMP_EMERGENCY_DELAY
     assert control.humidifier_controller() == -3
-    assert control.state["state"] == control.STATE.OFF
-    assert control.state["mode"] == control.MODE.TEMP_EMERGENCY
+    assert control.state["state"] == tef_control.STATE.OFF
+    assert control.state["mode"] == tef_control.MODE.TEMP_EMERGENCY
 
 
-def test_temp_delay_auto_start_humid_on_start(state_with_data):
+def test_temp_delay_auto_start_humid_on_start(control, state_with_data):
     settings.set("GENERAL.mode", "AUTO", persist=False)
     settings.set("GENERAL.emergency_target", 30, persist=False)
-    state_with_data["state"] = control.STATE.OFF
+    state_with_data["state"] = tef_control.STATE.OFF
     state_with_data["humidity"] = 50
     state_with_data["target_temp"] = -15
     control.state = state_with_data
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.OFF
+    assert control.state["state"] == tef_control.STATE.OFF
 
     settings.set("GENERAL.mode", "AUTO", persist=False)
     control.state["humidity"] = 10
-    control.state["temp delay"] = control.TEMP_EMERGENCY_DELAY
+    control.state["temp delay"] = tef_control.TEMP_EMERGENCY_DELAY
     assert control.humidifier_controller() == -4
-    assert control.state["state"] == control.STATE.ON
-    assert control.state["mode"] == control.MODE.TEMP_EMERGENCY
+    assert control.state["state"] == tef_control.STATE.ON
+    assert control.state["mode"] == tef_control.MODE.TEMP_EMERGENCY
 
 
-def test_weather_delay_manual(state_with_data):
+def test_weather_delay_manual(control, state_with_data):
     settings.set("GENERAL.mode", "MANUAL", persist=False)
-    state_with_data["state"] = control.STATE.OFF
+    state_with_data["state"] = tef_control.STATE.OFF
     state_with_data["humidity"] = 10
     state_with_data["target_temp"] = -15
     control.state = state_with_data
     assert control.humidifier_controller() == 1
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
-    control.state["temp delay"] = control.TEMP_EMERGENCY_DELAY+1000
-    control.state["state"] = control.STATE.OFF
+    control.state["temp delay"] = tef_control.TEMP_EMERGENCY_DELAY+1000
+    control.state["state"] = tef_control.STATE.OFF
     assert control.humidifier_controller() == 1
-    assert control.state["state"] == control.STATE.ON
-    assert control.state["mode"] != control.MODE.TEMP_EMERGENCY
+    assert control.state["state"] == tef_control.STATE.ON
+    assert control.state["mode"] != tef_control.MODE.TEMP_EMERGENCY
 
 
-def test_humidity_delay(state_with_data):
+def test_humidity_delay(control, state_with_data):
     settings.set("GENERAL.mode", "AUTO", persist=False)
-    state_with_data["state"] = control.STATE.ON
-    state_with_data["humidity"] = 10
-    state_with_data["target_temp"] = -15
-    control.state = state_with_data
-    assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.ON
-
-    control.state["humidity delay"] = control.HUMIDITY_EMERGENCY_DELAY
-    assert control.humidifier_controller() == -2
-    assert control.state["state"] == control.STATE.OFF
-    assert control.state["mode"] == control.MODE.NO_HUMIDITY
-
-
-def test_humidity_and_temp_delay(state_with_data):
-    settings.set("GENERAL.mode", "AUTO", persist=False)
-    state_with_data["state"] = control.STATE.ON
+    state_with_data["state"] = tef_control.STATE.ON
     state_with_data["humidity"] = 10
     state_with_data["target_temp"] = -15
     control.state = state_with_data
     control.humidifier.turn_on()
     assert control.humidifier_controller() == 0
-    assert control.state["state"] == control.STATE.ON
+    assert control.state["state"] == tef_control.STATE.ON
 
-    control.state["humidity delay"] = control.HUMIDITY_EMERGENCY_DELAY
-    control.state["temp delay"] = control.TEMP_EMERGENCY_DELAY+1000
+    control.state["humidity delay"] = tef_control.HUMIDITY_EMERGENCY_DELAY
     assert control.humidifier_controller() == -2
-    assert control.state["state"] == control.STATE.OFF
-    assert control.state["mode"] == control.MODE.NO_HUMIDITY
+    assert control.state["state"] == tef_control.STATE.OFF
+    assert control.state["mode"] == tef_control.MODE.NO_HUMIDITY
 
 
-def test_off_mode_from_on(state_with_data):
+def test_humidity_and_temp_delay(control, state_with_data):
+    settings.set("GENERAL.mode", "AUTO", persist=False)
+    state_with_data["state"] = tef_control.STATE.ON
+    state_with_data["humidity"] = 10
+    state_with_data["target_temp"] = -15
+    control.state = state_with_data
+    control.humidifier.turn_on()
+    assert control.humidifier_controller() == 0
+    assert control.state["state"] == tef_control.STATE.ON
+
+    control.state["humidity delay"] = tef_control.HUMIDITY_EMERGENCY_DELAY
+    control.state["temp delay"] = tef_control.TEMP_EMERGENCY_DELAY+1000
+    assert control.humidifier_controller() == -2
+    assert control.state["state"] == tef_control.STATE.OFF
+    assert control.state["mode"] == tef_control.MODE.NO_HUMIDITY
+
+
+def test_off_mode_from_on(control, state_with_data):
     settings.set("GENERAL.mode", "OFF", persist=False)
-    state_with_data["state"] = control.STATE.ON
+    state_with_data["state"] = tef_control.STATE.ON
     state_with_data["humidity"] = 10
     control.state = state_with_data
     control.humidifier.turn_on()
     assert control.humidifier_controller() == -7
-    assert control.state["state"] == control.STATE.OFF
+    assert control.state["state"] == tef_control.STATE.OFF
 
 
-def test_off_mode_from_off(state_with_data):
+def test_off_mode_from_off(control, state_with_data):
     settings.set("GENERAL.mode", "OFF", persist=False)
-    state_with_data["state"] = control.STATE.OFF
+    state_with_data["state"] = tef_control.STATE.OFF
     state_with_data["humidity"] = 50
     control.state = state_with_data
     control.humidifier.turn_on()
     assert control.humidifier_controller() == -7
-    assert control.state["state"] == control.STATE.OFF
+    assert control.state["state"] == tef_control.STATE.OFF
 
 
-def test_dead_temp_band(state_with_data):
+def test_dead_temp_band(control, state_with_data):
     state_with_data["target_humidity"] = 55
     state_with_data["target_temp"] = 5.5  # deadspot
     control.state = state_with_data
@@ -647,7 +655,7 @@ def test_dead_temp_band(state_with_data):
     control.state["target_humidity"] = 55
 
 
-def test_dead_temp_band_int(state_with_data):
+def test_dead_temp_band_int(control, state_with_data):
     state_with_data["target_humidity"] = 55
     state_with_data["target_temp"] = -10  # deadspot
     control.state = state_with_data
@@ -655,7 +663,7 @@ def test_dead_temp_band_int(state_with_data):
     control.state["target_humidity"] = 55
 
 
-def test_valid_temp_change_humidity(state_with_data):
+def test_valid_temp_change_humidity(control, state_with_data):
     state_with_data["target_humidity"] = 55
     state_with_data["target_temp"] = -5  # valid spot
     control.state = state_with_data
