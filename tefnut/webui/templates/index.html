@@ -1,110 +1,114 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <div class="container section has-text-centered">
-    <h1 class="title">
-        Status
-    </h1>
-    <div class="columns is-multiline">
-        <div class="column is-half">
-            <div class="box">
-                <h1 class="subtitle">
-                    Humidifier Mode
-                </h1>
-                <h1 class="title">
-                    <div id="mode"><span class="icon"> <i class="fas fa-spinner"></i></span></div>
-                </h1>
-            </div>
-        </div>
-        <div class="column is-half">
-            <div class="box">
-                <h1 class="subtitle">
-                    Humidifier Status
-                </h1>
-                <h1 class="title">
-                    <div id="state"><span class="icon"> <i class="fas fa-spinner"></i></span></div>
-                </h1>
-            </div>
-        </div>
-        <div class="column is-half">
-            <div class="box">
-                <h1 class="subtitle">
-                    Humidity
-                </h1>
-                <h1 class="title">
-                    <div id="humidity"><span class="icon"> <i class="fas fa-spinner"></i></span></div>
-                </h1>
-            </div>
-        </div>
-        <div class="column is-half">
-            <div class="box">
-                <h1 class="subtitle">
-                    Target Humidity
-                </h1>
-                <h1 class="title">
-                    <div id="setpoint"><span class="icon"> <i class="fas fa-spinner"></i></span></div>
-                </h1>
-            </div>
-        </div>
+  <h1 class="title">Status</h1>
+  <div class="columns is-multiline">
+    <div class="column is-half">
+      <div class="box">
+        <h1 class="subtitle">Humidifier Mode</h1>
+        <h1 class="title">
+          <div id="mode">
+            <span class="icon"> <i class="fas fa-spinner"></i></span>
+          </div>
+        </h1>
+      </div>
     </div>
+    <div class="column is-half">
+      <div class="box">
+        <h1 class="subtitle">Humidifier Status</h1>
+        <h1 class="title">
+          <div id="state">
+            <span class="icon"> <i class="fas fa-spinner"></i></span>
+          </div>
+        </h1>
+      </div>
+    </div>
+    <div class="column is-half">
+      <div class="box">
+        <h1 class="subtitle">Humidity</h1>
+        <h1 class="title">
+          <div id="humidity">
+            <span class="icon"> <i class="fas fa-spinner"></i></span>
+          </div>
+        </h1>
+      </div>
+    </div>
+    <div class="column is-half">
+      <div class="box">
+        <h1 class="subtitle">Target Humidity</h1>
+        <h1 class="title">
+          <div id="setpoint">
+            <span class="icon"> <i class="fas fa-spinner"></i></span>
+          </div>
+        </h1>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="container section has-text-centered" id="config">
-    <h1 class="title">
-        Configuration
-    </h1>
-    <div class="box">
-        <h2 class="subtitle">
-            Humidifier Mode
-        </h2>
-        <div class="buttons has-addons is-centered">
-            <button class="button" id="btn_auto" disabled>Automatic</button>
-            <button class="button" id="btn_manual" disabled>Manual</button>
-            <button class="button" id="btn_off" disabled>Off</button>
-        </div>
+  <h1 class="title">Configuration</h1>
+  <div class="box">
+    <h2 class="subtitle">Humidifier Mode</h2>
+    <div class="buttons has-addons is-centered">
+      <button class="button" id="btn_auto" disabled>Automatic</button>
+      <button class="button" id="btn_manual" disabled>Manual</button>
+      <button class="button" id="btn_off" disabled>Off</button>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2 class="subtitle">Target Humidity</h2>
+    <div class="columns">
+      <div class="column is-three-quarters">
+        <input
+          class="input"
+          id="target_input"
+          type="phone"
+          placeholder="40"
+          disabled
+        />
+      </div>
+      <div class="column">
+        <button class="button" id="btn_target" disabled>Submit</button>
+      </div>
     </div>
 
-    <div class="box">
-        <h2 class="subtitle">
-             Target Humidity
-        </h2>
-        <div class="columns">
-            <div class="column is-three-quarters">
-                <input class="input" id="target_input" type="phone" placeholder="40" disabled>
-            </div>
-            <div class="column ">
-                <button class="button" id="btn_target" disabled>Submit</button>
-            </div>
-        </div>
-
-        <h2 class="subtitle">
-            Automatic Mode Delta
-       </h2>
-       <div class="columns">
-           <div class="column is-three-quarters">
-               <input class="input" id="auto_delta_input" type="phone" placeholder="0" disabled>
-           </div>
-           <div class="column ">
-               <button class="button" id="btn_auto_delta" disabled>Submit</button>
-           </div>
-       </div>
+    <h2 class="subtitle">Automatic Mode Delta</h2>
+    <div class="columns">
+      <div class="column is-three-quarters">
+        <input
+          class="input"
+          id="auto_delta_input"
+          type="phone"
+          placeholder="0"
+          disabled
+        />
+      </div>
+      <div class="column">
+        <button class="button" id="btn_auto_delta" disabled>Submit</button>
+      </div>
     </div>
+  </div>
 </div>
 
 <div class="modal">
-    <div class="modal-background"></div>
-    <div class="modal-card">
-      <header class="modal-card-head">
-        <p class="modal-card-title">Humidifier change</p>
-      </header>
-      <section class="modal-card-body">
-        <p>You are about to change the Humidifier to <span class="has-text-weight-bold" id="modal_mode">TBD</span>.</p>
-        <p>Is this ok?</p>
-      </section>
-      <footer class="modal-card-foot">
-        <button class="button is-success" id="modal_accept">Save changes</button>
-        <button class="button" id="modal_cancel">Cancel</button>
-      </footer>
-    </div>
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Humidifier change</p>
+    </header>
+    <section class="modal-card-body">
+      <p>
+        You are about to change the Humidifier to
+        <span class="has-text-weight-bold" id="modal_mode">TBD</span>.
+      </p>
+      <p>Is this ok?</p>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" id="modal_accept">Save changes</button>
+      <button class="button" id="modal_cancel">Cancel</button>
+    </footer>
+  </div>
 </div>
 
 {% endblock %}

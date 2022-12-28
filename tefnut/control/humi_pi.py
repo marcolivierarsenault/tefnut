@@ -1,7 +1,9 @@
 # noqa: F401
 import logging
 import time
+
 import RPi.GPIO as GPIO
+
 from tefnut.utils.constant import STATE
 from tefnut.utils.setting import settings
 

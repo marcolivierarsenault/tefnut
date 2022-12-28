@@ -1,99 +1,120 @@
-<!doctype html>
 <!DOCTYPE html>
 <html>
   <head>
     {% block head %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
-    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/e1b66f953d.js" rossorigin="anonymous"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='img/favicon.ico') }}"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.6.1.min.js"
+      integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://kit.fontawesome.com/e1b66f953d.js"
+      rossorigin="anonymous"
+    ></script>
     <script src="{{url_for('static', filename='js/scripts.js')}}"></script>
     <title>Tefnut</title>
     {% endblock %}
   </head>
   <body class="has-navbar-fixed-top" id="status">
-    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-          <a class="navbar-item" href="#">
-            <img src="{{url_for('static', filename='img/tefnut.png')}}">
+    <nav
+      class="navbar is-fixed-top"
+      role="navigation"
+      aria-label="main navigation"
+    >
+      <div class="navbar-brand">
+        <a class="navbar-item" href="#">
+          <img src="{{url_for('static', filename='img/tefnut.png')}}" />
+        </a>
+        <a
+          role="button"
+          class="navbar-burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="navbarBasicExample"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="/#status">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fas fa-home"></i>
+              </span>
+              <span>Status</span>
+            </span>
           </a>
-          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
+
+          <a class="navbar-item" href="/#config">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fas fa-gear"></i>
+              </span>
+              <span>Config</span>
+            </span>
+          </a>
+
+          <a class="navbar-item" href="http://grafana.home/d/jjceitD4z">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fas fa-chart-line"></i>
+              </span>
+              <span>Metrics</span>
+            </span>
           </a>
         </div>
-      
-        <div id="navbarBasicExample" class="navbar-menu">
-          <div class="navbar-start">
-            <a class="navbar-item" href="/#status">
-                <span class="icon-text">
-                    <span class="icon">
-                      <i class="fas fa-home"></i>
-                    </span>
-                    <span>Status</span>
+
+        <div class="navbar-end">
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-item">
+              <span class="icon-text">
+                <span class="icon">
+                  <i class="fas fa-circle-question"></i>
                 </span>
+                <span>Help</span>
+              </span>
             </a>
 
-            <a class="navbar-item" href="/#config">
-                <span class="icon-text">
-                    <span class="icon">
-                      <i class="fas fa-gear"></i>
-                    </span>
-                    <span>Config</span>
-                </span>
-            </a>
-
-            <a class="navbar-item" href="http://grafana.home/d/jjceitD4z">
-                <span class="icon-text">
-                    <span class="icon">
-                      <i class="fas fa-chart-line"></i>
-                    </span>
-                    <span>Metrics</span>
-                </span>
-            </a>
+            <div class="navbar-dropdown">
+              <a
+                class="navbar-item"
+                href="https://github.com/marcolivierarsenault/tefnut/wiki"
+              >
+                User Guide
+              </a>
+              <a
+                class="navbar-item"
+                href="https://github.com/marcolivierarsenault/tefnut"
+              >
+                About
+              </a>
+              <hr class="navbar-divider" />
+              <div class="navbar-item">git sha: {{ sha }}</div>
+              <div class="navbar-item">Tefnut: {{ version }}</div>
+            </div>
           </div>
-      
-          <div class="navbar-end">
-            <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-item">
-                    <span class="icon-text">
-                        <span class="icon">
-                          <i class="fas fa-circle-question"></i>
-                        </span>
-                        <span>Help</span>
-                    </span>
-                </a>
-        
-                <div class="navbar-dropdown">
-                  <a class="navbar-item" href="https://github.com/marcolivierarsenault/tefnut/wiki">
-                    User Guide
-                  </a>
-                  <a class="navbar-item" href="https://github.com/marcolivierarsenault/tefnut">
-                    About
-                  </a>
-                  <hr class="navbar-divider">
-                  <div class="navbar-item">
-                    git sha: {{ sha }}
-                  </div>
-                  <div class="navbar-item">
-                    Tefnut: {{ version }}
-                  </div>
-                </div>
-              </div>
-            {% if current_user.is_authenticated %}
-                <div class="navbar-item">
-                    <a class="button is-light" id="logout"  href="/logout">
-                    Log out
-                    </a>
-                </div>
-            {% endif %}
+          {% if current_user.is_authenticated %}
+          <div class="navbar-item">
+            <a class="button is-light" id="logout" href="/logout"> Log out </a>
           </div>
+          {% endif %}
         </div>
+      </div>
     </nav>
     {% block content %}{% endblock %}
-
-
+  </body>
 </html>

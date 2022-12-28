@@ -14,11 +14,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: prod
     steps:
-    - name: Deploy on server
-      uses: appleboy/ssh-action@v0.1.4
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        port: ${{ secrets.PORT }}
-        script: ./deploy.sh ${{ github.sha }}
+      - name: Deploy on server
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: ./deploy.sh ${{ github.sha }}

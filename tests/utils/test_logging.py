@@ -1,6 +1,7 @@
 import logging
-from tefnut.utils.setting import settings
+
 from tefnut.utils.logging import configure_logger
+from tefnut.utils.setting import settings
 
 
 def test_disable_loki():

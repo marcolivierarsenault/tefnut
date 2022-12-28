@@ -15,4 +15,6 @@ app = start_server()
 
 if __name__ == "__main__":
     print("===========Starting up Tefnut for vscode=============")
-    webservice.app.run(use_debugger=False, use_reloader=False, passthrough_errors=True, host='0.0.0.0')
+    webservice.app.run(
+        use_debugger=False, use_reloader=False, passthrough_errors=True, host="0.0.0.0"
+    )

@@ -1,7 +1,9 @@
 """Add logging and customize logging for the application."""
 import logging
-import logging_loki
+
 import logging_json
+import logging_loki
+
 from tefnut.utils.setting import settings
 
 
@@ -12,7 +14,9 @@ def configure_logger(logger):
 
     # Console
     handler2 = logging.StreamHandler()
-    formatter2 = logging.Formatter('%(asctime)s - %(module)10s - %(levelname)5s - %(message)s')
+    formatter2 = logging.Formatter(
+        "%(asctime)s - %(module)10s - %(levelname)5s - %(message)s"
+    )
     handler2.setFormatter(formatter2)
     logger.addHandler(handler2)
 
@@ -26,10 +30,9 @@ def configure_logger(logger):
             version="1",
         )
         # formatter = logging.Formatter('%(module)10s - %(levelname)5s - %(message)s')
-        formatter = logging_json.JSONFormatter(fields={
-            "severity": "levelname",
-            "module": "module"
-        })
+        formatter = logging_json.JSONFormatter(
+            fields={"severity": "levelname", "module": "module"}
+        )
         handler.setFormatter(formatter)
         logger.addHandler(handler)
         logger.info("Loki configured")

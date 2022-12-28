@@ -1,4 +1,5 @@
 import logging
+
 from tefnut.utils.constant import STATE
 
 logger = logging.getLogger("main")
@@ -23,4 +24,3 @@ class HumidifierImplement:
 
     def shutdown(self):
         logger.info("Shutdown humidifier, disabling GPIO")
-        pass
