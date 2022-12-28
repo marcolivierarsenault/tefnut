@@ -205,10 +205,10 @@ def load_user_from_header(request):
     if username == settings.get("WEBUI.username") and password == settings.get(
         "WEBUI.password"
     ):
-        app.logger.info("User Logging in from HTTP AUTH")
+        app.logger.debug("User Logging in from HTTP AUTH")
         return user
 
-    app.logger.info("User FAILED Logging from HTTP AUTH")
+    app.logger.debug("User FAILED Logging from HTTP AUTH")
 
 
 @app.route("/logout")

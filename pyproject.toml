@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tefnut"
-version = "0.4.0"
+version = "0.5.0"
 description = "Tefnut is a control system to manage central humidificatior."
 authors = ["Marc-Olivier Arsenault <marcolivier.arsenault@gmail.com>"]
 license = "MIT"
@@ -35,3 +35,5 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.isort]
 profile = "black"
+
+[tool.poetry_bumpversion.file."VERSION"]
