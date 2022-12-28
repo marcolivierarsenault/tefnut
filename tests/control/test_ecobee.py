@@ -1,10 +1,12 @@
-import tefnut.control.ecobee as ecobee
 import os
-import pytz
-import requests_mock
-import requests
 from datetime import datetime
 from unittest.mock import patch
+
+import pytz
+import requests
+import requests_mock
+
+import tefnut.control.ecobee as ecobee
 from tests.common import load_fixture
 
 

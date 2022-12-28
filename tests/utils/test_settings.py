@@ -1,6 +1,8 @@
-from tefnut.utils.setting import SettingLoader, settings
 import os
+
 import pytest
+
+from tefnut.utils.setting import SettingLoader, settings
 
 
 def test_missing_path(caplog):

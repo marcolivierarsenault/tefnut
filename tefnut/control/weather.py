@@ -1,7 +1,9 @@
-import requests
 import json
 import logging
 import time
+
+import requests
+
 from tefnut.utils.setting import settings
 
 logger = logging.getLogger("main")

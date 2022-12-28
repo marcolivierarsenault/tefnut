@@ -1,8 +1,9 @@
 import time
-import requests
-from tefnut.control.weather import get_temperature, calculate_target
-from tefnut.utils.setting import settings
 
+import requests
+
+from tefnut.control.weather import calculate_target, get_temperature
+from tefnut.utils.setting import settings
 
 api_key = settings.get("WEATHER.api_key")
 lat = settings.get("WEATHER.lat")

@@ -1,4 +1,5 @@
 import logging
+
 from tefnut.utils.constant import STATE
 
 logger = logging.getLogger("main")

@@ -1,8 +1,10 @@
-import pytest
-from tefnut.utils.setting import settings
-from tefnut.utils.influx_client import InfluxClient
 from unittest.mock import patch
+
+import pytest
 from influxdb_client import Point
+
+from tefnut.utils.influx_client import InfluxClient
+from tefnut.utils.setting import settings
 
 
 @pytest.fixture

@@ -1,7 +1,9 @@
 """Add logging and customize logging for the application."""
 import logging
-import logging_loki
+
 import logging_json
+import logging_loki
+
 from tefnut.utils.setting import settings
 
 

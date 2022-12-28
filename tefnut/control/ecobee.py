@@ -1,9 +1,11 @@
-import shelve
 import logging
-import pytz
-import pyecobee as pyecobee
+import shelve
 from datetime import datetime
 from threading import Lock
+
+import pyecobee as pyecobee
+import pytz
+
 from tefnut.utils.setting import settings
 
 logger = logging.getLogger("main")

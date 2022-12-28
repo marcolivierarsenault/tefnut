@@ -22,6 +22,7 @@ flask-login = "*"
 pytest-mock = "*"
 gunicorn = "*"
 flask-apscheduler = "*"
+isort = "^5.11.4"
 
 
 [tool.poetry.group.dev.dependencies]

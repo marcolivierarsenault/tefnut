@@ -1,12 +1,14 @@
-import pytest
-import json
-import copy
-import time
 import base64
+import copy
+import json
+import time
 from unittest.mock import patch
-import tefnut.webui.webservice as webservice
+
+import pytest
+
 import tefnut.control.control as ctl
-from tefnut.utils.constant import STATE, MODE
+import tefnut.webui.webservice as webservice
+from tefnut.utils.constant import MODE, STATE
 from tefnut.utils.setting import settings
 
 
@@ -303,4 +305,3 @@ class TestFramework:
         assert webservice.sha != ""
         assert webservice.version != ""
         assert webservice.tefnut_controller is not None
-

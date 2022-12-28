@@ -1,6 +1,7 @@
 """Config manager for the application"""
 import logging
 import os
+
 from dynaconf import Dynaconf, loaders
 
 logger = logging.getLogger("main")

@@ -1,6 +1,8 @@
 import logging
+
 from influxdb_client import InfluxDBClient
 from influxdb_client.client.write_api import SYNCHRONOUS
+
 from tefnut.utils.setting import settings
 
 logger = logging.getLogger("main")

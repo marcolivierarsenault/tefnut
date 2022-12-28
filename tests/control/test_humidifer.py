@@ -1,4 +1,5 @@
 import pytest
+
 from tefnut.control.humidifier import Humidifier
 from tefnut.utils.constant import STATE
 

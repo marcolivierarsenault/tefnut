@@ -1,14 +1,15 @@
 import logging
 import time
+
 import psutil
-from tefnut.utils.constant import STATE, MODE
-from tefnut.utils.setting import settings
-from tefnut.control.weather import get_temperature
-from tefnut.control.ecobee import ecobee as ee
-from tefnut.utils.influx_client import InfluxClient
-from tefnut.control.humidifier import Humidifier
 from influxdb_client import Point
 
+from tefnut.control.ecobee import ecobee as ee
+from tefnut.control.humidifier import Humidifier
+from tefnut.control.weather import get_temperature
+from tefnut.utils.constant import MODE, STATE
+from tefnut.utils.influx_client import InfluxClient
+from tefnut.utils.setting import settings
 
 logger = logging.getLogger("main")
 influx_client = InfluxClient()

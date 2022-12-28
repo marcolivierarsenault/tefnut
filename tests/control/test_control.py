@@ -1,8 +1,10 @@
-import pytest
 import time
+from unittest.mock import patch
+
+import pytest
+
 import tefnut.control.control as tef_control
 from tefnut.utils.setting import settings
-from unittest.mock import patch
 
 
 @pytest.fixture

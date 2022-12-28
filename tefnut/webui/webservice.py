@@ -1,14 +1,16 @@
+import atexit
 import json
 import logging
-from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_login import LoginManager, login_required, login_user, UserMixin, logout_user
-from tefnut.utils.setting import settings
-from tefnut.utils.logging import configure_logger
-import git
-import atexit
-from flask_apscheduler import APScheduler
-import tefnut.control.control as control
 
+import git
+from flask import Flask, flash, redirect, render_template, request, url_for
+from flask_apscheduler import APScheduler
+from flask_login import (LoginManager, UserMixin, login_required, login_user,
+                         logout_user)
+
+import tefnut.control.control as control
+from tefnut.utils.logging import configure_logger
+from tefnut.utils.setting import settings
 
 app = Flask(__name__)
 
