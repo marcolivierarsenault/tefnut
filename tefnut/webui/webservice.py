@@ -22,7 +22,7 @@ app.secret_key = "super secret key"
 scheduler = APScheduler()
 
 persist = True
-BACKGROUND_THREAD_TIMER = 10
+BACKGROUND_THREAD_TIMER = 60
 
 sha = ""
 version = ""
@@ -37,6 +37,8 @@ def close_tefnut():
 
 def load_application():
     global tefnut_controller
+    global version
+    global sha
 
     scheduler.init_app(app)
     scheduler.start()
@@ -57,6 +59,7 @@ def load_application():
     app.logger.info("Starting code on git sha: %s", sha)
 
     tefnut_controller = control.TefnutController()
+    tefnut_controller.controler_loop()
 
 
 @scheduler.task(
@@ -195,7 +198,6 @@ def load_user_from_header(request):
     auth = request.authorization
     if not auth:
         return None
-
     username = auth.username
     password = auth.password
     user = User()
