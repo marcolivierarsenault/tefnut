@@ -22,7 +22,7 @@ app.secret_key = "super secret key"
 scheduler = APScheduler()
 
 persist = True
-BACKGROUND_THREAD_TIMER = 10
+BACKGROUND_THREAD_TIMER = 60
 
 sha = ""
 version = ""
@@ -57,6 +57,7 @@ def load_application():
     app.logger.info("Starting code on git sha: %s", sha)
 
     tefnut_controller = control.TefnutController()
+    tefnut_controller.controler_loop()
 
 
 @scheduler.task(
