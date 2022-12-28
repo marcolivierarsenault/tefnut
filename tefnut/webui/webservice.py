@@ -37,6 +37,8 @@ def close_tefnut():
 
 def load_application():
     global tefnut_controller
+    global version
+    global sha
 
     scheduler.init_app(app)
     scheduler.start()
@@ -196,7 +198,6 @@ def load_user_from_header(request):
     auth = request.authorization
     if not auth:
         return None
-
     username = auth.username
     password = auth.password
     user = User()
