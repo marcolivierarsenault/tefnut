@@ -13,7 +13,7 @@ git pull --all
 echo checkout specific code
 git checkout $1
 
-poetry install
+/home/marco/.local/bin/poetry install
 
 echo Starting service
 systemctl start tefnut.service
