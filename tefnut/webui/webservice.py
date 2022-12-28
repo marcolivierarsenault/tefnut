@@ -5,7 +5,8 @@ import logging
 import git
 from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_apscheduler import APScheduler
-from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
+from flask_login import (LoginManager, UserMixin, login_required, login_user,
+                         logout_user)
 
 import tefnut.control.control as control
 from tefnut.utils.logging import configure_logger
