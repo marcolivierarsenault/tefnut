@@ -7,23 +7,22 @@ from dynaconf import Dynaconf, loaders
 logger = logging.getLogger("main")
 
 validators = [
-        # Ensure some parameters exists (are required)
-    ]
+    # Ensure some parameters exists (are required)
+]
 
 
 class SettingLoader:
     """Setting loader access through. Use this to access logging"""
-    def __init__(self, file_path='settings.toml'):
+
+    def __init__(self, file_path="settings.toml"):
         if not os.path.exists(file_path):
             logger.fatal("CONFIG FILE DOES NOT EXISTS, please a add settings.toml")
             logger.fatal("More details https://github.com/marcolivierarsenault/tefnut")
             exit()
         self.file_path = file_path
         self.setting_obj = Dynaconf(
-                                envvar_prefix="DYNACONF",
-                                settings_files=[file_path],
-                                validators=validators
-                            )
+            envvar_prefix="DYNACONF", settings_files=[file_path], validators=validators
+        )
 
     def save_config(self):
         """Save config file, after they are updated programatically"""
@@ -56,9 +55,12 @@ class SettingLoader:
             logger.error("Setting config failled, missing setting: %s", name)
             return None
         elif result is None:
-            logger.warning("Setting config failled, missing setting: %s, using the default value", name)
+            logger.warning(
+                "Setting config failled, missing setting: %s, using the default value",
+                name,
+            )
             return default
         return result
 
 
-settings = SettingLoader('settings.toml')
+settings = SettingLoader("settings.toml")

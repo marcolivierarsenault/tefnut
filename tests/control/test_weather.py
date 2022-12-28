@@ -9,8 +9,14 @@ api_key = settings.get("WEATHER.api_key")
 lat = settings.get("WEATHER.lat")
 lon = settings.get("WEATHER.lon")
 
-current_temp_url = "https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&appid=%s&units=metric" % (lat, lon, api_key)
-future_temp_url = "https://api.openweathermap.org/data/2.5/forecast?lat=%s&lon=%s&appid=%s&units=metric" % (lat, lon, api_key)
+current_temp_url = (
+    "https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&appid=%s&units=metric"
+    % (lat, lon, api_key)
+)
+future_temp_url = (
+    "https://api.openweathermap.org/data/2.5/forecast?lat=%s&lon=%s&appid=%s&units=metric"
+    % (lat, lon, api_key)
+)
 
 
 def test_target_calculation():
@@ -23,14 +29,24 @@ def test_target_calculation():
 
 def test_valide_returns_from_url(requests_mock):
     requests_mock.get(current_temp_url, json={"main": {"temp": 10, "humidity": 60}})
-    requests_mock.get(future_temp_url, json={"list": [{"dt": int(time.time())+60*60*2, "main": {"temp": 20}}]})
+    requests_mock.get(
+        future_temp_url,
+        json={"list": [{"dt": int(time.time()) + 60 * 60 * 2, "main": {"temp": 20}}]},
+    )
     assert get_temperature() == (10, 20, 10, 60)
 
 
 def test_valide_returns_from_url_second_forecast(requests_mock):
     requests_mock.get(current_temp_url, json={"main": {"temp": 10, "humidity": 60}})
-    requests_mock.get(future_temp_url, json={"list": [{"dt": 1669075200+60*10, "main": {"temp": 20}},
-                                                      {"dt": 1669086000+60*60*4, "main": {"temp": 40}}]})
+    requests_mock.get(
+        future_temp_url,
+        json={
+            "list": [
+                {"dt": 1669075200 + 60 * 10, "main": {"temp": 20}},
+                {"dt": 1669086000 + 60 * 60 * 4, "main": {"temp": 40}},
+            ]
+        },
+    )
     assert get_temperature() == (10, 40, 10, 60)
 
 

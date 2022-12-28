@@ -9,52 +9,55 @@ from tefnut.utils.setting import settings
 
 @pytest.fixture
 def state():
-    return {'temp time': time.time() - tef_control.DELAY_TEMP,
-            'humidity time': time.time() - tef_control.OFF_DELAY_HUMIDITY,
-            'temp delay': 0,
-            'humidity delay': 0,
-            'current_temp': None,
-            'future_temp': None,
-            'target_temp': None,
-            'humidity': None,
-            'target_humidity': 40,
-            'auto_delta': 0,
-            'mode': tef_control.MODE.AUTO,
-            'state': tef_control.STATE.OFF,
-            }
+    return {
+        "temp time": time.time() - tef_control.DELAY_TEMP,
+        "humidity time": time.time() - tef_control.OFF_DELAY_HUMIDITY,
+        "temp delay": 0,
+        "humidity delay": 0,
+        "current_temp": None,
+        "future_temp": None,
+        "target_temp": None,
+        "humidity": None,
+        "target_humidity": 40,
+        "auto_delta": 0,
+        "mode": tef_control.MODE.AUTO,
+        "state": tef_control.STATE.OFF,
+    }
 
 
 @pytest.fixture
 def state_with_data():
-    return {'temp time': time.time() - tef_control.DELAY_TEMP,
-            'humidity time': time.time() - tef_control.OFF_DELAY_HUMIDITY,
-            'temp delay': 0,
-            'humidity delay': 0,
-            'current_temp': -20,
-            'future_temp': -20,
-            'target_temp': -20,
-            'humidity': 40,
-            'auto_delta': 0,
-            'target_humidity': 30,
-            'mode': tef_control.MODE.AUTO,
-            'state': tef_control.STATE.OFF,
-            }
+    return {
+        "temp time": time.time() - tef_control.DELAY_TEMP,
+        "humidity time": time.time() - tef_control.OFF_DELAY_HUMIDITY,
+        "temp delay": 0,
+        "humidity delay": 0,
+        "current_temp": -20,
+        "future_temp": -20,
+        "target_temp": -20,
+        "humidity": 40,
+        "auto_delta": 0,
+        "target_humidity": 30,
+        "mode": tef_control.MODE.AUTO,
+        "state": tef_control.STATE.OFF,
+    }
 
 
 @pytest.fixture
 def current_values():
-    return {'current_temp': 5,
-            'future_temp': 6,
-            'target_temp': 5.5,
-            'finish time': time.time(),
-            'start time': time.time()-1,
-            'temp time': time.time()-0.5,
-            'humidity time': time.time()-0.5,
-            'temp delay': 7,
-            'humidity delay': 7,
-            'humidity': 45,
-            'outdoor_humidity': 60,
-            }
+    return {
+        "current_temp": 5,
+        "future_temp": 6,
+        "target_temp": 5.5,
+        "finish time": time.time(),
+        "start time": time.time() - 1,
+        "temp time": time.time() - 0.5,
+        "humidity time": time.time() - 0.5,
+        "temp delay": 7,
+        "humidity delay": 7,
+        "humidity": 45,
+        "outdoor_humidity": 60,
+    }
 
 
 @pytest.fixture
@@ -70,55 +73,55 @@ def test_normal_beavior(control, current_values, state):
 def test_none_temp_setting(control, current_values, state):
     control.state = state
 
-    current_values['current_temp'] = None
+    current_values["current_temp"] = None
     control.data_collection_logic(current_values)
     assert control.state["current_temp"] is None
     assert control.humidifier_controller() == -1
 
-    current_values['future_temp'] = None
+    current_values["future_temp"] = None
     control.data_collection_logic(current_values)
     assert control.state["future_temp"] is None
     assert control.humidifier_controller() == -1
 
-    current_values['target_temp'] = None
+    current_values["target_temp"] = None
     control.data_collection_logic(current_values)
     assert control.state["target_temp"] is None
     assert control.humidifier_controller() == -1
 
-    del (current_values['current_temp'])
+    del current_values["current_temp"]
     control.data_collection_logic(current_values)
     assert control.state["current_temp"] is None
     assert control.humidifier_controller() == -1
 
-    del (current_values['future_temp'])
+    del current_values["future_temp"]
     control.data_collection_logic(current_values)
     assert control.state["future_temp"] is None
     assert control.humidifier_controller() == -1
 
-    del (current_values['target_temp'])
+    del current_values["target_temp"]
     control.data_collection_logic(current_values)
     assert control.state["target_temp"] is None
     assert control.humidifier_controller() == -1
 
-    current_values['current_temp'] = 10
-    current_values['future_temp'] = 11
-    current_values['target_temp'] = 12
+    current_values["current_temp"] = 10
+    current_values["future_temp"] = 11
+    current_values["target_temp"] = 12
     control.data_collection_logic(current_values)
     assert control.state["current_temp"] == 10
     assert control.state["future_temp"] == 11
     assert control.state["target_temp"] == 12
 
-    current_values['current_temp'] = None
-    current_values['future_temp'] = None
-    current_values['target_temp'] = None
+    current_values["current_temp"] = None
+    current_values["future_temp"] = None
+    current_values["target_temp"] = None
     control.data_collection_logic(current_values)
     assert control.state["current_temp"] == 10
     assert control.state["future_temp"] == 11
     assert control.state["target_temp"] == 12
 
-    del (current_values['current_temp'])
-    del (current_values['future_temp'])
-    del (current_values['target_temp'])
+    del current_values["current_temp"]
+    del current_values["future_temp"]
+    del current_values["target_temp"]
     control.data_collection_logic(current_values)
     assert control.state["current_temp"] == 10
     assert control.state["future_temp"] == 11
@@ -127,78 +130,78 @@ def test_none_temp_setting(control, current_values, state):
 
 def test_none_temp_time(control, current_values, state):
     control.state = state
-    init_time = control.state['temp time']
+    init_time = control.state["temp time"]
 
-    current_values['temp time'] = None
+    current_values["temp time"] = None
     control.data_collection_logic(current_values)
-    assert init_time == control.state['temp time']
+    assert init_time == control.state["temp time"]
 
-    del (current_values['temp time'])
+    del current_values["temp time"]
     control.data_collection_logic(current_values)
-    assert init_time == control.state['temp time']
+    assert init_time == control.state["temp time"]
 
-    current_values['temp time'] = init_time+1
+    current_values["temp time"] = init_time + 1
     control.data_collection_logic(current_values)
-    assert init_time+1 == control.state['temp time']
+    assert init_time + 1 == control.state["temp time"]
 
-    current_values['temp time'] = None
+    current_values["temp time"] = None
     control.data_collection_logic(current_values)
-    assert init_time+1 == control.state['temp time']
+    assert init_time + 1 == control.state["temp time"]
 
-    del (current_values['temp time'])
+    del current_values["temp time"]
     control.data_collection_logic(current_values)
-    assert init_time+1 == control.state['temp time']
+    assert init_time + 1 == control.state["temp time"]
 
 
 def test_none_humidity_setting(control, current_values, state):
     control.state = state
 
-    current_values['humidity'] = None
+    current_values["humidity"] = None
     control.data_collection_logic(current_values)
     assert control.state["humidity"] is None
     assert control.humidifier_controller() == -1
 
-    del (current_values['humidity'])
+    del current_values["humidity"]
     control.data_collection_logic(current_values)
     assert control.state["humidity"] is None
     assert control.humidifier_controller() == -1
 
-    current_values['humidity'] = 10
+    current_values["humidity"] = 10
     control.data_collection_logic(current_values)
     assert control.state["humidity"] == 10
 
-    current_values['humidity'] = None
+    current_values["humidity"] = None
     control.data_collection_logic(current_values)
     assert control.state["humidity"] == 10
 
-    del (current_values['humidity'])
+    del current_values["humidity"]
     control.data_collection_logic(current_values)
     assert control.state["humidity"] == 10
 
 
 def test_none_humidity_time(control, current_values, state):
     control.state = state
-    init_time = control.state['humidity time']
+    init_time = control.state["humidity time"]
 
-    current_values['humidity time'] = None
+    current_values["humidity time"] = None
     control.data_collection_logic(current_values)
-    assert init_time == control.state['humidity time']
+    assert init_time == control.state["humidity time"]
 
-    del (current_values['humidity time'])
+    del current_values["humidity time"]
     control.data_collection_logic(current_values)
-    assert init_time == control.state['humidity time']
+    assert init_time == control.state["humidity time"]
 
-    current_values['humidity time'] = init_time+1
+    current_values["humidity time"] = init_time + 1
     control.data_collection_logic(current_values)
-    assert init_time+1 == control.state['humidity time']
+    assert init_time + 1 == control.state["humidity time"]
 
-    current_values['humidity time'] = None
+    current_values["humidity time"] = None
     control.data_collection_logic(current_values)
-    assert init_time+1 == control.state['humidity time']
+    assert init_time + 1 == control.state["humidity time"]
 
-    del (current_values['humidity time'])
+    del current_values["humidity time"]
     control.data_collection_logic(current_values)
-    assert init_time+1 == control.state['humidity time']
+    assert init_time + 1 == control.state["humidity time"]
 
 
 def test_auto_calculation_logic(control):
@@ -303,7 +306,7 @@ def test_manual_high_humid_stopping(control, state_with_data):
     state_with_data["state"] = tef_control.STATE.ON
     control.humidifier.turn_on()
     control.state = state_with_data
-    control.state['humidity delay'] = 0
+    control.state["humidity delay"] = 0
     settings.set("GENERAL.manual_target", 20, persist=False)
     assert control.humidifier_controller() == 2
     assert control.state["state"] == tef_control.STATE.OFF
@@ -590,7 +593,7 @@ def test_weather_delay_manual(control, state_with_data):
     assert control.humidifier_controller() == 1
     assert control.state["state"] == tef_control.STATE.ON
 
-    control.state["temp delay"] = tef_control.TEMP_EMERGENCY_DELAY+1000
+    control.state["temp delay"] = tef_control.TEMP_EMERGENCY_DELAY + 1000
     control.state["state"] = tef_control.STATE.OFF
     assert control.humidifier_controller() == 1
     assert control.state["state"] == tef_control.STATE.ON
@@ -624,7 +627,7 @@ def test_humidity_and_temp_delay(control, state_with_data):
     assert control.state["state"] == tef_control.STATE.ON
 
     control.state["humidity delay"] = tef_control.HUMIDITY_EMERGENCY_DELAY
-    control.state["temp delay"] = tef_control.TEMP_EMERGENCY_DELAY+1000
+    control.state["temp delay"] = tef_control.TEMP_EMERGENCY_DELAY + 1000
     assert control.humidifier_controller() == -2
     assert control.state["state"] == tef_control.STATE.OFF
     assert control.state["mode"] == tef_control.MODE.NO_HUMIDITY
@@ -678,9 +681,9 @@ def test_is_active(control):
     assert control.is_active() == control.ecobee.is_active()
 
 
-@patch('tefnut.control.control.TefnutController.data_collection_logic')
-@patch('tefnut.control.control.get_temperature')
-@patch('tefnut.control.ecobee.ecobee.get_humidity')
+@patch("tefnut.control.control.TefnutController.data_collection_logic")
+@patch("tefnut.control.control.get_temperature")
+@patch("tefnut.control.ecobee.ecobee.get_humidity")
 def test_working_loop(ecobee, get_temperature, data_collection_logic, control):
     ecobee.return_value = 35
     get_temperature.return_value = (5, 10, 15, 40)
@@ -690,20 +693,22 @@ def test_working_loop(ecobee, get_temperature, data_collection_logic, control):
     data_collection_logic.assert_called_once()
     params = data_collection_logic.call_args[0][0]
 
-    output = {'humidity': 35,
-              'current_temp': 5,
-              'future_temp': 10,
-              'target_temp': 15,
-              'outdoor_humidity': 40}
+    output = {
+        "humidity": 35,
+        "current_temp": 5,
+        "future_temp": 10,
+        "target_temp": 15,
+        "outdoor_humidity": 40,
+    }
 
     assert output.items() <= params.items()
 
 
-@patch('tefnut.control.control.TefnutController.data_collection_logic')
-@patch('tefnut.control.control.get_temperature')
-@patch('tefnut.control.ecobee.ecobee.get_humidity')
+@patch("tefnut.control.control.TefnutController.data_collection_logic")
+@patch("tefnut.control.control.get_temperature")
+@patch("tefnut.control.ecobee.ecobee.get_humidity")
 def test_ecobee_timeout(ecobee, get_temperature, data_collection_logic, control):
-    control.state['humidity time'] = time.time() + 60*60*60
+    control.state["humidity time"] = time.time() + 60 * 60 * 60
     ecobee.return_value = 35
     get_temperature.return_value = (5, 10, 15, 40)
     control.controler_loop()
@@ -712,23 +717,25 @@ def test_ecobee_timeout(ecobee, get_temperature, data_collection_logic, control)
     data_collection_logic.assert_called_once()
     params = data_collection_logic.call_args[0][0]
 
-    output = {'current_temp': 5,
-              'future_temp': 10,
-              'target_temp': 15,
-              'outdoor_humidity': 40}
+    output = {
+        "current_temp": 5,
+        "future_temp": 10,
+        "target_temp": 15,
+        "outdoor_humidity": 40,
+    }
 
-    not_output = {'humidity': 35}
+    not_output = {"humidity": 35}
 
     assert output.items() <= params.items()
     assert not not_output.items() <= params.items()
-    control.state['humidity time'] = time.time() - 60*60
+    control.state["humidity time"] = time.time() - 60 * 60
 
 
-@patch('tefnut.control.control.TefnutController.data_collection_logic')
-@patch('tefnut.control.control.get_temperature')
-@patch('tefnut.control.ecobee.ecobee.get_humidity')
+@patch("tefnut.control.control.TefnutController.data_collection_logic")
+@patch("tefnut.control.control.get_temperature")
+@patch("tefnut.control.ecobee.ecobee.get_humidity")
 def test_weather_timeout(ecobee, get_temperature, data_collection_logic, control):
-    control.state['temp time'] = time.time() + 60*60*60
+    control.state["temp time"] = time.time() + 60 * 60 * 60
     ecobee.return_value = 35
     get_temperature.return_value = (5, 10, 15, 40)
     control.controler_loop()
@@ -737,30 +744,32 @@ def test_weather_timeout(ecobee, get_temperature, data_collection_logic, control
     data_collection_logic.assert_called_once()
     params = data_collection_logic.call_args[0][0]
 
-    output = {'humidity': 35}
+    output = {"humidity": 35}
 
-    not_output = {'current_temp': 5,
-                  'future_temp': 10,
-                  'target_temp': 15,
-                  'outdoor_humidity': 40}
+    not_output = {
+        "current_temp": 5,
+        "future_temp": 10,
+        "target_temp": 15,
+        "outdoor_humidity": 40,
+    }
 
     assert output.items() <= params.items()
     assert not not_output.items() <= params.items()
-    control.state['temp time'] = time.time() - 60*60
+    control.state["temp time"] = time.time() - 60 * 60
 
 
-@patch('tefnut.control.control.TefnutController.data_collection_logic')
-@patch('tefnut.control.ecobee.ecobee.get_humidity')
+@patch("tefnut.control.control.TefnutController.data_collection_logic")
+@patch("tefnut.control.ecobee.ecobee.get_humidity")
 def test_ecobee_Exception(ecobee, data_collection_logic, control, caplog):
-    control.state['temp time'] = time.time() + 60*60*60
+    control.state["temp time"] = time.time() + 60 * 60 * 60
     ecobee.side_effect = Exception("test")
 
     control.controler_loop()
 
-    assert 'control main loop exception' in caplog.text
+    assert "control main loop exception" in caplog.text
     assert not data_collection_logic.called
 
 
 def test_goodbye(control, caplog):
     control.goodbye()
-    assert 'GOODBYE' in caplog.text
+    assert "GOODBYE" in caplog.text

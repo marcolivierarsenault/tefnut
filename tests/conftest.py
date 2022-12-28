@@ -19,6 +19,7 @@ def pytest_configure(config):
 
 def pytest_sessionfinish(session):
     import tefnut.control.control as control
+
     logger = logging.getLogger("main")
     logger.info("test finished")
     control.humidifier.shutdown()

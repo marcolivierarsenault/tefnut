@@ -5,9 +5,11 @@ class Humidifier:
     def __init__(self):
         if settings.get("GENERAL.humidifier") == "pi":  # pragma: no cover
             from tefnut.control.humi_pi import HumidifierImplement
+
             self.humi = HumidifierImplement()
         else:
             from tefnut.control.humi_stub import HumidifierImplement
+
             self.humi = HumidifierImplement()
 
     def turn_on(self):
