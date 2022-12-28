@@ -19,11 +19,9 @@ login_manager.login_view = "login"
 app.secret_key = 'super secret key'
 
 scheduler = APScheduler()
-scheduler.init_app(app)
-scheduler.start()
 
 persist = True
-BACKGROUND_THREAD_TIMER = 60
+BACKGROUND_THREAD_TIMER = 10
 
 sha = ""
 version = ""
@@ -38,6 +36,9 @@ def close_tefnut():
 
 def load_application():
     global tefnut_controller
+
+    scheduler.init_app(app)
+    scheduler.start()
 
     atexit.register(close_tefnut)
 
