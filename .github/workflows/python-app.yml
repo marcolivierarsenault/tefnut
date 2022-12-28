@@ -47,28 +47,31 @@ jobs:
       uses: codecov/codecov-action@v3
   isort:
     runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
-        - uses: isort/isort-action@v1.0.0
+    name: isort
+    steps:
+      - uses: actions/checkout@v3
+      - uses: isort/isort-action@v1.0.0
   black:
     runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
-        - uses: jpetrucciani/black-check@master
+    name: black
+    steps:
+      - uses: actions/checkout@v3
+      - uses: jpetrucciani/black-check@master
   lint:
     runs-on: ubuntu-latest
-      steps:
-        - name: Set up Python 3.11
-          uses: actions/setup-python@v3
-          with:
-            python-version: "3.11"
-        - name: Install dependencies
-          run: |
-            python -m pip install --upgrade pip
-            pip install flake8
-        - name: Lint with flake8
-          run: |
-            # stop the build if there are Python syntax errors or undefined names
-            poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-            # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-            poetry run flake8 . --count --max-complexity=15 --max-line-length=127 --statistics
+    name: lint
+    steps:
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          poetry run flake8 . --count --max-complexity=15 --max-line-length=127 --statistics
