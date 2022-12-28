@@ -40,6 +40,8 @@ jobs:
         poetry run flake8 . --count --max-complexity=15 --max-line-length=127 --statistics
     - name: Isort
       uses: isort/isort-action@v1.0.0
+    - name: Black
+      uses: jpetrucciani/black-check@master
     - name: Test with pytest and collect coverage
       run: |
         poetry run pytest --cov=tefnut --cov-report=xml
