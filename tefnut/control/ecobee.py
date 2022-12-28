@@ -73,7 +73,7 @@ class ecobee:
     def refresh_tokens(self):
         self.token_response = self.ecobee_service.refresh_tokens()
         logger.debug(
-            "TokenResponse returned from ecobee_service.refresh_tokens():\n{0}".format(
+            "TokenResponse returned from ecobee_service.refresh_tokens():\n{}".format(
                 self.token_response.pretty_format()
             )
         )
@@ -83,7 +83,7 @@ class ecobee:
         try:
             self.token_response = self.ecobee_service.request_tokens()
             logger.debug(
-                "TokenResponse returned from ecobee_service.request_tokens():\n{0}".format(
+                "TokenResponse returned from ecobee_service.request_tokens():\n{}".format(
                     self.token_response.pretty_format()
                 )
             )
@@ -98,7 +98,7 @@ class ecobee:
         try:
             self.authorize_response = self.ecobee_service.authorize()
             logger.debug(
-                "AuthorizeResponse returned from ecobee_service.authorize():\n{0}".format(
+                "AuthorizeResponse returned from ecobee_service.authorize():\n{}".format(
                     self.authorize_response.pretty_format()
                 )
             )

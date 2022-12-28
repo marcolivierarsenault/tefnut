@@ -47,7 +47,7 @@ def load_application():
     configure_logger(app.logger)
     app.logger.info("Application loaded")
 
-    f = open("VERSION", "r")
+    f = open("VERSION")
     version = f.read()
     f.close()
     app.logger.info("Tefnut version: %s", version)

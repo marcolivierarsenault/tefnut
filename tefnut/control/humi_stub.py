@@ -24,4 +24,3 @@ class HumidifierImplement:
 
     def shutdown(self):
         logger.info("Shutdown humidifier, disabling GPIO")
-        pass

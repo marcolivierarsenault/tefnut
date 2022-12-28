@@ -1,29 +1,27 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Run Tefnut",
-            "type": "shell",
-            "command": "poetry run gunicorn --threads=2  -b 0.0.0.0:5000 main:app",
-        },
-        {
-            "label": "Test all",
-            "type": "shell",
-            "command": "poetry run pytest --cov=tefnut tests/ --cov-report term-missing -v",
-        },
-        {
-            "label": "Install all Requirements",
-            "type": "shell",
-            "command": "poetry install",
-            
-        },
-        {
-            "label": "Flake",
-            "type": "shell",
-            "command": "poetry run flake8 . --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics; poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics",
-            
-        }
-    ]
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Tefnut",
+      "type": "shell",
+      "command": "poetry run gunicorn --threads=2  -b 0.0.0.0:5000 main:app"
+    },
+    {
+      "label": "Test all",
+      "type": "shell",
+      "command": "poetry run pytest --cov=tefnut tests/ --cov-report term-missing -v"
+    },
+    {
+      "label": "Install all Requirements",
+      "type": "shell",
+      "command": "poetry install"
+    },
+    {
+      "label": "Flake",
+      "type": "shell",
+      "command": "poetry run flake8 . --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics; poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics"
+    }
+  ]
 }

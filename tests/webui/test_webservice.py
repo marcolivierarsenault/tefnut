@@ -78,16 +78,12 @@ class TestLogin:
 
     def test_login_http_get_redirected(self, client_nl):
         credentials = base64.b64encode(b"test:test").decode("utf-8")
-        response = client_nl.get(
-            "/", headers={"Authorization": "Basic {}".format(credentials)}
-        )
+        response = client_nl.get("/", headers={"Authorization": f"Basic {credentials}"})
         assert b"Humidifier Mode" in response.data
 
     def test_login_http_invalid(self, client_nl):
         credentials = base64.b64encode(b"test:test2").decode("utf-8")
-        response = client_nl.get(
-            "/", headers={"Authorization": "Basic {}".format(credentials)}
-        )
+        response = client_nl.get("/", headers={"Authorization": f"Basic {credentials}"})
         assert response.status == "302 FOUND"
 
     def test_form_login(self, client_nl):
