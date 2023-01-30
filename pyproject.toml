@@ -22,7 +22,7 @@ flask-login = "*"
 pytest-mock = "*"
 gunicorn = "*"
 flask-apscheduler = "*"
-isort = "^5.11.4"
+isort = "^5.12.0"
 black = "^22.12.0"
 
 
