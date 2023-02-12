@@ -104,9 +104,7 @@ class TestOtherFlowEcobee:
         assert local_ecobee.ecobee_service.refresh_token_expires_on == now
 
         with patch("tefnut.control.ecobee.ecobee.authorize") as authorize:
-
             with patch("tefnut.control.ecobee.ecobee.request_tokens") as request_tokens:
-
                 local_ecobee.update_token()
                 authorize.assert_called_once()
                 request_tokens.assert_called_once()
@@ -134,7 +132,6 @@ class TestOtherFlowEcobee:
         assert local_ecobee.ecobee_service.access_token_expires_on == now
 
         with patch("pyecobee.EcobeeService.refresh_tokens") as refresh_tokens:
-
             local_ecobee.update_token()
             refresh_tokens.assert_called_once()
 
