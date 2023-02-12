@@ -181,7 +181,6 @@ class TefnutController:
         return output
 
     def data_collection_logic(self, current_values):
-
         # humidity
         if "humidity" in current_values:
             if current_values["humidity"] is not None:
@@ -204,7 +203,6 @@ class TefnutController:
                 "target_temp" in current_values,
             ]
         ):
-
             if all(
                 [
                     current_values["current_temp"] is not None,
@@ -212,7 +210,6 @@ class TefnutController:
                     current_values["target_temp"] is not None,
                 ]
             ):
-
                 point = (
                     Point("temp")
                     .field("current temp", float(current_values["current_temp"]))
