@@ -29,6 +29,7 @@ setuptools = "~67.4.0" # 67.5 and above create a issue linked to dynaconf
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "*"
+autopep8 = "^2.0.2"
 
 [build-system]
 requires = ["poetry-core"]
