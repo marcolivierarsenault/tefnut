@@ -69,6 +69,9 @@ class TefnutController:
             if self.state["humidity delay"] >= delay:
                 logger.info("Capturing humidity")
                 current_values["humidity"] = self.ecobee.get_humidity()
+                current_values[
+                    "humidity freshness"
+                ] = self.ecobee.get_latest_freshness()
                 logger.debug("humidity: %s", current_values["humidity"])
                 current_values["humidity time"] = time.time()
             else:
@@ -188,7 +191,9 @@ class TefnutController:
                     "humidity time" in current_values
                     and current_values["humidity time"] is not None
                 ):
-                    self.state["humidity time"] = current_values["humidity time"]
+                    # self.state["humidity time"] = current_values["humidity time"]
+                    # PROBABLY HERE
+                    self.state["humidity time"] = current_values["humidity freshness"]
                 self.state["humidity"] = current_values["humidity"]
                 point = Point("humidity").field(
                     "humidity", float(current_values["humidity"])

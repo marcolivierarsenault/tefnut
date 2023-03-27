@@ -1,5 +1,6 @@
 import logging
 import shelve
+import time
 from datetime import datetime
 from threading import Lock
 
@@ -15,6 +16,7 @@ mutex = Lock()
 
 class ecobee:
     def __init__(self, pyecobee_db_path):
+        self.ecobee_latest_freshness = time.time() - 100000
         self.pyecobee_db_path = pyecobee_db_path
         try:
             mutex.acquire()
@@ -130,6 +132,17 @@ class ecobee:
             )
             thermostat_response = self.ecobee_service.request_thermostats(selection)
             logger.debug(thermostat_response)
+            logger.debug(
+                thermostat_response.thermostat_list[0].runtime.last_status_modified
+            )
+            self.ecobee_latest_freshness = datetime.strptime(
+                f"{thermostat_response.thermostat_list[0].runtime.last_status_modified} -0000",
+                "%Y-%m-%d %H:%M:%S %z",
+            ).timestamp()
+
             return thermostat_response.thermostat_list[0].runtime.actual_humidity
         except Exception as e:
             logger.warning("Failed to retreive humidity", exc_info=e)
+
+    def get_latest_freshness(self):
+        return self.ecobee_latest_freshness

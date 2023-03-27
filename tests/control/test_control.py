@@ -53,6 +53,7 @@ def current_values():
         "start time": time.time() - 1,
         "temp time": time.time() - 0.5,
         "humidity time": time.time() - 0.5,
+        "humidity freshness": time.time() - 0.5,
         "temp delay": 7,
         "humidity delay": 7,
         "humidity": 45,
@@ -192,14 +193,17 @@ def test_none_humidity_time(control, current_values, state):
     assert init_time == control.state["humidity time"]
 
     current_values["humidity time"] = init_time + 1
+    current_values["humidity freshness"] = init_time + 1
     control.data_collection_logic(current_values)
     assert init_time + 1 == control.state["humidity time"]
 
     current_values["humidity time"] = None
+    current_values["humidity freshness"] = None
     control.data_collection_logic(current_values)
     assert init_time + 1 == control.state["humidity time"]
 
     del current_values["humidity time"]
+    del current_values["humidity freshness"]
     control.data_collection_logic(current_values)
     assert init_time + 1 == control.state["humidity time"]
 
