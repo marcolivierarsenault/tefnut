@@ -207,6 +207,11 @@ def test_none_humidity_time(control, current_values, state):
     control.data_collection_logic(current_values)
     assert init_time + 1 == control.state["humidity time"]
 
+    current_values["humidity time"] = init_time + 100
+    current_values["humidity freshness"] = init_time - 100
+    control.data_collection_logic(current_values)
+    assert init_time - 100 == control.state["humidity time"]
+
 
 def test_auto_calculation_logic(control):
     assert control.compute_automated_target(-31) == 15
