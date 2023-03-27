@@ -24,7 +24,7 @@ gunicorn = "*"
 flask-apscheduler = "*"
 isort = "*"
 black = "*"
-setuptools = "~67.4.0" # 67.5 and above create a issue linked to dynaconf
+setuptools = "~67.6.0" # 67.5 and above create a issue linked to dynaconf
 
 
 [tool.poetry.group.dev.dependencies]
