@@ -2,5 +2,9 @@
   "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
-  "python.analysis.typeCheckingMode": "off"
+  "python.analysis.typeCheckingMode": "off",
+  "sonarlint.connectedMode.project": {
+    "connectionId": "https-sonarqube-coffeeanddata-ca-",
+    "projectKey": "marcolivierarsenault_tefnut_AYl-GIw1Lfhi0P8TO1rB"
+  }
 }
