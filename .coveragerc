@@ -2,4 +2,4 @@
 relative_files = True
 [report]
 omit =
-    tefnut/control/humi_pi.py
+    **/humi_pi.py
