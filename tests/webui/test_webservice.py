@@ -84,7 +84,7 @@ class TestLogin:
     def test_login_http_invalid(self, client_nl):
         credentials = base64.b64encode(b"test:test2").decode("utf-8")
         response = client_nl.get("/", headers={"Authorization": f"Basic {credentials}"})
-        # assert response.status == "302 FOUND"
+        assert not b"Humidifier Mode" in response.data
 
     def test_form_login(self, client_nl):
         response = client_nl.post(
