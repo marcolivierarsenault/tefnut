@@ -25,7 +25,7 @@ flask-apscheduler = "*"
 isort = "*"
 black = "*"
 setuptools = "*"
-apscheduler = {git = "git@github.com:agronholm/apscheduler.git", rev = "3.x"}
+apscheduler = {git = "https://github.com/agronholm/apscheduler.git", rev = "3.x"}
 
 
 [tool.poetry.group.dev.dependencies]
