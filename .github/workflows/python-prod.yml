@@ -23,6 +23,6 @@ jobs:
           port: ${{ secrets.PORT }}
           debug: True
           script: |
-            whoami
-            echo ${{ github.sha }}
-            pwd
+            echo ${{ github.sha }} > OUTOUTOUT
+            cd tefnut
+            echo ${{ github.sha }} > iiii
