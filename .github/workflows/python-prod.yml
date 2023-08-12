@@ -23,6 +23,8 @@ jobs:
           port: ${{ secrets.PORT }}
           debug: True
           script: |
-            echo ${{ github.sha }} > OUTOUTOUT
-            cd tefnut
-            echo ${{ github.sha }} > iiii
+            echo "Starting Deploy"
+            cd /home/marco/tefnut
+            git fetch --all
+            git checkout ${{ github.sha }}
+            ./test.sh
