@@ -21,4 +21,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          script: ./deploy.sh ${{ github.sha }}
+          script: |
+            whoami
+            echo ${{ github.sha }}
+            pwd
