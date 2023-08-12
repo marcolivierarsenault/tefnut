@@ -27,4 +27,4 @@ jobs:
             cd /home/marco/tefnut
             git fetch --all
             git checkout ${{ github.sha }}
-            ./test.sh
+            ./deploy.sh ${{ github.sha }}
