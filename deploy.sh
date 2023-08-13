@@ -25,6 +25,7 @@ journalctl -n 30 -u tefnut.service
 echo ===============================================
 
 echo sleeping 10 seconds
+sleep 10
 
 if (journalctl -n 30 -u tefnut.service | grep -q $1 )
     then
@@ -34,7 +35,6 @@ if (journalctl -n 30 -u tefnut.service | grep -q $1 )
     exit -1
 fi
 
-sleep 10
 if (! sudo systemctl -q is-active tefnut.service)
     then
     echo "Application failed after 10 seconds"
