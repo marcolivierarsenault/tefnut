@@ -26,7 +26,7 @@ echo ===============================================
 
 echo sleeping 10 seconds
 
-if (journalctl -n 30 -u tefnut.service | grep -q $1 == 0)
+if (journalctl -n 30 -u tefnut.service | grep -q $1 )
     then
     echo "Good version started"
     else
