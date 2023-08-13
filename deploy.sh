@@ -12,6 +12,7 @@ sudo systemctl stop tefnut.service
 echo Starting service
 sudo systemctl start tefnut.service
 
+echo checking status
 if (! sudo systemctl -q is-active tefnut.service)
     then
     echo "Application failed to start"
@@ -19,14 +20,16 @@ if (! sudo systemctl -q is-active tefnut.service)
     else
     echo "Application started"
 fi
+echo sleeping 10 seconds
+sleep 10
 
 echo ===============================================
 journalctl -n 30 -u tefnut.service
 echo ===============================================
 
-echo sleeping 10 seconds
-sleep 10
 
+
+echo checking version
 if (journalctl -n 30 -u tefnut.service | grep -q $1 )
     then
     echo "Good version started"
@@ -35,6 +38,7 @@ if (journalctl -n 30 -u tefnut.service | grep -q $1 )
     exit -1
 fi
 
+echo checking status
 if (! sudo systemctl -q is-active tefnut.service)
     then
     echo "Application failed after 10 seconds"
