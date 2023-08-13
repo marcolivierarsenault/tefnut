@@ -32,7 +32,6 @@ if (journalctl -n 30 -u tefnut.service | grep -q $1 == 0)
     else
     echo "Not on good version"
     exit -1
-    else
 fi
 
 sleep 10
