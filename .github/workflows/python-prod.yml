@@ -19,6 +19,11 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
-          script: ./deploy.sh ${{ github.sha }}
+          script: |
+            echo "Starting Deploy"
+            cd /home/marco/tefnut
+            git fetch --all
+            git checkout ${{ github.sha }}
+            ./deploy.sh ${{ github.sha }}
