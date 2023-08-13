@@ -4,15 +4,15 @@ echo Deploying code $1
 
 
 echo stopping service
-systemctl stop tefnut.service
+sudo systemctl stop tefnut.service
 
 
 /home/marco/.local/bin/poetry install
 
 echo Starting service
-systemctl start tefnut.service
+sudo systemctl start tefnut.service
 
-if (! systemctl -q is-active tefnut.service)
+if (! sudo systemctl -q is-active tefnut.service)
     then
     echo "Application failed to start"
     exit -1
@@ -24,7 +24,7 @@ echo ===============================================
 
 echo sleeping 10 seconds
 sleep 10
-if (! systemctl -q is-active tefnut.service)
+if (! sudo systemctl -q is-active tefnut.service)
     then
     echo "Application failed after 10 seconds"
     exit -1
