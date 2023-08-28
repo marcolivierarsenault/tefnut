@@ -30,7 +30,7 @@ apscheduler = {git = "https://github.com/agronholm/apscheduler.git", rev = "3.x"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "*"
-autopep8 = "^2.0.2"
+autopep8 = "^2.0.4"
 
 [build-system]
 requires = ["poetry-core"]
