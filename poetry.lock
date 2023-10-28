@@ -181,16 +181,23 @@ flask = ">=2.2.5,<3.0.0"
 python-dateutil = ">=2.4.2"
 
 [[package]]
-name = "flask-login"
-version = "0.6.2"
+name = "Flask-Login"
+version = "0.7.0"
 description = "User authentication and session management for Flask."
 category = "main"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
+develop = false
 
 [package.dependencies]
-Flask = ">=1.0.4"
-Werkzeug = ">=1.0.1"
+Flask = ">=2.3.0"
+Werkzeug = ">=2.3.2"
+
+[package.source]
+type = "git"
+url = "https://github.com/maxcountryman/flask-login"
+reference = "HEAD"
+resolved_reference = "2204b4eee7b215977ba5a1bf85e2061f7fa65e20"
 
 [[package]]
 name = "gitdb"
@@ -627,7 +634,7 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "werkzeug"
-version = "2.3.7"
+version = "3.0.1"
 description = "The comprehensive WSGI web application library."
 category = "main"
 optional = false
@@ -642,7 +649,7 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.11.4"
-content-hash = "79fc3427278184d2e03c2e380a73ef9275d0235dd5a2103050d94c218f16a971"
+content-hash = "c8cfbb02fba3d1fe4b60288d3795511ee8af8c92b43cc8286aea8698620472cb"
 
 [metadata.files]
 APScheduler = []
@@ -847,10 +854,7 @@ flask = [
 flask-apscheduler = [
     {file = "Flask-APScheduler-1.13.0.tar.gz", hash = "sha256:19555d6761990f110678aa584ab3ad0e7e698238e6ff60d8f38ab1322bda14c2"},
 ]
-flask-login = [
-    {file = "Flask-Login-0.6.2.tar.gz", hash = "sha256:c0a7baa9fdc448cdd3dd6f0939df72eec5177b2f7abe6cb82fc934d29caac9c3"},
-    {file = "Flask_Login-0.6.2-py3-none-any.whl", hash = "sha256:1ef79843f5eddd0f143c2cd994c1b05ac83c0401dc6234c143495af9a939613f"},
-]
+Flask-Login = []
 gitdb = [
     {file = "gitdb-4.0.11-py3-none-any.whl", hash = "sha256:81a3407ddd2ee8df444cbacea00e2d038e40150acfa3001696fe0dcf1d3adfa4"},
     {file = "gitdb-4.0.11.tar.gz", hash = "sha256:bf5421126136d6d0af55bc1e7c1af1c397a34f5b7bd79e776cd3e89785c2b04b"},
@@ -1066,6 +1070,6 @@ urllib3 = [
     {file = "urllib3-2.0.7.tar.gz", hash = "sha256:c97dfde1f7bd43a71c8d2a58e369e9b2bf692d1334ea9f9cae55add7d0dd0f84"},
 ]
 werkzeug = [
-    {file = "werkzeug-2.3.7-py3-none-any.whl", hash = "sha256:effc12dba7f3bd72e605ce49807bbe692bd729c3bb122a3b91747a6ae77df528"},
-    {file = "werkzeug-2.3.7.tar.gz", hash = "sha256:2b8c0e447b4b9dbcc85dd97b6eeb4dcbaf6c8b6c3be0bd654e25553e0a2157d8"},
+    {file = "werkzeug-3.0.1-py3-none-any.whl", hash = "sha256:90a285dc0e42ad56b34e696398b8122ee4c681833fb35b8334a095d82c56da10"},
+    {file = "werkzeug-3.0.1.tar.gz", hash = "sha256:507e811ecea72b18a404947aded4b3390e1db8f826b494d76550ef45bb3b1dcc"},
 ]
