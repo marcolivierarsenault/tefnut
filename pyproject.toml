@@ -18,7 +18,7 @@ pytest-cov = "*"
 requests-mock = "*"
 gitpython = "*"
 flask = "*"
-flask-login = "*"
+flask-login = {git = "https://github.com/maxcountryman/flask-login"}
 pytest-mock = "*"
 gunicorn = "*"
 flask-apscheduler = "*"
@@ -26,7 +26,7 @@ isort = "*"
 black = "*"
 setuptools = "*"
 apscheduler = {git = "https://github.com/agronholm/apscheduler.git", rev = "3.x"}
-werkzeug = "^2.3.0"
+werkzeug = "*"
 
 
 [tool.poetry.group.dev.dependencies]
