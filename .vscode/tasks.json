@@ -11,7 +11,7 @@
     {
       "label": "Test all",
       "type": "shell",
-      "command": "poetry run pytest --cov=tefnut tests/ --cov-report term-missing -v"
+      "command": "poetry run pytest --cov=tefnut tests/ --cov-report term-missing -v -W ignore::DeprecationWarning"
     },
     {
       "label": "Install all Requirements",
