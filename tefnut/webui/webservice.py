@@ -22,7 +22,7 @@ app.secret_key = "super secret key"
 scheduler = APScheduler()
 
 persist = True
-BACKGROUND_THREAD_TIMER = 60
+BACKGROUND_THREAD_TIMER = 10
 
 sha = ""
 version = ""

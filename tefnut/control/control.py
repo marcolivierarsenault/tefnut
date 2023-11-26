@@ -43,6 +43,7 @@ class TefnutController:
 
     def __init__(self):
         self.humidifier = humidifier
+        self.humidifier.turn_off()
 
         logger.info("starting ecobee device")
         self.ecobee = ee("pyecobee_db")
@@ -117,7 +118,8 @@ class TefnutController:
 
         if self.state["mode"] == MODE.OFF:
             logger.debug("Off")
-            self.humidifier.turn_off()
+            if self.state["state"] != STATE.OFF:
+                self.humidifier.turn_off()
             self.state["state"] = STATE.OFF
             return -7
 
