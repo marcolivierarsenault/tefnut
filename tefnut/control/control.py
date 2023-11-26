@@ -115,6 +115,12 @@ class TefnutController:
         self.state["mode"] = MODE[settings.get("GENERAL.mode")]
         self.state["auto_delta"] = settings.get("GENERAL.auto_delta", default=0)
 
+        if self.state["mode"] == MODE.OFF:
+            logger.debug("Off")
+            self.humidifier.turn_off()
+            self.state["state"] = STATE.OFF
+            return -7
+
         if self.state["humidity delay"] >= HUMIDITY_EMERGENCY_DELAY:
             logger.error("No Humidity info for too long, turning Humi off")
             self.state["mode"] = MODE.NO_HUMIDITY
@@ -147,11 +153,6 @@ class TefnutController:
                 self.state["target_humidity"] = self.compute_automated_target(
                     self.state["target_temp"]
                 )
-        elif self.state["mode"] == MODE.OFF:
-            logger.debug("Off")
-            self.humidifier.turn_off()
-            self.state["state"] = STATE.OFF
-            return -7
 
         deadband = settings.get("GENERAL.deadband", default=2)
 
