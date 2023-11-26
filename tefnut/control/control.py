@@ -43,6 +43,7 @@ class TefnutController:
 
     def __init__(self):
         self.humidifier = humidifier
+        self.humidifier.turn_off()
 
         logger.info("starting ecobee device")
         self.ecobee = ee("pyecobee_db")
