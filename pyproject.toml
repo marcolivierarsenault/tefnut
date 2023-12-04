@@ -31,7 +31,7 @@ werkzeug = "*"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "*"
-autopep8 = "^2.0.2"
+autopep8 = "*"
 
 [build-system]
 requires = ["poetry-core"]
