@@ -3,9 +3,9 @@
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
   "python.analysis.typeCheckingMode": "off",
-  "sonarlint.connectedMode.project": {
-    "connectionId": "https-sonarqube-coffeeanddata-ca-",
-    "projectKey": "marcolivierarsenault_tefnut_AYl-GIw1Lfhi0P8TO1rB"
-  },
-  "flake8.args": ["--ignore=E501,E503"]
+
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  }
 }
