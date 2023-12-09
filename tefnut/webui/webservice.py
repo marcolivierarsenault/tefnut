@@ -123,7 +123,7 @@ def get_state():
             app.logger.error("Error incoming data, mode invalid: %s", new_data["mode"])
             return tefnut_controller.state
 
-        app.logger.info("Chaning Humidifier mode: %s", new_data["mode"])
+        app.logger.info("Changing Humidifier mode: %s", new_data["mode"])
         settings.set("GENERAL.mode", new_data["mode"], persist=persist)
         tefnut_controller.humidifier_controller()
         return tefnut_controller.state

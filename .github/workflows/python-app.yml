@@ -35,18 +35,20 @@ jobs:
           poetry run pytest --cov=tefnut --cov-report=xml -W ignore::DeprecationWarning
       - name: Upload coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v3
-  isort:
-    runs-on: ubuntu-latest
-    name: isort
+  ruff:
+    name: "Ruff"
+    runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v3
-      - uses: isort/isort-action@v1.0.0
-  black:
-    runs-on: ubuntu-latest
-    name: black
-    steps:
-      - uses: actions/checkout@v3
-      - uses: jpetrucciani/black-check@master
+      - name: "Checkout the repository"
+        uses: "actions/checkout@v4.1.0"
+      - name: "Set up Python"
+        uses: actions/setup-python@v4.7.1
+        with:
+          python-version: "3.12"
+      - name: "Install requirements"
+        run: poetry install --with dev
+      - name: "Run"
+        run: poetry run ruff check .
   lint:
     runs-on: ubuntu-latest
     name: lint
