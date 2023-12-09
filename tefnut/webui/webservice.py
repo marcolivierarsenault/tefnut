@@ -123,13 +123,13 @@ def get_state():
             app.logger.error("Error incoming data, mode invalid: %s", new_data["mode"])
             return tefnut_controller.state
 
-        app.logger.info("Chaning Humidifier mode: %s", new_data["mode"])
+        app.logger.info("Changing Humidifier mode: %s", new_data["mode"])
         settings.set("GENERAL.mode", new_data["mode"], persist=persist)
         tefnut_controller.humidifier_controller()
         return tefnut_controller.state
 
     if "manual_target" in new_data:
-        if not type(new_data["manual_target"]) == int:
+        if not isinstance(new_data["manual_target"], int):
             app.logger.error(
                 "Error incoming data, manual_target invalid: %s",
                 new_data["manual_target"],
@@ -153,7 +153,7 @@ def get_state():
         return tefnut_controller.state
 
     if "auto_delta" in new_data:
-        if not type(new_data["auto_delta"]) == int:
+        if not isinstance(new_data["auto_delta"], int):
             app.logger.error(
                 "Error incoming data, auto_delta invalid: %s", new_data["auto_delta"]
             )
@@ -166,7 +166,7 @@ def get_state():
             )
             return tefnut_controller.state
 
-        app.logger.info("Chaning Humidifier auto_delta: %d", new_data["auto_delta"])
+        app.logger.info("Changing Humidifier auto_delta: %d", new_data["auto_delta"])
         settings.set("GENERAL.auto_delta", new_data["auto_delta"], persist=persist)
         tefnut_controller.humidifier_controller()
         return tefnut_controller.state
