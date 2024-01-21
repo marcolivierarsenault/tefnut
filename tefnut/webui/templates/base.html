@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     {% block head %}
     <meta charset="utf-8" />
@@ -33,7 +33,10 @@
     >
       <div class="navbar-brand">
         <a class="navbar-item" href="#">
-          <img src="{{url_for('static', filename='img/tefnut.png')}}" />
+          <img
+            src="{{url_for('static', filename='img/tefnut.png')}}"
+            alt="Tefnut logo"
+          />
         </a>
         <a
           role="button"
