@@ -39,6 +39,7 @@ class TefnutController:
         "auto_delta": settings.get("GENERAL.auto_delta", default=0),
         "mode": MODE.AUTO,
         "state": STATE.OFF,
+        "fresh_target_assignement": True,
     }
 
     def __init__(self):
@@ -115,6 +116,9 @@ class TefnutController:
 
         self.state["mode"] = MODE[settings.get("GENERAL.mode")]
         self.state["auto_delta"] = settings.get("GENERAL.auto_delta", default=0)
+        self.state["fresh_target_assignement"] = settings.get(
+            "GENERAL.fresh_target_assignement", default=False
+        )
 
         if self.state["mode"] == MODE.OFF:
             logger.debug("Off")
@@ -150,7 +154,10 @@ class TefnutController:
             logger.debug("Manual")
         elif self.state["mode"] == MODE.AUTO:
             logger.debug("Auto")
-            tmp_target = self.compute_automated_target(self.state["target_temp"])
+            tmp_target = self.compute_automated_target(
+                self.state["target_temp"], self.state["fresh_target_assignement"]
+            )
+            self.state["fresh_target_assignement"] = False
             if tmp_target is not None:  # Leaving a deadspot for specific degree
                 self.state["target_humidity"] = self.compute_automated_target(
                     self.state["target_temp"]
