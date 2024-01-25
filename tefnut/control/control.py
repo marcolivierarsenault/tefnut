@@ -276,23 +276,39 @@ class TefnutController:
         influx_client.write(point)
         return 0
 
-    def compute_automated_target(self, outside_temp):
+    def compute_automated_target(self, outside_temp, new_assignement=False):
         outside_temp = int(outside_temp)
         delta = settings.get("GENERAL.auto_delta", default=0)
 
-        if outside_temp > 5:
-            return 45 + delta
-        elif outside_temp > -10 and outside_temp < 5:
-            return 40 + delta
-        elif outside_temp > -15 and outside_temp < -10:
-            return 35 + delta
-        elif outside_temp > -20 and outside_temp < -15:
-            return 30 + delta
-        elif outside_temp > -25 and outside_temp < -20:
-            return 25 + delta
-        elif outside_temp > -30 and outside_temp < -25:
-            return 20 + delta
-        elif outside_temp < -30:
-            return 15 + delta
+        if new_assignement:
+            if outside_temp > 5:
+                return 45 + delta
+            elif outside_temp > -10 and outside_temp <= 5:
+                return 40 + delta
+            elif outside_temp > -15 and outside_temp <= -10:
+                return 35 + delta
+            elif outside_temp > -20 and outside_temp <= -15:
+                return 30 + delta
+            elif outside_temp > -25 and outside_temp <= -20:
+                return 25 + delta
+            elif outside_temp > -30 and outside_temp <= -25:
+                return 20 + delta
+            elif outside_temp <= -30:
+                return 15 + delta
         else:
-            return None
+            if outside_temp > 5:
+                return 45 + delta
+            elif outside_temp > -10 and outside_temp < 5:
+                return 40 + delta
+            elif outside_temp > -15 and outside_temp < -10:
+                return 35 + delta
+            elif outside_temp > -20 and outside_temp < -15:
+                return 30 + delta
+            elif outside_temp > -25 and outside_temp < -20:
+                return 25 + delta
+            elif outside_temp > -30 and outside_temp < -25:
+                return 20 + delta
+            elif outside_temp < -30:
+                return 15 + delta
+            else:
+                return None

@@ -215,26 +215,32 @@ def test_none_humidity_time(control, current_values, state):
 
 def test_auto_calculation_logic(control):
     assert control.compute_automated_target(-31) == 15
+    assert control.compute_automated_target(-30, True) == 15
     assert control.compute_automated_target(-30) is None
     assert control.compute_automated_target(-29) == 20
 
     assert control.compute_automated_target(-26) == 20
+    assert control.compute_automated_target(-25, True) == 20
     assert control.compute_automated_target(-25) is None
     assert control.compute_automated_target(-24) == 25
 
     assert control.compute_automated_target(-21) == 25
+    assert control.compute_automated_target(-20, True) == 25
     assert control.compute_automated_target(-20) is None
     assert control.compute_automated_target(-19) == 30
 
     assert control.compute_automated_target(-16) == 30
+    assert control.compute_automated_target(-15, True) == 30
     assert control.compute_automated_target(-15) is None
     assert control.compute_automated_target(-14) == 35
 
     assert control.compute_automated_target(-11) == 35
+    assert control.compute_automated_target(-10, True) == 35
     assert control.compute_automated_target(-10) is None
     assert control.compute_automated_target(-9) == 40
 
     assert control.compute_automated_target(4) == 40
+    assert control.compute_automated_target(5, True) == 40
     assert control.compute_automated_target(5) is None
     assert control.compute_automated_target(6) == 45
     assert control.compute_automated_target(7) == 45
@@ -244,26 +250,32 @@ def test_auto_calculation_logic_with_negative_delta(control):
     settings.set("GENERAL.auto_delta", -2, persist=False)
 
     assert control.compute_automated_target(-31) == 15 - 2
+    assert control.compute_automated_target(-30, True) == 15 - 2
     assert control.compute_automated_target(-30) is None
     assert control.compute_automated_target(-29) == 20 - 2
 
     assert control.compute_automated_target(-26) == 20 - 2
+    assert control.compute_automated_target(-25, True) == 20 - 2
     assert control.compute_automated_target(-25) is None
     assert control.compute_automated_target(-24) == 25 - 2
 
     assert control.compute_automated_target(-21) == 25 - 2
+    assert control.compute_automated_target(-20, True) == 25 - 2
     assert control.compute_automated_target(-20) is None
     assert control.compute_automated_target(-19) == 30 - 2
 
     assert control.compute_automated_target(-16) == 30 - 2
+    assert control.compute_automated_target(-15, True) == 30 - 2
     assert control.compute_automated_target(-15) is None
     assert control.compute_automated_target(-14) == 35 - 2
 
     assert control.compute_automated_target(-11) == 35 - 2
+    assert control.compute_automated_target(-10, True) == 35 - 2
     assert control.compute_automated_target(-10) is None
     assert control.compute_automated_target(-9) == 40 - 2
 
     assert control.compute_automated_target(4) == 40 - 2
+    assert control.compute_automated_target(5, True) == 40 - 2
     assert control.compute_automated_target(5) is None
     assert control.compute_automated_target(6) == 45 - 2
     assert control.compute_automated_target(7) == 45 - 2
@@ -275,26 +287,32 @@ def test_auto_calculation_logic_with_positive_delta(control):
     settings.set("GENERAL.auto_delta", 2, persist=False)
 
     assert control.compute_automated_target(-31) == 15 + 2
+    assert control.compute_automated_target(-30, True) == 15 + 2
     assert control.compute_automated_target(-30) is None
     assert control.compute_automated_target(-29) == 20 + 2
 
     assert control.compute_automated_target(-26) == 20 + 2
+    assert control.compute_automated_target(-25, True) == 20 + 2
     assert control.compute_automated_target(-25) is None
     assert control.compute_automated_target(-24) == 25 + 2
 
     assert control.compute_automated_target(-21) == 25 + 2
+    assert control.compute_automated_target(-20, True) == 25 + 2
     assert control.compute_automated_target(-20) is None
     assert control.compute_automated_target(-19) == 30 + 2
 
     assert control.compute_automated_target(-16) == 30 + 2
+    assert control.compute_automated_target(-15, True) == 30 + 2
     assert control.compute_automated_target(-15) is None
     assert control.compute_automated_target(-14) == 35 + 2
 
     assert control.compute_automated_target(-11) == 35 + 2
+    assert control.compute_automated_target(-10, True) == 35 + 2
     assert control.compute_automated_target(-10) is None
     assert control.compute_automated_target(-9) == 40 + 2
 
     assert control.compute_automated_target(4) == 40 + 2
+    assert control.compute_automated_target(5, True) == 40 + 2
     assert control.compute_automated_target(5) is None
     assert control.compute_automated_target(6) == 45 + 2
     assert control.compute_automated_target(7) == 45 + 2
