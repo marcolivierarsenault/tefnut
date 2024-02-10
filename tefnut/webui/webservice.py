@@ -136,7 +136,7 @@ def get_state():
             )
             return tefnut_controller.state
 
-        if new_data["manual_target"] < 10 or new_data["manual_target"] > 50:
+        if new_data["manual_target"] < 10 or new_data["manual_target"] > 60:
             app.logger.error(
                 "Error incoming data, manual_target is out of range: %s",
                 new_data["manual_target"],
