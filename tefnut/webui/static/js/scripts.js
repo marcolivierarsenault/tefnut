@@ -79,11 +79,11 @@ $(document).ready(function () {
   $("#btn_target").click(function () {
     value = Number($("#target_input").val());
     if (isNaN(value)) {
-      alert("Please enter a value between 10 and 50");
+      alert("Please enter a value between 10 and 60");
       return 1;
     }
-    if (value < 10 || value > 50) {
-      alert("Please enter a value between 10 and 50");
+    if (value < 10 || value > 60) {
+      alert("Please enter a value between 10 and 60");
       return 1;
     }
     alert("Updating Manual target value");
