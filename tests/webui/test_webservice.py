@@ -240,16 +240,16 @@ class TestChangeState:
 
     def test_invalid_too_high_target(self, client, caplog, control):
         copy_state = copy.deepcopy(control.state)
-        response = client.post("/state", data='{"manual_target": 52}')
-        assert "Error incoming data, manual_target is out of range: 52" in [
+        response = client.post("/state", data='{"manual_target": 62}')
+        assert "Error incoming data, manual_target is out of range: 62" in [
             rec.message for rec in caplog.records
         ]
         assert json.loads(response.data) == copy_state
 
     def test_invalid_dict_key(self, client, caplog, control):
         copy_state = copy.deepcopy(control.state)
-        response = client.post("/state", data='{"manual_tss": 52}')
-        assert "Error incoming data, invalid data: {'manual_tss': 52}" in [
+        response = client.post("/state", data='{"manual_tss": 62}')
+        assert "Error incoming data, invalid data: {'manual_tss': 62}" in [
             rec.message for rec in caplog.records
         ]
         assert json.loads(response.data) == copy_state
