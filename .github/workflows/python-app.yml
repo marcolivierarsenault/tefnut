@@ -34,7 +34,7 @@ jobs:
         run: |
           poetry run pytest --cov=tefnut --cov-report=xml -W ignore::DeprecationWarning
       - name: Upload coverage reports to Codecov with GitHub Action
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4.2.0
   ruff:
     name: "Ruff"
     runs-on: "ubuntu-latest"
