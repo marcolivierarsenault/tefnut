@@ -86,7 +86,7 @@ def load_user(user_id):
 
 @app.route("/version")
 @login_required
-def version():
+def version_call():
     out = {"version": version, "sha": sha}
     return out
 
