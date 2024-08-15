@@ -1,6 +1,7 @@
 import atexit
 import json
 import logging
+import platform
 
 import git
 from flask import Flask, flash, redirect, render_template, request, url_for
@@ -52,6 +53,7 @@ def load_application():
     f = open("VERSION")
     version = f.read()
     f.close()
+    app.logger.info("Python version: %s", platform.python_version())
     app.logger.info("Tefnut version: %s", version)
 
     repo = git.Repo(search_parent_directories=True)
