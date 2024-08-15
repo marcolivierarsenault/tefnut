@@ -9,6 +9,8 @@ sudo systemctl stop tefnut.service
 
 /home/marco/.local/bin/poetry install
 
+/home/marco/.local/bin/poetry run pip install RPi.GPIO ## Lib only available on rPI
+
 echo Starting service| ts
 sudo systemctl start tefnut.service
 
