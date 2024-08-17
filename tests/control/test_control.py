@@ -667,7 +667,7 @@ def test_dead_temp_band(control, state_with_data):
     state_with_data["target_temp"] = 5.5  # deadspot
     control.state = state_with_data
     control.humidifier_controller()
-    control.state["target_humidity"] = 55
+    assert control.state["target_humidity"] == 55
 
 
 def test_dead_temp_band_int(control, state_with_data):
@@ -675,15 +675,16 @@ def test_dead_temp_band_int(control, state_with_data):
     state_with_data["target_temp"] = -10  # deadspot
     control.state = state_with_data
     control.humidifier_controller()
-    control.state["target_humidity"] = 55
+    assert control.state["target_humidity"] == 55
 
 
 def test_valid_temp_change_humidity(control, state_with_data):
+    settings.set("GENERAL.mode", "AUTO", persist=False)
     state_with_data["target_humidity"] = 55
     state_with_data["target_temp"] = -5  # valid spot
     control.state = state_with_data
     control.humidifier_controller()
-    control.state["target_humidity"] = 40
+    assert control.state["target_humidity"] == 40
 
 
 def test_is_active(control):
@@ -782,3 +783,21 @@ def test_ecobee_Exception(ecobee, data_collection_logic, control, caplog):
 def test_goodbye(control, caplog):
     control.goodbye()
     assert "GOODBYE" in caplog.text
+
+
+def test_from_manual_to_auto(control, state_with_data):
+    settings.set("GENERAL.mode", "MANUAL", persist=False)
+    state_with_data["state"] = tef_control.STATE.OFF
+    state_with_data["humidity"] = 45
+    state_with_data["target_temp"] = -10
+    settings.set("GENERAL.manual_target", 60, persist=False)
+    control.state = state_with_data
+
+    assert control.humidifier_controller() == 1
+    assert control.state["state"] == tef_control.STATE.ON
+    assert control.state["target_humidity"] == 60
+
+    settings.set("GENERAL.mode", "AUTO", persist=False)
+    assert control.humidifier_controller(force=True) == 2
+    print(control.state)
+    assert control.state["target_humidity"] == 35

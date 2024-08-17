@@ -127,7 +127,7 @@ def get_state():
 
         app.logger.info("Changing Humidifier mode: %s", new_data["mode"])
         settings.set("GENERAL.mode", new_data["mode"], persist=persist)
-        tefnut_controller.humidifier_controller()
+        tefnut_controller.humidifier_controller(force=True)
         return tefnut_controller.state
 
     if "manual_target" in new_data:

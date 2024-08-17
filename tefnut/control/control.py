@@ -70,9 +70,9 @@ class TefnutController:
             if self.state["humidity delay"] >= delay:
                 logger.info("Capturing humidity")
                 current_values["humidity"] = self.ecobee.get_humidity()
-                current_values[
-                    "humidity freshness"
-                ] = self.ecobee.get_latest_freshness()
+                current_values["humidity freshness"] = (
+                    self.ecobee.get_latest_freshness()
+                )
                 logger.debug("humidity: %s", current_values["humidity"])
                 current_values["humidity time"] = time.time()
             else:
@@ -104,7 +104,7 @@ class TefnutController:
         logger.info("GOODBYE")
         self.humidifier.shutdown()
 
-    def humidifier_controller(self):
+    def humidifier_controller(self, force=False):
         logger.debug("Starting control")
         if self.state["humidity"] is not None:
             logger.debug("humidity is currently %d", self.state["humidity"])
@@ -154,6 +154,10 @@ class TefnutController:
             if tmp_target is not None:  # Leaving a deadspot for specific degree
                 self.state["target_humidity"] = self.compute_automated_target(
                     self.state["target_temp"]
+                )
+            elif force:
+                self.state["target_humidity"] = self.compute_automated_target(
+                    self.state["target_temp"] - 2
                 )
 
         deadband = settings.get("GENERAL.deadband", default=2)
