@@ -40,7 +40,7 @@ def test_influx_connection_raise_exeption_without_mock(
         write_api.side_effect = Exception("test")
         assert working_influx_db.write(point) == -1
         write_api.assert_called_once()
-        assert "Faillure to configure Influx DB client" in caplog.text
+        assert "Faillure to send InfluxDB message" in caplog.text
 
 
 def test_influx_failing_to_create_client(caplog):
