@@ -38,5 +38,7 @@ class HumidifierImplement:
 
     def shutdown(self):
         logger.warning("Pi turning off the GPIO")
+        GPIO.output(self.pin, GPIO.HIGH)
+        time.sleep(2)
         GPIO.cleanup()
         time.sleep(2)
