@@ -6,7 +6,8 @@
     {
       "label": "Run Tefnut",
       "type": "shell",
-      "command": "poetry run gunicorn --threads=2  -b 0.0.0.0:5000 main:app"
+      "command": "poetry run gunicorn --threads=2  -b 0.0.0.0:5001 main:app",
+      "problemMatcher": []
     },
     {
       "label": "Test all",
