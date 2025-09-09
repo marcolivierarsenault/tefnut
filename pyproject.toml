@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "tefnut"
-version = "1.2.11"
+version = "1.2.12"
 description = "Tefnut is a control system to manage central humidificatior."
 authors = ["Marc-Olivier Arsenault <marcolivier.arsenault@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12.0"
+python = "^3.13.0"
 dynaconf = "*"
 python-logging-loki = "*"
 influxdb-client = "*"
