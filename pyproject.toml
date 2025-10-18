@@ -9,7 +9,7 @@ authors = [
     { name = "Marc-Olivier Arsenault", email = "marcolivier.arsenault@gmail.com" },
 ]
 dependencies = [
-    "dynaconf==3.2.11",
+    "dynaconf==3.2.12",
     "python-logging-loki==0.3.1",
     "influxdb-client==1.49.0",
     "logging-json==0.6.0",
