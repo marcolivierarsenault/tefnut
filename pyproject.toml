@@ -1,37 +1,43 @@
-[tool.poetry]
+[project]
 name = "tefnut"
 version = "1.2.12"
 description = "Tefnut is a control system to manage central humidificatior."
-authors = ["Marc-Olivier Arsenault <marcolivier.arsenault@gmail.com>"]
-license = "MIT"
 readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "MIT" }
+authors = [
+    { name = "Marc-Olivier Arsenault", email = "marcolivier.arsenault@gmail.com" },
+]
+dependencies = [
+    "dynaconf==3.2.11",
+    "python-logging-loki==0.3.1",
+    "influxdb-client==1.49.0",
+    "logging-json==0.6.0",
+    "pyecobee==1.3.11",
+    "psutil==7.1.0",
+    "pytest-cov==7.0.0",
+    "requests-mock==1.12.1",
+    "gitpython==3.1.45",
+    "flask==3.1.2",
+    "flask-login==0.6.3",
+    "pytest-mock==3.15.1",
+    "gunicorn==23.0.0",
+    "flask-apscheduler==1.13.1",
+    "setuptools==80.9.0",
+    "apscheduler==3.11.0",
+    "werkzeug==3.1.3",
+]
 
-[tool.poetry.dependencies]
-python = "^3.13.0"
-dynaconf = "*"
-python-logging-loki = "*"
-influxdb-client = "*"
-logging-json = "*"
-pyecobee = "*"
-psutil = "*"
-pytest-cov = "*"
-requests-mock = "*"
-gitpython = "*"
-flask = "*"
-flask-login = "*"
-pytest-mock = "*"
-gunicorn = "*"
-flask-apscheduler = "*"
-setuptools = "*"
-apscheduler = "*"
-werkzeug = "*"
-
-[tool.poetry.group.dev.dependencies]
-ruff = "*"
+[project.optional-dependencies]
+dev = [
+    "ruff==0.13.3",
+    "pre-commit>=3.7,<4.0",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-
-[tool.poetry_bumpversion.file."VERSION"]
+[tool.uv]
+python = "3.13"
+python-preference = "managed"
