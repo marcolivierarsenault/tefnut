@@ -6,7 +6,7 @@ This repository ships a uv-managed Python 3.13 service. Entry point `main.py` st
 
 ## Build, Test, and Development Commands
 
-Initial setup: run `uv sync --extra dev` or `./setup.sh` to install uv, dependencies, and the pre-commit hooks. Launch locally with `uv run python main.py` after configuring Dynaconf settings. Execute `uv run pytest` for the suite; append `--cov=tefnut --cov-report=term-missing` to audit coverage like CI. Lint/format via `uv run ruff check .` (auto-fix enabled) and `uv run ruff format .`. Run `uv run pre-commit run --all-files` before each push to mirror CI.
+Initial setup: run `uv sync --extra dev` or `./setup.sh` to install uv, dependencies, and the pre-commit hooks. Launch locally with `uv run python main.py` after configuring Dynaconf settings. Execute `uv run pytest` for the suite; append `--cov=tefnut --cov-report=term-missing` to audit coverage like CI. Lint/format via `uv run ruff check .` (auto-fix enabled) and `uv run ruff format .`. Run `uv run pre-commit run --all-files` before each push to mirror CI. On Raspberry Pi deployments, include the hardware extra with `uv sync --extra rpi` to pull in `RPi.GPIO`.
 
 ## Coding Style & Naming Conventions
 

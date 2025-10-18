@@ -11,9 +11,7 @@ sudo systemctl stop tefnut.service
 
 /home/marco/.local/bin/uv python install 3.13 >/dev/null
 
-/home/marco/.local/bin/uv sync
-
-/home/marco/.local/bin/uv run pip install RPi.GPIO ## Lib only available on rPI
+/home/marco/.local/bin/uv sync --extra rpi
 
 echo Starting service| ts
 sudo systemctl start tefnut.service

@@ -33,6 +33,9 @@ dev = [
     "ruff==0.13.3",
     "pre-commit>=3.7,<4.0",
 ]
+rpi = [
+    "RPi.GPIO==0.7.1; platform_system == 'Linux'",
+]
 
 [build-system]
 requires = ["hatchling"]
