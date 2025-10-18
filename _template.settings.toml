@@ -32,3 +32,4 @@ apikey = "dsaDwe34fDsfedsssd3dasADWDqwdawdq@DADad"
 [WEBUI]
 username = "admin"
 password = "password"
+grafana_url = "https://grafana.example.com/d/jjceitD4z"
