@@ -79,7 +79,11 @@ def background_job():
 
 @app.context_processor
 def inject_git_info():
-    return dict(sha=sha[0:6], version=version)
+    return dict(
+        sha=sha[0:6],
+        version=version,
+        grafana_url=settings.get("WEBUI.grafana_url", "#"),
+    )
 
 
 def _read_project_version() -> str:
