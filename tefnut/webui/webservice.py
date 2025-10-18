@@ -2,6 +2,9 @@ import atexit
 import json
 import logging
 import platform
+from pathlib import Path
+
+import tomllib
 
 import git
 from flask import Flask, flash, redirect, render_template, request, url_for
@@ -50,9 +53,7 @@ def load_application():
     configure_logger(app.logger)
     app.logger.info("Application loaded")
 
-    f = open("VERSION")
-    version = f.read()
-    f.close()
+    version = _read_project_version()
     app.logger.info("Python version: %s", platform.python_version())
     app.logger.info("Tefnut version: %s", version)
 
@@ -79,6 +80,14 @@ def background_job():
 @app.context_processor
 def inject_git_info():
     return dict(sha=sha[0:6], version=version)
+
+
+def _read_project_version() -> str:
+    root = Path(__file__).resolve().parents[2]
+    pyproject_path = root / "pyproject.toml"
+    with pyproject_path.open("rb") as handle:
+        metadata = tomllib.load(handle)
+    return metadata["project"]["version"]
 
 
 @login_manager.user_loader

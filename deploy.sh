@@ -1,4 +1,6 @@
-#! /bin/bash
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 echo Deploying code $1 | ts
 
@@ -7,9 +9,9 @@ echo stopping service | ts
 sudo systemctl stop tefnut.service
 
 
-/home/marco/.local/bin/poetry install
+/home/marco/.local/bin/uv python install 3.13 >/dev/null
 
-/home/marco/.local/bin/poetry run pip install RPi.GPIO ## Lib only available on rPI
+/home/marco/.local/bin/uv sync --extra rpi
 
 echo Starting service| ts
 sudo systemctl start tefnut.service
