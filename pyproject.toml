@@ -3,7 +3,7 @@ name = "tefnut"
 version = "1.2.12"
 description = "Tefnut is a control system to manage central humidificatior."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = "==3.13.*"
 license = { text = "MIT" }
 authors = [
     { name = "Marc-Olivier Arsenault", email = "marcolivier.arsenault@gmail.com" },
@@ -39,5 +39,5 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.uv]
-python = "3.13"
 python-preference = "managed"
+managed = true
