@@ -44,8 +44,3 @@ build-backend = "hatchling.build"
 [tool.uv]
 python-preference = "managed"
 managed = true
-
-[tool.hatch.version]
-source = "regex"
-path = "VERSION"
-pattern = '^(?P<version>[0-9]+\.[0-9]+\.[0-9]+)$'
