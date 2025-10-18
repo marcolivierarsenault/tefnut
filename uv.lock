@@ -563,6 +563,12 @@ wheels = [
 ]
 
 [[package]]
+name = "rpi-gpio"
+version = "0.7.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c4/0f/10b524a12b3445af1c607c27b2f5ed122ef55756e29942900e5c950735f2/RPi.GPIO-0.7.1.tar.gz", hash = "sha256:cd61c4b03c37b62bba4a5acfea9862749c33c618e0295e7e90aa4713fb373b70", size = 29090, upload-time = "2022-02-06T15:15:06.022Z" }
+
+[[package]]
 name = "ruff"
 version = "0.13.3"
 source = { registry = "https://pypi.org/simple" }
@@ -644,6 +650,9 @@ dev = [
     { name = "pre-commit" },
     { name = "ruff" },
 ]
+rpi = [
+    { name = "rpi-gpio", marker = "sys_platform == 'linux'" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -663,11 +672,12 @@ requires-dist = [
     { name = "pytest-mock", specifier = "==3.15.1" },
     { name = "python-logging-loki", specifier = "==0.3.1" },
     { name = "requests-mock", specifier = "==1.12.1" },
+    { name = "rpi-gpio", marker = "sys_platform == 'linux' and extra == 'rpi'", specifier = "==0.7.1" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.13.3" },
     { name = "setuptools", specifier = "==80.9.0" },
     { name = "werkzeug", specifier = "==3.1.3" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["dev", "rpi"]
 
 [[package]]
 name = "typing-extensions"
