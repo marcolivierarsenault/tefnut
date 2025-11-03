@@ -24,7 +24,7 @@ dependencies = [
     "gunicorn==23.0.0",
     "flask-apscheduler==1.13.1",
     "setuptools==80.9.0",
-    "apscheduler==3.11.0",
+    "apscheduler==3.11.1",
     "werkzeug==3.1.3",
 ]
 
