@@ -9,7 +9,7 @@ echo stopping service | ts
 sudo systemctl stop tefnut.service
 
 
-/home/marco/.local/bin/uv python install 3.13 >/dev/null
+/home/marco/.local/bin/uv python install 4 >/dev/null
 
 /home/marco/.local/bin/uv sync --extra rpi
 
