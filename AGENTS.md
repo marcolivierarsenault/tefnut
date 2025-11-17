@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-This repository ships a uv-managed Python 3.13 service. Entry point `main.py` starts the scheduler and background jobs. Package code in `tefnut/` splits into `control/` (device orchestration, Ecobee clients), `utils/` (shared helpers), and `webui/` (Flask views/assets). Configuration templates sit in `_template.settings.toml` and `misc/`. Tests replicate the layout under `tests/`. Operational scripts (`deploy.sh`, `setup.sh`) and CI settings (`.github/`, `sonar-project.properties`, `codecov.yml`) reside at the root. uv pins Python 3.13 via `pyproject.toml`; run `uv python install 3.13` once to provision the interpreter before syncing dependencies.
+This repository ships a uv-managed Python 3.14 service. Entry point `main.py` starts the scheduler and background jobs. Package code in `tefnut/` splits into `control/` (device orchestration, Ecobee clients), `utils/` (shared helpers), and `webui/` (Flask views/assets). Configuration templates sit in `_template.settings.toml` and `misc/`. Tests replicate the layout under `tests/`. Operational scripts (`deploy.sh`, `setup.sh`) and CI settings (`.github/`, `sonar-project.properties`, `codecov.yml`) reside at the root. uv pins Python 3.14 via `pyproject.toml`; run `uv python install 3.14` once to provision the interpreter before syncing dependencies.
 
 ## Build, Test, and Development Commands
 

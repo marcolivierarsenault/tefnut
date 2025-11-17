@@ -1,6 +1,6 @@
 {
   "name": "tefnut",
-  "image": "mcr.microsoft.com/vscode/devcontainers/python:dev-3.13-trixie",
+  "image": "mcr.microsoft.com/vscode/devcontainers/python:dev-3.14-trixie",
   "forwardPorts": [5000],
   "postCreateCommand": "./setup.sh",
   "customizations": {
