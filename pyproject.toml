@@ -30,7 +30,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "ruff==0.14.8",
+    "ruff==0.14.9",
     "pre-commit>=3.7,<5.0",
 ]
 rpi = [
