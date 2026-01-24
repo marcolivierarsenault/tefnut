@@ -33,7 +33,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p ~/.ssh
-          ssh -o StrictHostKeyChecking=accept-new "$TS_USER@$TS_HOST" <<'EOF'
+          ssh -o StrictHostKeyChecking=accept-new "$TS_USER@$TS_HOST" <<EOF
           echo "Starting Deploy"
           cd /home/$TS_USER/tefnut
           git fetch --all
