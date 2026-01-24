@@ -29,3 +29,4 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             echo "Starting Deploy"
+            echo "$(whoami)" > /home/marco/ts-check.txt
