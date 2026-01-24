@@ -27,12 +27,13 @@ jobs:
           getent hosts "tefnut.tail7a3686.ts.net" || true
           nslookup "tefnut.tail7a3686.ts.net" || true
       - name: Deploy on server
-        uses: appleboy/ssh-action@v0.1.4
-        with:
-          host: tefnut.tail7a3686.ts.net
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            echo "Starting Deploy"
-            echo "$(whoami)" > /home/marco/ts-check.txt
+        env:
+          SSH_HOST: tefnut.tail7a3686.ts.net
+          SSH_USER: marco
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          ssh -o StrictHostKeyChecking=accept-new "$SSH_USER@$SSH_HOST" <<'EOF'
+          echo "Starting Deploy"
+          echo "$(whoami)" > /home/marco/ts-check.txt
+          EOF
