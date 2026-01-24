@@ -24,12 +24,12 @@ jobs:
         run: |
           tailscale status
           tailscale ip -4
-          getent hosts "tefnut.tailnet-name.ts.net" || true
-          nslookup "tefnut.tailnet-name.ts.net" || true
+          getent hosts "tefnut.tail7a3686.ts.net" || true
+          nslookup "tefnut.tail7a3686.ts.net" || true
       - name: Deploy on server
         uses: appleboy/ssh-action@v0.1.4
         with:
-          host: tefnut.tailnet-name.ts.net
+          host: tefnut.tail7a3686.ts.net
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
