@@ -13,23 +13,30 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: prod
+    env:
+      TS_HOST: ${{ vars.TS_HOST }}
+      TS_USER: ${{ vars.TS_USER }}
     steps:
       - name: Connect to Tailscale
-        uses: tailscale/github-action@v2
+        uses: tailscale/github-action@v4
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:tefnut-prod,tag:ci
+      - name: Debug Tailscale connectivity
+        run: |
+          tailscale status
+          tailscale ip -4
+          getent hosts "$TS_HOST" || true
+          nslookup "$TS_HOST" || true
       - name: Deploy on server
-        uses: appleboy/ssh-action@v0.1.4
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            echo "Starting Deploy"
-            cd /home/marco/tefnut
-            git fetch --all
-            git checkout ${{ github.sha }}
-            ./deploy.sh ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          ssh -o StrictHostKeyChecking=accept-new "$TS_USER@$TS_HOST" <<EOF
+          echo "Starting Deploy"
+          cd /home/$TS_USER/tefnut
+          git fetch --all
+          git checkout ${{ github.sha }}
+          ./deploy.sh ${{ github.sha }}
+          EOF
