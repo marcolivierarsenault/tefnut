@@ -20,10 +20,16 @@ jobs:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:tefnut-prod,tag:ci
+      - name: Debug Tailscale connectivity
+        run: |
+          tailscale status
+          tailscale ip -4
+          getent hosts "tefnut.tailnet-name.ts.net" || true
+          nslookup "tefnut.tailnet-name.ts.net" || true
       - name: Deploy on server
         uses: appleboy/ssh-action@v0.1.4
         with:
-          host: ${{ secrets.HOST }}
+          host: tefnut.tailnet-name.ts.net
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
