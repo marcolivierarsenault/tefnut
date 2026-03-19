@@ -36,6 +36,7 @@ jobs:
           ssh -o StrictHostKeyChecking=accept-new "$TS_USER@$TS_HOST" <<EOF
           echo "Starting Deploy"
           cd /home/$TS_USER/tefnut
+          git restore uv.lock
           git fetch --all
           git checkout ${{ github.sha }}
           ./deploy.sh ${{ github.sha }}
