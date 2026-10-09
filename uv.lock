@@ -404,16 +404,16 @@ wheels = [
 
 [[package]]
 name = "pyecobee"
-version = "1.3.11"
+version = "1.3.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pytz" },
     { name = "requests" },
     { name = "six" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/68/bf/e94a599a93d30bb76556ead25feac0bec5f9fbb1df9625f064693938fc6a/pyecobee-1.3.11.tar.gz", hash = "sha256:da92be1c8c663c3a2fb146b1dddf55792802e19389e750b73a5057f0e50329f3", size = 103129, upload-time = "2021-05-27T22:58:02.109Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/72/73/9eb4c719a15b7b77071ec46f5b198cab8a3eefd3dfaef708c7e245013fb8/pyecobee-1.3.13.tar.gz", hash = "sha256:f1b8752370e973532b1982435cc789a4db813668a39c80daa74ef5a1f7c69927", size = 107908, upload-time = "2026-07-31T22:36:27.352Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/33/58/1a7b94e18fcee0429be89bfdf3a6c840d25d722b87306f1419679b5a9426/pyecobee-1.3.11-py2.py3-none-any.whl", hash = "sha256:afc601e783a7e6596f9ec8f1fa094daac51bfd16040a656b1d41a99a5d03e4b3", size = 118822, upload-time = "2021-05-27T22:55:01.009Z" },
+    { url = "https://files.pythonhosted.org/packages/35/2b/6ac2e8c8ea31b76403d19f3d59855ad444ced05ce9adb1a1f3b537b62716/pyecobee-1.3.13-py3-none-any.whl", hash = "sha256:fd5d9deb114c2f556f8685b59a031cf5f802cb0d941677fd5a5498d930d5600e", size = 118316, upload-time = "2026-07-31T22:36:25.218Z" },
 ]
 
 [[package]]
@@ -691,7 +691,7 @@ requires-dist = [
     { name = "logging-json", specifier = "==0.6.0" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4.5.1,<5.0" },
     { name = "psutil", specifier = "==7.2.2" },
-    { name = "pyecobee", specifier = "==1.3.11" },
+    { name = "pyecobee", specifier = "==1.3.13" },
     { name = "pytest-cov", specifier = "==7.1.0" },
     { name = "pytest-mock", specifier = "==3.15.1" },
     { name = "python-logging-loki", specifier = "==0.3.1" },
