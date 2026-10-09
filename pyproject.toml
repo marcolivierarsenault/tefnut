@@ -1,6 +1,6 @@
 [project]
 name = "tefnut"
-version = "1.4.0"
+version = "1.4.1"
 description = "Tefnut is a control system to manage central humidificatior."
 readme = "README.md"
 requires-python = "==3.14.*"
