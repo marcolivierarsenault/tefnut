@@ -23,7 +23,7 @@ dependencies = [
     "pytest-mock==3.17.0",
     "gunicorn==26.2.0",
     "flask-apscheduler==1.13.1",
-    "setuptools==84.0.0",
+    "setuptools==84.1.0",
     "apscheduler==3.11.3",
     "werkzeug==3.1.9",
 ]
